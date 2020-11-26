@@ -25,10 +25,6 @@ app.get('/api/farmers', (req, res) => {
     });
 })
 
-app.post('api/farmers', (req, res) => {
-  
-})
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 })

@@ -6,7 +6,6 @@ import './App.css';
 function App() {
 
   const [farmers, setFarmers] = useState([]);
-  const [toggleFarmers, setToggleFarmers] = useState(false);
 
   useEffect(() => {
     axios.get('/api/farmers')
@@ -17,11 +16,12 @@ function App() {
 
   return (
     <div className="App">
-      <button type="button" onClick={() => setToggleFarmers(!toggleFarmers)}>View All Farmers</button>
       {
-        toggleFarmers
+        farmers
           ?
-          <Farmers farmers={farmers} />
+          <div className="farmerBox">
+            <Farmers farmers={farmers} />
+          </div>
           : null
       }
     </div>

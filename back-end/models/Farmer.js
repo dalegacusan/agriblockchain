@@ -24,13 +24,12 @@ const farmerSchema = new mongoose.Schema({
   preferredModeOfCommunication: String,
 });
 
-
 // Create a farmer
 // const farmerMangJose = new Farmer({
-//   firstName: 'Mang',
+//   firstName: 'Juan',
 //   lastName: 'Jose',
-//   location: 'San Miguel, Bulacan',
-//   produce: ['Cabbage', 'Chili Pepper', 'Carrot'],
+//   location: 'Ilocos Norte',
+//   produce: ['Potatoes', 'Tomatoes'],
 //   lastOnline: new Date(),
 //   preferredModeOfCommunication: 'SMS'
 // });
