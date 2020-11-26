@@ -1,6 +1,9 @@
 # 📈 Team Agriblockchain
 
-Tech Stack: **MERN** (MongoDB, ExpressJS, React, NodeJS)
+### 🎯 Goal
+To create an application (web or mobile) to help the agricultural sector have an efficient *farm-to-market* process by utilizing blockchain technology.
+
+### 🛠️ Tech Stack: **MERN**
 
 #### <img src="https://img.icons8.com/color/452/mongodb.png" width="30"> MongoDB
 * **Key-Value Pair Data** (ex: *```{name: "Blockies"}```*)
@@ -14,3 +17,5 @@ Tech Stack: **MERN** (MongoDB, ExpressJS, React, NodeJS)
 
 #### <img src="https://cdn.freebiesupply.com/logos/thumbs/2x/nodejs-1-logo.png" width="30"> NodeJS
 * A **javascript runtime environment**
+  * Uses Javascript on the server. 
+  * *Javascript is normally run on the browser*.
