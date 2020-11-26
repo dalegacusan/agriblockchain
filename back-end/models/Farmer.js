@@ -24,6 +24,12 @@ const farmerSchema = new mongoose.Schema({
   preferredModeOfCommunication: String,
 });
 
+/*
+  'Farmer' is the collection/table name
+  farmerSchema will be the 'blueprint' that the collection will follow
+*/
+// const Farmer = mongoose.model('Farmer', farmerSchema);
+
 // Create a farmer
 // const farmerMangJose = new Farmer({
 //   firstName: 'Juan',
@@ -49,8 +55,4 @@ farmerSchema.set('toJSON', {
   }
 })
 
-/*
-  'Farmer' is the collection/table name
-  farmerSchema will be the 'blueprint' that the collection will follow
-*/
 module.exports = mongoose.model('Farmer', farmerSchema);
