@@ -80,7 +80,11 @@ To create an application (web or mobile) to help the agricultural sector have an
    
    <img src="https://imgur.com/zv0OEwr.png" />
    
-8. `cd` to **front-end** using the following command
+8. **MAKE SURE** to add the `.env` file to the `.gitignore` file of **back-end**
+
+   <img src="https://imgur.com/AH8bUXX.png" />
+   
+9. `cd` to **front-end** using the following command
    
    ```bash
    cd ../front-end/
@@ -90,7 +94,7 @@ To create an application (web or mobile) to help the agricultural sector have an
    
    <img src="https://imgur.com/tlMZU75.png" width="500"/>
    
-9. `cd` back to the root directory by typing the following
+10. `cd` back to the root directory by typing the following
 
    ```
    cd ../
@@ -98,7 +102,7 @@ To create an application (web or mobile) to help the agricultural sector have an
    
    You should now be in the `agriblockchain` folder
    
-10. Enter the following to run the app 
+11. Enter the following to run the app 
    
     ```
     npm run dev
