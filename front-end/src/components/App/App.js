@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from "react";
-import Farmers from "../Farmers/Farmers";
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
+import LandingPage from "../LandingPage/LandingPage";
+import Farmers from "../Farmers/Farmers";
+import FarmersList from "../Farmers/FarmersList";
 
 function App() {
 
-  const [farmers, setFarmers] = useState([]);
-
-  useEffect(() => {
-    axios.get('/api/farmers')
-      .then(res => {
-        setFarmers([...farmers, ...res.data]);
-      });
-  }, []);
-
   return (
     <div className="App">
-      {
-        farmers
-          ?
-          <div className="farmerBox">
-            <Farmers farmers={farmers} />
-          </div>
-          : null
-      }
+      <Router>
+        <Switch>
+          <Route exact path='/' component={LandingPage} />
+          <Route exact path='/farmers' component={FarmersList} />
+        </Switch>
+      </Router>
     </div>
   );
 }

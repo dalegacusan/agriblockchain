@@ -19,5 +19,10 @@
   "homepage": "https://github.com/swenceslao/agriblockchain#readme",
   "devDependencies": {
     "concurrently": "^5.3.0"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.11.1",
+    "@material-ui/icons": "^4.9.1",
+    "react-router-dom": "^5.2.0"
   }
 }
