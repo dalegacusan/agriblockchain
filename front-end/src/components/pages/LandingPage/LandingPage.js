@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Slideshow from './components/Slideshow';
-import HowDoesItWork from './components/HowDoesItWork';
+import HowDoesItWork from './components/HowDoesItWork/HowDoesItWork';
 import Programs from './components/Programs/Programs.js';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -32,10 +32,13 @@ function LandingPage() {
 
                     <Slideshow classes={classes} />
 
-                    <HowDoesItWork classes={classes} />
+                    <div>
+                        <h2 style={{ textAlign: "center" }}>How does it work?</h2>
+                        <HowDoesItWork classes={classes} />
+                    </div>
 
                     <div>
-                        <h2 style={{textAlign: "center"}}>Programs</h2>
+                        <h2 style={{ textAlign: "center" }}>Programs</h2>
                         <Programs />
                     </div>
 

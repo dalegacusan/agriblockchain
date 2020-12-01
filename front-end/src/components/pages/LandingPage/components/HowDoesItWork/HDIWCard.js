@@ -24,27 +24,29 @@ const useStyles = makeStyles({
   },
 });
 
-export default function OutlinedCard(props) {
+export default function HDIWCard(props) {
+  const { description } = props;
   const classes = useStyles();
-  const { programName, programDate, programDescription } = props;
 
   return (
-    <Card className={classes.root}>
-      <CardContent>
-        <Typography variant="h5" component="h2">
-          <span>{programName}</span>
-        </Typography>
-        <Typography className={classes.pos} color="textSecondary">
-          <span>{programDate}</span>
-        </Typography>
-        <Typography variant="body2" component="p">
-          <span>{programDescription}</span>
-          <br />
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </Card>
+    <div className={classes.root}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Card className={classes.root}>
+            <CardContent>
+              <img src="/images/dummy_icon.png" style={{ float: "right" }} alt="icon" width="100" />
+
+              <Typography variant="body2" component="p">
+                <span style={{ display: "inline-block", width: "60%" }}>
+                  {description}
+                </span>
+              </Typography>
+
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+    </div>
+
   );
 }
