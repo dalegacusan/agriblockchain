@@ -4,7 +4,6 @@ import HowDoesItWork from './components/HowDoesItWork';
 import Programs from './components/Programs.js';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Header from '../../global/Header/Header';
 import MaterialLink from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -28,7 +27,6 @@ function LandingPage() {
 
     return (
         <div>
-            <Header />
             <div className={classes.root}>
                 <Grid container spacing={1}>
 
