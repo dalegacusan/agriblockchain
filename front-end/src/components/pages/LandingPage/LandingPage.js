@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Slideshow from './Slideshow';
-import HowDoesItWork from './HowDoesItWork';
-import Programs from './Programs.js';
+import Slideshow from './components/Slideshow';
+import HowDoesItWork from './components/HowDoesItWork';
+import Programs from './components/Programs.js';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Header from '../../global/Header/Header';

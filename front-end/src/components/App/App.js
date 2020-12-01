@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import LandingPage from "../pages/LandingPage/LandingPage";
-import FarmersList from "../pages/Farmers/FarmersList";
+import FarmersList from "../pages/FarmersList/FarmersList";
 
 function App() {
 

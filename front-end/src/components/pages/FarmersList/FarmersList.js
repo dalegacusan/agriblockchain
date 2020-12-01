@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Farmer from "./Farmer";
+import Farmer from "./components/Farmer";
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
