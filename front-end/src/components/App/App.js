@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
-import LandingPage from "../LandingPage/LandingPage";
-import Farmers from "../Farmers/Farmers";
-import FarmersList from "../Farmers/FarmersList";
+import LandingPage from "../pages/LandingPage/LandingPage";
+import FarmersList from "../pages/Farmers/FarmersList";
 
 function App() {
 

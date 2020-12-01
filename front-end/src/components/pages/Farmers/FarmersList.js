@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Farmers from "./Farmers";
+import Farmer from "./Farmer";
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
@@ -22,7 +22,7 @@ function FarmersList() {
           ?
           <Grid container spacing={3}>
             <Grid item xs={2}>
-              <Farmers farmers={farmers} />
+              <Farmer farmers={farmers} />
               {/* Will change to actual grid items per farmers next time */}
             </Grid>
           </Grid>
