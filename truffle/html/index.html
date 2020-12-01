@@ -33,7 +33,7 @@
 
     <script>
         // Change this to the truffle deploy url
-        const local_URL = 'http://127.0.0.1:9545';
+        const local_URL = 'HTTP://127.0.0.1:7545';
 
         const web3 = new Web3(new Web3.providers.HttpProvider(local_URL));
 
@@ -85,12 +85,12 @@
           ];
 
         // Change this to the contract address
-        const contractAddress = "0xF268586e34Dd9C739df05C7881E2C2f249A9e6A1";
+        const contractAddress = "0xAA205E4C12De1476576Fb0a936b1EceC14EcC5Bc";
         const myContract = new web3.eth.Contract(contractABI, contractAddress);
 
         // Change this to an account from the 10 deployed nodes
-        const ownerAcct = "0x72e55a6b3e2e2c19141618ae3cd7f44ffd22b7d9";
-        const ownerKey = "3398c62b42e41a3c69274aa4779a405a3d1a0e9b32b51d6c631786d3f49c8f43";
+        const ownerAcct = "0x83Fa60E7DB74aBA7D0b70e7AF201f607Ee3B7D70";
+        const ownerKey = "0xbb6de981caeeffc2bdbf83c00b186555febd63a48dabfa6c87cfa1d1165dffef";
 
         window.addEventListener('load', async () => {
             $('#ownerAdd').text(ownerAcct);

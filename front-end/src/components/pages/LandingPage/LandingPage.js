@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Slideshow from './components/Slideshow';
 import HowDoesItWork from './components/HowDoesItWork';
-import Programs from './components/Programs.js';
+import Programs from './components/Programs/Programs.js';
 
 import { makeStyles } from '@material-ui/core/styles';
 import MaterialLink from '@material-ui/core/Link';
@@ -34,9 +34,12 @@ function LandingPage() {
 
                     <HowDoesItWork classes={classes} />
 
-                    <Programs classes={classes} />
+                    <div>
+                        <h2 style={{textAlign: "center"}}>Programs</h2>
+                        <Programs />
+                    </div>
 
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <Paper>
                             <Button variant="contained" color="primary">
                                 <MaterialLink component={Link} color="inherit" to="/farmers">
@@ -44,7 +47,7 @@ function LandingPage() {
                                 </MaterialLink>
                             </Button>
                         </Paper>
-                    </Grid>
+                    </Grid> */}
 
                 </Grid>
             </div>
