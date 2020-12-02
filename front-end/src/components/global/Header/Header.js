@@ -73,7 +73,7 @@ export default function ButtonAppBar() {
         </div>
         <Divider />
         <List>
-          {['Home', 'Organization Profile', 'Farmer Search', 'Programs', 'About Us', 'Contact Us'].map((text, index) => (
+          {['Home', 'Login', 'Register', 'Programs', 'About Us', 'Contact Us'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemText primary={text} />
             </ListItem>
