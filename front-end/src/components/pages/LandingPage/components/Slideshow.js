@@ -1,13 +1,49 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
+import Carousel from 'react-material-ui-carousel';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
 
-export default function Slideshow(props) {
-  const { classes } = props;
+const useStyles = makeStyles({
+  fullWidth: {
+    width: '100vw',
+  },
+  carouselImage: {
+    width: 500,
+  }
+});
+
+export default function Slideshow() {
+  const classes = useStyles();
+
+  const items = [
+    {
+      image: '/images/people-finding-a-seat-on-a-passing-train.jpg',
+    },
+    {
+      image: '/images/people-finding-a-seat-on-a-passing-train.jpg',
+    }
+  ]
 
   return (
-    <Grid item xs={12}>
-      <Paper className={classes.paper}>Slideshow/Carousel Section</Paper>
+    <Grid container>
+      <Grid item xs={12}>
+        <Carousel interval={40000} animation='slide' className={classes.fullWidth}>
+          {
+            items.map( (item, i) => <Item key={i} item={item} /> )
+          }
+        </Carousel>
+      </Grid>
     </Grid>
   );
+}
+
+function Item(props) {
+  const classes = useStyles();
+
+  return (
+    <Box display='block' my={3} textAlign='center'>
+      <img src={props.item.image} className={classes.carouselImage} />
+    </Box>
+  )
 }

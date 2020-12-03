@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Farmer from "./components/Farmer";
-import LoadingScreen from '../LoadingScreen/LoadingScreen';
+import Farmer from './components/Farmer';
 import axios from 'axios';
 import Grid from '@material-ui/core/Grid';
+import LoadingScreen from '../LoadingScreen/LoadingScreen';
+
 
 function FarmersList() {
 

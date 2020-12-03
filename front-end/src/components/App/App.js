@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import FarmersList from '../pages/FarmersList/FarmersList';
 import Login from '../pages/LoginRegister/Login/Login';
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <div className="App">
+      <CssBaseline />
       <Header />
       <Router>
         <Switch>

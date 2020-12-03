@@ -20,44 +20,44 @@ export default function Programs() {
   const classes = useStyles();
 
   return (
-    <Grid container spacing={1}>
-      <Grid item xs={12} md={6} lg={3}>
-        <Program
-          programName="Program Name"
-          programDate="December 19, 2020"
-          programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Program
-          programName="Program Name"
-          programDate="December 19, 2020"
-          programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Program
-          programName="Program Name"
-          programDate="December 19, 2020"
-          programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-        />
-      </Grid>
-      <Grid item xs={12} md={6} lg={3}>
-        <Program
-          programName="Program Name"
-          programDate="December 19, 2020"
-          programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
-        />
-      </Grid>
-      <Grid item xs={12} md={12} lg={12}>
-        <Box display="flex" flexDirection="row-reverse" p={1}>
-          <Box>
+    <Box mt={3}>
+      <Grid container spacing={2} style={{ width: '100vw', }}>
+        <Grid item xs={12} md={6} lg={3}>
+          <Program
+            programName="Program Name"
+            programDate="December 19, 2020"
+            programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <Program
+            programName="Program Name"
+            programDate="December 19, 2020"
+            programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <Program
+            programName="Program Name"
+            programDate="December 19, 2020"
+            programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+          />
+        </Grid>
+        <Grid item xs={12} md={6} lg={3}>
+          <Program
+            programName="Program Name"
+            programDate="December 19, 2020"
+            programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+          />
+        </Grid>
+        <Grid item xs={12} md={12} lg={12}>
+          <Box display="flex" flexDirection="row-reverse" p={1}>
             <Button variant="contained" color="primary">
               <span>More Programs</span>
             </Button>
           </Box>
-        </Box>
+        </Grid>
       </Grid>
-    </Grid>
+    </Box>
   );
 }
