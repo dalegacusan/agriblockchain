@@ -18,7 +18,7 @@ export default function Agreement() {
         <FormControlLabel value="Agree" control={<Radio />} label={<Typography style={{ fontSize: "14px" }}>I agree to the Terms & Conditions and Data Privacy Act</Typography>} />
       </RadioGroup>
 
-      <Box display="flex" flexDirection="row-reverse" p={1} m={1}>
+      <Box display="flex" flexDirection="row-reverse">
         <Box p={1}>
           <Button variant="contained" color="primary">
             <span>Next</span>

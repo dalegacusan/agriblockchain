@@ -14,16 +14,55 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-export default function NGO_Form() {
+export default function SponsorIndividualForm() {
   const classes = useStyles();
 
   return (
     <form noValidate autoComplete="off">
-      {/* NGO Name */}
+      {/* First Name */}
       <TextField
         id="outlined-full-width"
-        label="NGO Name"
-        placeholder="NGO Name"
+        label="First Name"
+        placeholder="First Name"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="outlined"
+      />
+
+      {/* Middle Name */}
+      <TextField
+        id="outlined-full-width"
+        label="Middle Name"
+        placeholder="Middle Name"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="outlined"
+      />
+
+      {/* Last Name */}
+      <TextField
+        id="outlined-full-width"
+        label="Last Name"
+        placeholder="Last Name"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="outlined"
+      />
+
+      {/* Suffix */}
+      <TextField
+        id="outlined-full-width"
+        label="Suffix"
+        placeholder="Suffix"
         fullWidth
         margin="normal"
         InputLabelProps={{
@@ -116,6 +155,42 @@ export default function NGO_Form() {
         </Select>
       </FormControl>
 
+      {/* Civil Status */}
+      <FormControl variant="outlined" style={{ width: "100%" }}>
+        <InputLabel id="demo-simple-select-outlined-label">Civil Status</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+
+          label="Civil Status"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+      </FormControl>
+
+      {/* Gender */}
+      <FormControl variant="outlined" style={{ width: "100%" }}>
+        <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          id="demo-simple-select-outlined"
+
+          label="Gender"
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value={10}>Ten</MenuItem>
+          <MenuItem value={20}>Twenty</MenuItem>
+          <MenuItem value={30}>Thirty</MenuItem>
+        </Select>
+      </FormControl>
+
       {/* Contact Number */}
       <TextField
         id="outlined-full-width"
@@ -129,11 +204,11 @@ export default function NGO_Form() {
         variant="outlined"
       />
 
-      {/* Authorized Representative */}
+      {/* Email Address */}
       <TextField
         id="outlined-full-width"
-        label="Authorized Representative"
-        placeholder="Authorized Representative"
+        label="Optional"
+        placeholder="Email Address"
         fullWidth
         margin="normal"
         InputLabelProps={{

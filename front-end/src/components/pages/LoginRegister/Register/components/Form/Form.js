@@ -1,6 +1,9 @@
 import React from 'react';
 
-import NGO_Form from './NGO_Form';
+import NGOForm from './NGOForm';
+import SponsorCorporationForm from './SponsorCorporationForm';
+import SponsorIndividual from './SponsorIndividualForm';
+import PartnerFarmerForm from './PartnerFarmerForm';
 
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
@@ -10,6 +13,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +46,21 @@ export default function Form() {
 
       <Grid item xs={12} md={12} lg={12}>
         <p>Please enter the following details</p>
-        <NGO_Form />
+        {/* <NGOForm /> */}
+        {/* <SponsorCorporationForm /> */}
+        {/* <SponsorIndividual /> */}
+        <PartnerFarmerForm />
+
+        <Box display="flex" flexDirection="row-reverse">
+          <Box p={1}>
+            <Button variant="contained" color="primary">
+              <span>Next</span>
+            </Button>
+            <Button variant="contained" color="primary">
+              <span>Back</span>
+            </Button>
+          </Box>
+        </Box>
       </Grid>
 
     </Grid>
