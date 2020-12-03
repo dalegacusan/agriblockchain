@@ -1,7 +1,6 @@
 import React from 'react';
-import ProgramStatistics from './ProgramStatistics/ProgramStatistics';
-import ProgramFavorites from './ProgramFavorites/ProgramFavorites';
-import ActiveProgram from './ActiveProgram/ActiveProgram';
+import ProgramStatistics from '../../components/ProgramStatistics/ProgramStatistics';
+import ActiveProgram from '../../components/ActiveProgram/ActiveProgram';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Profile() {
+export default function NGOProfile(props) {
+  const { currentUser } = props;
   const classes = useStyles();
 
   return (
@@ -25,10 +25,9 @@ export default function Profile() {
           <Avatar>N</Avatar>
           <p>NGO Name</p>
           <p>City Address</p>
-          <ProgramStatistics />
+          <ProgramStatistics currentUser={currentUser} />
           <Button variant="contained" color="primary">Create Program</Button>
-          <ProgramFavorites />
-          <ActiveProgram />
+          <ActiveProgram currentUser={currentUser} />
 
         </Grid>
 
