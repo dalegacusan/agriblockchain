@@ -1,7 +1,6 @@
 import React from 'react';
-import ProgramStatistics from './ProgramStatistics/ProgramStatistics';
-import ProgramFavorites from './ProgramFavorites/ProgramFavorites';
-import ActiveProgram from './ActiveProgram/ActiveProgram';
+import ProgramStatistics from '../../components/ProgramStatistics/ProgramStatistics';
+import ActiveProgram from '../../components/ActiveProgram/ActiveProgram';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +13,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Profile() {
+export default function SponsorCorporationProfile(props) {
+  const { currentUser } = props;
   const classes = useStyles();
 
   return (
@@ -25,10 +25,10 @@ export default function Profile() {
           <Avatar>C</Avatar>
           <p>Sponsor Corporation Name</p>
           <p>City Address</p>
-          <ProgramStatistics />
-          <Button variant="contained" color="primary">Create Program</Button>
-          <ProgramFavorites />
-          <ActiveProgram />
+          <p>Program's Wallet Balance: <span>100,000</span></p>
+          <ProgramStatistics currentUser={currentUser} />
+          <Button variant="contained" color="primary">Sponsor a program</Button>
+          <ActiveProgram currentUser={currentUser} />
 
         </Grid>
 
