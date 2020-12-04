@@ -7,6 +7,7 @@ import FarmersList from '../pages/FarmersList/FarmersList';
 import Login from '../pages/LoginRegister/Login/Login';
 import Register from '../pages/LoginRegister/Register/Register';
 import Profile from '../pages/Profile/Profile';
+import CreateProgram from '../pages/CreateProgram/CreateProgram';
 import Header from '../global/Header/Header';
 
 function App() {
@@ -17,11 +18,27 @@ function App() {
       <Header />
       <Router>
         <Switch>
+          {/* Screen 002 - Menu Items */}
+
+          {/* Screen 001 */}
           <Route exact path='/' component={LandingPage} />
+
           <Route exact path='/farmers' component={FarmersList} />
+
+          {/* Screen 003 */}
           <Route exact path='/login' component={Login} />
+
+          {/* Screen 004 */}
           <Route exact path='/register' component={Register} />
+
+          {/* Screen 005 */}
           <Route exact path='/profile' component={Profile} />
+
+          {/* Screen 006 */}
+          {/* Screen 007 */}
+
+          {/* Screen 008 */}
+          <Route exact path='/createprogram' component={CreateProgram} />
         </Switch>
       </Router>
     </div>

@@ -19,7 +19,7 @@ export default function Profile(props) {
   // const { currentUser } = props;
 
   // Temporary User
-  const currentUser = "program";
+  const currentUser = "ngo";
 
   const classes = useStyles();
 
