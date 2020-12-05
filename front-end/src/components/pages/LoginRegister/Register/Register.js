@@ -2,17 +2,27 @@ import React from 'react';
 import Agreement from './FirstStep/Agreement';
 import RegisterStepper from './components/RegisterStepper';
 import SecondStep from './SecondStep/SecondStep';
+import ThirdStep from './ThirdStep/ThirdStep';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flexGrow: 1,
-  }
+    width: '100%',
+    flexGrow: 1
+  },
+  backButton: {
+    marginRight: theme.spacing(1),
+  },
+  instructions: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
 }));
 
-export default function Register() {
+export default function Register(props) {
+  const { currentUser } = props;
   const classes = useStyles();
 
   // ===========================
@@ -39,6 +49,7 @@ export default function Register() {
 
         <Grid item xs={12}>
           <RegisterStepper
+            classes={classes}
             activeStep={activeStep}
             setActiveStep={setActiveStep}
             steps={steps}
@@ -55,8 +66,18 @@ export default function Register() {
               <Agreement
                 handleNext={handleNext}
               />
-              :
-              <SecondStep />
+              : activeStep === 1
+                ?
+                <SecondStep
+                  currentUser={currentUser}
+                  classes={classes}
+                  activeStep={activeStep}
+                  steps={steps}
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                />
+                :
+                <ThirdStep />
           }
 
         </Grid>
