@@ -22,13 +22,7 @@
                 <button class="btn btn-outline-secondary" type="button" id="btnSet">Set</button>
             </div>
         </div>
-        
-        <br>
-
-          <button id="btnGetPrograms" type="button">Get Programs</button>
-          <br><br>
-          <p>Number of programs: <span id="txtProgramsLength">1</span></p>
-        
+            
     </div>
 
     <!--Jquery JS -->
@@ -39,7 +33,7 @@
 
     <script>
         // Change this to the truffle deploy url
-        const local_URL = 'HTTP://127.0.0.1:9545';
+        const local_URL = 'HTTP://127.0.0.1:7545';
 
         const web3 = new Web3(new Web3.providers.HttpProvider(local_URL));
 
@@ -95,8 +89,8 @@
         const myContract = new web3.eth.Contract(contractABI, contractAddress);
 
         // Change this to an account from the 10 deployed nodes
-        const ownerAcct = "0x03b5501f0c689a6d9089b65a6bab04ff464a97ac";
-        const ownerKey = "9e11d515fd80c4e43792de174c01c7e0329799f589d4c7440729c614af95fab8";
+        const ownerAcct = "0x83Fa60E7DB74aBA7D0b70e7AF201f607Ee3B7D70";
+        const ownerKey = "0xbb6de981caeeffc2bdbf83c00b186555febd63a48dabfa6c87cfa1d1165dffef";
 
         window.addEventListener('load', async () => {
             $('#ownerAdd').text(ownerAcct);
@@ -121,12 +115,6 @@
                 console.log('newValue', newValue);
                 $('#storedVal').text(newValue);
             });
-
-            $("#btnGetPrograms").click( async () => {
-              const programsLength = await myContract.methods.CreateProgram().call({from: ownerAcct});
-              console.log('Programs Length:', programsLength)
-              $("#txtProgramsLength").text(programsLength);
-            } );
         });
     </script>
 
