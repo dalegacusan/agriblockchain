@@ -16,10 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Profile(props) {
-  // const { currentUser } = props;
-
-  // Temporary User
-  const currentUser = "ngo";
+  const { currentUser } = props;
 
   const classes = useStyles();
 
