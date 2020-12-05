@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -8,26 +9,57 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 export default function Agreement(props) {
-  const { handleNext } = props;
+  const { handleNext, classes } = props;
   const LoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
-  return (
-    <div>
-      <p>{LoremIpsum}</p>
+  const [ accepted, setAccepted ] = useState(false)
 
-      <RadioGroup aria-label="gender" name="gender1">
-        <FormControlLabel value="Agree" control={<Radio />} label={<Typography style={{ fontSize: "14px" }}>I agree to the Terms & Conditions and Data Privacy Act</Typography>} />
+  const handleChange = (e) => {
+    setAccepted(e.target.value)
+  }
+
+  return (
+    <Box mt={3}>
+      <Typography component="h6" gutterBottom>Terms and Conditions</Typography>
+      <Typography variant="body2" component="p" gutterBottom>{LoremIpsum}</Typography>
+
+      <RadioGroup 
+        aria-label="t&c" 
+        name="t&c1" 
+        value={accepted}
+        onChange={handleChange}
+      >
+        <FormControlLabel 
+          value="true" 
+          control={<Radio />} 
+          label={<Typography 
+                    style={{ fontSize: "14px" }}
+                  >
+                    I agree to the Terms & Conditions and Data Privacy Act
+                 </Typography>} 
+        />
       </RadioGroup>
 
       <Box display="flex" flexDirection="row-reverse">
         <Box p={1}>
-          <Button variant="contained" color="primary" onClick={handleNext}>
-            <span>Next</span>
+          <Button
+            className={classes.backButton}
+            component={Link}
+            to="/"
+            color="textSecondary"
+          >
+            Cancel Registration
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            disabled={!accepted}
+            onClick={handleNext}
+          >
+            Next
           </Button>
         </Box>
       </Box>
-
-
-    </div>
+    </Box>
   );
 }

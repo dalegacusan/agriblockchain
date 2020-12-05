@@ -9,9 +9,10 @@ import Register from '../pages/LoginRegister/Register/Register';
 import Profile from '../pages/Profile/Profile';
 import CreateProgram from '../pages/CreateProgram/CreateProgram';
 import Header from '../global/Header/Header';
+import { RegisterDialogProvider } from '../global/Contexts/RegisterDialogContext';
+import RegisterDialog from "../pages/LoginRegister/Register/RegisterDialog";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState('corporation');
 
   /*
 
@@ -31,28 +32,31 @@ function App() {
     <div className="App">
       <CssBaseline />
       <Router>
-        <Header />
+        <RegisterDialogProvider>
+          <Header />
+          <RegisterDialog />
+        </RegisterDialogProvider>
         <Switch>
           {/* Screen 002 - Menu Items */}
           {/* Screen 001 */}
-          <Route exact path='/' render={() => <LandingPage currentUser={currentUser} />} />
+          <Route exact path='/' render={() => <LandingPage />} />
 
-          <Route exact path='/farmers' render={() => <FarmersList currentUser={currentUser} />} />
+          <Route exact path='/farmers' render={() => <FarmersList />} />
 
           {/* Screen 003 */}
-          <Route exact path='/login' render={() => <Login currentUser={currentUser} />} />
+          <Route exact path='/login' render={() => <Login />} />
 
           {/* Screen 004 */}
-          <Route exact path='/register' render={() => <Register currentUser={currentUser} />} />
+          <Route exact path='/register/:userType' render={() => <Register />} />
 
           {/* Screen 005 */}
-          <Route exact path='/profile' render={() => <Profile currentUser={currentUser} />} />
+          <Route exact path='/profile' render={() => <Profile />} />
 
           {/* Screen 006 */}
           {/* Screen 007 */}
 
           {/* Screen 008 */}
-          <Route exact path='/program/create' render={() => <CreateProgram currentUser={currentUser} />} />
+          <Route exact path='/program/create' render={() =>  <CreateProgram />} />
         </Switch>
       </Router>
     </div>

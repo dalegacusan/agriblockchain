@@ -1,11 +1,13 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import Agreement from './FirstStep/Agreement';
 import RegisterStepper from './components/RegisterStepper';
 import SecondStep from './SecondStep/SecondStep';
 import ThirdStep from './ThirdStep/ThirdStep';
 
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,15 +23,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Register(props) {
-  const { currentUser } = props;
+export default withRouter(function Register(props) {
+  const { match } = props;
   const classes = useStyles();
 
   // ===========================
   //  Stepper Handlers
   // ===========================
   const [activeStep, setActiveStep] = React.useState(0);
-  const steps = ['Terms and Conditions', 'Personal Information', 'Produce Details'];
+  const steps = ['Terms and Conditions', 'Personal Information', 'Login Credentials'];
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -44,49 +46,45 @@ export default function Register(props) {
   };
 
   return (
-    <div className={classes.root}>
-      <Grid container spacing={1}>
-
-        <Grid item xs={12}>
-          <RegisterStepper
-            classes={classes}
-            activeStep={activeStep}
-            setActiveStep={setActiveStep}
-            steps={steps}
-            handleNext={handleNext}
-            handleBack={handleBack}
-            handleReset={handleReset}
-          />
-        </Grid>
-
-        <Grid item xs={12}>
-          {
-            activeStep === 0
+    <Box className={classes.root}>
+      <RegisterStepper
+        classes={classes}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
+        steps={steps}
+        handleNext={handleNext}
+        handleBack={handleBack}
+        handleReset={handleReset}
+      />
+      <Box mx={3}>
+        {
+          activeStep === 0
+            ?
+            <Agreement
+              handleNext={handleNext}
+              classes={classes}
+            />
+            : activeStep === 1
               ?
-              <Agreement
+              <SecondStep
+                currentUser={match.params.userType}
+                classes={classes}
+                activeStep={activeStep}
+                steps={steps}
                 handleNext={handleNext}
+                handleBack={handleBack}
               />
-              : activeStep === 1
-                ?
-                <SecondStep
-                  currentUser={currentUser}
-                  classes={classes}
-                  activeStep={activeStep}
-                  steps={steps}
-                  handleNext={handleNext}
-                  handleBack={handleBack}
-                />
-                :
-                <ThirdStep />
+              :
+              <ThirdStep 
+                currentUser={match.params.userType}
+                classes={classes}
+                activeStep={activeStep}
+                steps={steps}
+                handleNext={handleNext}
+                handleBack={handleBack}
+              />
           }
-
-        </Grid>
-
-        {/* <Grid item xs={12}>
-          <Form />
-        </Grid> */}
-
-      </Grid>
-    </div>
+      </Box>
+    </Box>
   );
-}
+})

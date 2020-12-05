@@ -5,6 +5,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -31,6 +32,35 @@ export default function SponsorCorporationForm() {
         }}
         variant="outlined"
       />
+
+      {/* Contact Number */}
+      <TextField
+        id="outlined-full-width"
+        label="Contact Number"
+        placeholder="Contact Number"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="outlined"
+      />
+
+      {/* Authorized Representative */}
+      <TextField
+        id="outlined-full-width"
+        label="Authorized Representative"
+        placeholder="Authorized Representative"
+        fullWidth
+        margin="normal"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        variant="outlined"
+      />
+      <br/><br/>
+      <Divider variant="middle" />
+      <br/>
 
       {/* Address Line 1 */}
       <TextField
@@ -97,7 +127,6 @@ export default function SponsorCorporationForm() {
           <MenuItem value={30}>Thirty</MenuItem>
         </Select>
       </FormControl>
-
       {/* Country */}
       <FormControl variant="outlined" style={{ width: "100%" }}>
         <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
@@ -115,32 +144,6 @@ export default function SponsorCorporationForm() {
           <MenuItem value={30}>Thirty</MenuItem>
         </Select>
       </FormControl>
-
-      {/* Contact Number */}
-      <TextField
-        id="outlined-full-width"
-        label="Contact Number"
-        placeholder="Contact Number"
-        fullWidth
-        margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-      />
-
-      {/* Authorized Representative */}
-      <TextField
-        id="outlined-full-width"
-        label="Authorized Representative"
-        placeholder="Authorized Representative"
-        fullWidth
-        margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        variant="outlined"
-      />
     </form>
   );
 }

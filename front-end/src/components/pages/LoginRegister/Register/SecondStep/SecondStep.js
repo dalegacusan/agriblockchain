@@ -6,6 +6,7 @@ import SponsorIndividualForm from '../components/Form/SponsorIndividualForm';
 
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import Typography from '@material-ui/core/Typography';
 
 export default function SecondStep(props) {
   const { currentUser, classes, activeStep, steps, handleBack, handleNext } = props;
@@ -23,8 +24,8 @@ export default function SecondStep(props) {
   }
 
   return (
-    <div>
-      <p>Personal Information</p>
+    <Box mt={3}>
+      <Typography component="h6" gutterBottom>Personal Information</Typography>
 
       { toDisplay }
 
@@ -50,6 +51,6 @@ export default function SecondStep(props) {
         </Box>
 
       }
-    </div>
+    </Box>
   );
 }
