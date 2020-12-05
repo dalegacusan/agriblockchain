@@ -15,8 +15,8 @@ function App() {
   return (
     <div className="App">
       <CssBaseline />
-      <Header />
       <Router>
+        <Header />
         <Switch>
           {/* Screen 002 - Menu Items */}
 
@@ -38,7 +38,7 @@ function App() {
           {/* Screen 007 */}
 
           {/* Screen 008 */}
-          <Route exact path='/createprogram' component={CreateProgram} />
+          <Route exact path='/program/create' component={CreateProgram} />
         </Switch>
       </Router>
     </div>

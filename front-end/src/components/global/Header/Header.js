@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -73,13 +74,32 @@ export default function ButtonAppBar() {
         </div>
         <Divider />
         <List>
-          {['Home', 'Login', 'Register', 'Programs', 'About Us', 'Contact Us'].map((text, index) => (
-            <ListItem button key={text}>
+          {/* {['Home', 'Login', 'Register', 'Programs', 'About Us', 'Contact Us'].map((text, index) => (
+            <ListItem button key={index}>
               <ListItemText primary={text} />
             </ListItem>
-          ))}
+          ))} */}
+          <ListItemLink to='/' onClick={handleDrawerClose}>
+            <ListItemText primary="Home" />
+          </ListItemLink>
+          <ListItemLink to='/login' onClick={handleDrawerClose}>
+            <ListItemText primary="Login" />
+          </ListItemLink>
+          <ListItemLink to='/register' onClick={handleDrawerClose}>
+            <ListItemText primary="Register" />
+          </ListItemLink>
+          <ListItemLink to='/programs' onClick={handleDrawerClose}>
+            <ListItemText primary="Programs" />
+          </ListItemLink>
+          <ListItemLink to='/about' onClick={handleDrawerClose}>
+            <ListItemText primary="About us" />
+          </ListItemLink>
         </List>
       </Drawer>
     </div>
   );
+}
+
+function ListItemLink(props) {
+  return <ListItem button component={Link} {...props} />;
 }
