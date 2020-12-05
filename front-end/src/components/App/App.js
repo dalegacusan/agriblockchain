@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -9,36 +9,54 @@ import Register from '../pages/LoginRegister/Register/Register';
 import Profile from '../pages/Profile/Profile';
 import CreateProgram from '../pages/CreateProgram/CreateProgram';
 import Header from '../global/Header/Header';
+import { RegisterDialogProvider } from '../global/Contexts/RegisterDialogContext';
+import RegisterDialog from "../pages/LoginRegister/Register/RegisterDialog";
 
 function App() {
+
+  /*
+
+    // =============================
+    //            USERS
+    // 
+    //      a) ngo
+    //      b) corporation
+    //      c) individual
+    //      d) farmer
+    //
+    // =============================
+
+  */
 
   return (
     <div className="App">
       <CssBaseline />
       <Router>
-        <Header />
+        <RegisterDialogProvider>
+          <Header />
+          <RegisterDialog />
+        </RegisterDialogProvider>
         <Switch>
           {/* Screen 002 - Menu Items */}
-
           {/* Screen 001 */}
-          <Route exact path='/' component={LandingPage} />
+          <Route exact path='/' render={() => <LandingPage />} />
 
-          <Route exact path='/farmers' component={FarmersList} />
+          <Route exact path='/farmers' render={() => <FarmersList />} />
 
           {/* Screen 003 */}
-          <Route exact path='/login' component={Login} />
+          <Route exact path='/login' render={() => <Login />} />
 
           {/* Screen 004 */}
-          <Route exact path='/register' component={Register} />
+          <Route exact path='/register/:userType' render={() => <Register />} />
 
           {/* Screen 005 */}
-          <Route exact path='/profile' component={Profile} />
+          <Route exact path='/profile' render={() => <Profile />} />
 
           {/* Screen 006 */}
           {/* Screen 007 */}
 
           {/* Screen 008 */}
-          <Route exact path='/program/create' component={CreateProgram} />
+          <Route exact path='/program/create' render={() =>  <CreateProgram />} />
         </Switch>
       </Router>
     </div>
