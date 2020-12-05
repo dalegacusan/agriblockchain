@@ -27,6 +27,8 @@ export default function Programs() {
             programName="Program Name"
             programDate="December 19, 2020"
             programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            programStage="crowdfunding"
+            programStatus="active"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -34,6 +36,8 @@ export default function Programs() {
             programName="Program Name"
             programDate="December 19, 2020"
             programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            programStage="procurement"
+            programStatus="active"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -41,6 +45,8 @@ export default function Programs() {
             programName="Program Name"
             programDate="December 19, 2020"
             programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            programStage="execution"
+            programStatus="completed"
           />
         </Grid>
         <Grid item xs={12} md={6} lg={3}>
@@ -48,6 +54,8 @@ export default function Programs() {
             programName="Program Name"
             programDate="December 19, 2020"
             programDescription="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor"
+            programStage="leftover"
+            programStatus="cancelled"
           />
         </Grid>
         <Grid item xs={12} md={12} lg={12}>

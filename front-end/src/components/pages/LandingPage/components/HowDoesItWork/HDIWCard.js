@@ -30,7 +30,7 @@ export default function HDIWCard(props) {
     <Box my={2} mx={2}>
       <Card>
         <CardContent>
-          <Box px={5} display='flex' flexDirection='row' alignItems='center' justifyContent='space-between'>
+          <Box px={1} display='flex' flexDirection='row' alignItems='center' justifyContent='space-between'>
             <Typography variant="body2" component="p">
               {description}
             </Typography>
