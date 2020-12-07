@@ -1,27 +1,35 @@
 const mongoose = require('mongoose');
+const Program = require('./Program').schema;
 
-// MongoDB URL
-const URL = process.env.MONGODB_URL;
-
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-  .then(result => {
-    console.log('Successfully connected to MongoDB!');
-  })
-  .catch(error => {
-    console.log(`Error connecting to MongoDB:`, error.message)
-  });
-
-/* 
-  Schema is what a Farmer's data will look like
-  Think of it as a BLUEPRINT
-*/
 const farmerSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  location: String,
-  produce: Array,
-  lastOnline: Date,
-  preferredModeOfCommunication: String,
+  loginDetails: {
+    username: String,
+    password: String
+  },
+  farmerAbout: {
+    profilePicture: String,
+    firstName: String,
+    middleName: String,
+    lastName: String,
+    suffix: String,
+    addressLine1: String,
+    addressLine2: String,
+    region: String,
+    city: String,
+    country: String,
+  },
+  contactDetails: {
+    emailAddress: String,
+    contactNumber: String
+  },
+  // Contains Produce Schema
+  producePortfolio: Array,
+  programStatistics: {
+    // For active program, just get the latest item on activePrograms array
+    activePrograms: Array,
+    programsParticipated: Array,
+    completedPrograms: Array
+  },
 });
 
 /*
