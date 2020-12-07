@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const NGO = require('./NGO').schema;
+const { produceSchema, produceRequirement } = require('./Produce');
+const Farmer = require('./Farmer').schema;
 
 const programSchema = new mongoose.Schema({
   programAbout: {
@@ -8,9 +10,12 @@ const programSchema = new mongoose.Schema({
     about: String,
     completed: Boolean,
     cityAddress: String,
-    ngo: {type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, "A program must have an NGO"]},
+    ngo: { type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, "A program must have an NGO"] },
     status: String,
-    stage: String
+    stage: String,
+    // FundingMeter and FundingStatus will be based off of these two properties
+    requiredAmount: Number,
+    currentAmount: Number,
   },
   timeline: {
     submissionDate: Date,
@@ -21,17 +26,14 @@ const programSchema = new mongoose.Schema({
     programDate: Date
   },
   // Create a Requirement Schema
-  produceRequirements: [],
-  funding: {
-    meter: Number,
-    status: String
-  },
+  produceRequirements: [produceRequirement.schema],
+  farmersParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' }],
+  // Contains Sponsors Schema
+  sponsors: Array,
   sponsorshipOptions: {
     minor: Number,
     major: Number
   },
-  // Contains Sponsors Schema
-  sponsors: Array
 });
 
 // const Program = mongoose.model('Program', programSchema);
