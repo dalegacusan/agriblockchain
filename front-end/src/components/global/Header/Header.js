@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -8,12 +8,16 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronRight';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemLink from './ListItemLink';
 import ListItem from '@material-ui/core/ListItem';
+import Box from '@material-ui/core/Box';
+import Button from '@material-ui/core/Button';
+import Avatar from '@material-ui/core/Avatar';
 
 import { RegisterDialogContext } from '../Contexts/RegisterDialogContext';
+import { LoginDialogContext } from '../Contexts/LoginDialogContext';
 
 const drawerWidth = 320;
 
@@ -34,14 +38,21 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     minWidth: drawerWidth,
   },
+  avatar: {
+    color: theme.palette.secondary.contrastText,
+    backgroundColor: theme.palette.secondary.main,
+    textTransform: "uppercase",
+  }
 }));
 
 export default function ButtonAppBar() {
   const classes = useStyles();
 
   const [open, setOpen] = useState(false);
+  const [ loggedIn, setLogginIn ] = useState(false)
   const { setOpenRegisterDialog } = useContext(RegisterDialogContext);
-
+  const { setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext);
+  
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -51,24 +62,77 @@ export default function ButtonAppBar() {
   };
 
   const chooseRegisterType = () => {
-    handleDrawerClose()
-    setOpenRegisterDialog(true)
+    handleDrawerClose();
+    setOpenRegisterDialog(true);
+  };
+
+  const handleLoginDialog = () => {
+    setOpenLoginDialog(true);
+  };
+
+  const handleLogout = () => {
+    setLoginData({
+      username: '',
+      password: '',
+      type: '',
+    });
+    localStorage.removeItem('loginCreds');
   }
+
+  useEffect(() => {
+    if (loginData.username !== '' && loginData.password !== '' && loginData.type !== '') {
+      // logged in
+      setLogginIn(true)
+    } else {
+      // not logged in
+      setLogginIn(false)
+    }
+  }, [loginData])
 
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Bay-ANI-han
-          </Typography>
           <IconButton onClick={handleDrawerOpen} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Bay-ANI-han
+          </Typography>
+          <Box
+            display={ loggedIn ? "none" : "block"}  
+          >
+            <Button color="inherit" onClick={handleLoginDialog}>
+              Log In
+            </Button>
+            <Button color="inherit" onClick={chooseRegisterType}>
+              Register
+            </Button>
+          </Box>
+          <Box
+            display={ loggedIn ? "block" : "none"}
+          >
+            <Box display="flex" flexDirection="row" alignItems="center">
+              <Avatar className={classes.avatar}>
+                { loginData.username && loginData.username !== '' ? loginData.username.substring(0, 2) : '' }
+              </Avatar>
+              <Typography style={{ 
+                marginLeft: "0.5rem",
+                marginRight: "0.5rem",
+                borderRight: "1px solid #efefef",
+                paddingRight: "0.5rem",
+              }}>
+                { loginData.username && loginData.username !== '' ? loginData.username : '' }
+              </Typography>
+              <Button color="inherit" onClick={handleLogout} size="small">
+                Log Out
+              </Button>
+            </Box>
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
-        anchor="right"
+        anchor="left"
         open={open}
         className={classes.drawer}
         classes={{
@@ -77,7 +141,7 @@ export default function ButtonAppBar() {
       >
         <div>
           <IconButton onClick={handleDrawerClose}>
-            <ChevronRightIcon />
+            <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
