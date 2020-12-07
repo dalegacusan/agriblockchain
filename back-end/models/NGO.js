@@ -11,14 +11,14 @@ const ngoSchema = new mongoose.Schema({
     ngoName: String,
     addressLine1: String,
     addressLine2: String,
-    ngoRegion: String,
-    ngoCity: String,
-    ngoCountry: String
+    region: String,
+    city: String,
+    country: String
   },
-  ngoContactDetails: {
+  contactDetails: {
     authorizedRepresentative: String,
-    ngoContactNumber: String,
-    ngoEmailAddress: String
+    contactNumber: String,
+    emailAddress: String
   },
   programs: {
     // For active program, just get the latest item on activePrograms array
