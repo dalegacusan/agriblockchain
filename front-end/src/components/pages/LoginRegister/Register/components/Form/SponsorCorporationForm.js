@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -7,6 +7,8 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
+import { RegistrationDataContext } from '../../../../../global/Contexts/RegistrationDataContext';
+
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: "0 0%",
@@ -14,15 +16,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default function SponsorCorporationForm() {
   const classes = useStyles();
+
+  const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
+
+  const handleChange = (e) => {
+    setOpenRegistrationData({
+      ...openRegistrationData,
+      type: 'corporation',
+      [e.target.name]: e.target.value,
+    });
+  }
 
   return (
     <form noValidate autoComplete="off">
       {/* Corporation Name */}
       <TextField
-        id="outlined-full-width"
         label="Corporation Name"
         placeholder="Corporation Name"
         fullWidth
@@ -31,11 +41,14 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
+        id="name"
+        name="name"
+        value={openRegistrationData.name}
+        onChange={handleChange}
       />
 
       {/* Contact Number */}
       <TextField
-        id="outlined-full-width"
         label="Contact Number"
         placeholder="Contact Number"
         fullWidth
@@ -44,11 +57,15 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
+        id="contactNumber"
+        name="contactNumber"
+        type="number"
+        value={openRegistrationData.contactNumber}
+        onChange={handleChange}
       />
 
       {/* Authorized Representative */}
       <TextField
-        id="outlined-full-width"
         label="Authorized Representative"
         placeholder="Authorized Representative"
         fullWidth
@@ -57,14 +74,18 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
+        id="representativeName"
+        name="representativeName"
+        onChange={handleChange}
+        value={openRegistrationData.representativeName}
       />
+
       <br/><br/>
       <Divider variant="middle" />
       <br/>
 
       {/* Address Line 1 */}
       <TextField
-        id="outlined-full-width"
         label="Address Line 1"
         placeholder="Address Line 1"
         fullWidth
@@ -73,11 +94,14 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
+        id="address1"
+        name="address1"
+        value={openRegistrationData.address1}
+        onChange={handleChange}
       />
 
       {/* Address Line 2 */}
       <TextField
-        id="outlined-full-width"
         label="Address Line 2"
         placeholder="Address Line 2"
         fullWidth
@@ -86,27 +110,31 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
+        id="address2"
+        name="address2"
+        value={openRegistrationData.address2}
+        onChange={handleChange}
       />
 
-      {/*           
-      value={age}
-      onChange={handleChange} 
-      */}
       {/* Region */}
+      <br/><br/>
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
         <Select
           labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-
+          id="region"
+          name="region"
+          value={openRegistrationData.region}
           label="Region"
+          onChange={handleChange}
+          defaultValue=""
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          <MenuItem value="region 1">Region 1</MenuItem>
+          <MenuItem value="region 2">Region 2</MenuItem>
+          <MenuItem value="region 3">Region 3</MenuItem>
         </Select>
       </FormControl>
 
@@ -115,33 +143,41 @@ export default function SponsorCorporationForm() {
         <InputLabel id="demo-simple-select-outlined-label">City</InputLabel>
         <Select
           labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-
+          id="city"
+          name="city"
+          value={openRegistrationData.city}
           label="City"
+          onChange={handleChange}
+          defaultValue=""
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          <MenuItem value="makati">Makati</MenuItem>
+          <MenuItem value="poblacion">Poblacion</MenuItem>
+          <MenuItem value="davao">Davao</MenuItem>
         </Select>
       </FormControl>
+
       {/* Country */}
+      <br/><br/>
       <FormControl variant="outlined" style={{ width: "100%" }}>
         <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
         <Select
           labelId="demo-simple-select-outlined-label"
-          id="demo-simple-select-outlined"
-
+          id="country"
+          name="country"
+          value={openRegistrationData.country}
           label="Country"
+          onChange={handleChange}
+          defaultValue=""
         >
           <MenuItem value="">
             <em>None</em>
           </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          <MenuItem value="Philippines">Philippines</MenuItem>
+          <MenuItem value="Australia">Australia</MenuItem>
+          <MenuItem value="Nicaragua">Nicaragua</MenuItem>
         </Select>
       </FormControl>
     </form>
