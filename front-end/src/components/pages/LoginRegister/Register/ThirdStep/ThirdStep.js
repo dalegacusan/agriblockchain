@@ -1,23 +1,24 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 
+import { RegistrationDataContext } from '../../../../global/Contexts/RegistrationDataContext';
+
 
 export default function ThirdStep(props) {
-  const { currentUser, classes, activeStep, steps, handleBack, handleNext } = props;
+  const { classes, activeStep, steps, handleBack, handleNext } = props;
 
-  const [ username, setUsername ] = useState('');
-  const [ password, setPassword ] = useState('');
-
-  const handleUsername = (event) => {
-    setUsername(event.target.value);
-  };
-  const handlePassword = (event) => {
-    setPassword(event.target.value);
-  };
+  const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
+  
+  const handleChange = e => {
+    setOpenRegistrationData({
+      ...openRegistrationData,
+      [e.target.name]: e.target.value,
+    })
+  }
 
   return (
     <Box mt={3}>
@@ -30,9 +31,10 @@ export default function ThirdStep(props) {
             required
             fullWidth 
             id="username"
+            name="username"
             label="Username"
-            value={username}
-            onChange={handleUsername}
+            value={openRegistrationData.username}
+            onChange={handleChange}
             variant="outlined"
             margin="normal"
             InputLabelProps={{
@@ -44,9 +46,10 @@ export default function ThirdStep(props) {
             required
             fullWidth 
             id="password"
+            name="password"
             label="Password"
-            value={password}
-            onChange={handlePassword}
+            value={openRegistrationData.password}
+            onChange={handleChange}
             variant="outlined"
             margin="normal"
             InputLabelProps={{
@@ -76,7 +79,7 @@ export default function ThirdStep(props) {
               variant="contained" 
               color="primary" 
               onClick={handleNext}
-              disabled={username === '' || password === '' ? true : false}
+              disabled={openRegistrationData.username === '' || openRegistrationData.password === '' ? true : false}
             >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>

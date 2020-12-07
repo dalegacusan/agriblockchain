@@ -4,10 +4,10 @@ import Agreement from './FirstStep/Agreement';
 import RegisterStepper from './components/RegisterStepper';
 import SecondStep from './SecondStep/SecondStep';
 import ThirdStep from './ThirdStep/ThirdStep';
+import { RegistrationDataProvider } from '../../../global/Contexts/RegistrationDataContext';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,33 +57,35 @@ export default withRouter(function Register(props) {
         handleReset={handleReset}
       />
       <Box mx={3}>
-        {
-          activeStep === 0
-            ?
-            <Agreement
-              handleNext={handleNext}
-              classes={classes}
-            />
-            : activeStep === 1
+        <RegistrationDataProvider>
+          {
+            activeStep === 0
               ?
-              <SecondStep
-                currentUser={match.params.userType}
-                classes={classes}
-                activeStep={activeStep}
-                steps={steps}
+              <Agreement
                 handleNext={handleNext}
-                handleBack={handleBack}
-              />
-              :
-              <ThirdStep 
-                currentUser={match.params.userType}
                 classes={classes}
-                activeStep={activeStep}
-                steps={steps}
-                handleNext={handleNext}
-                handleBack={handleBack}
               />
-          }
+              : activeStep === 1
+                ?
+                <SecondStep
+                  currentUser={match.params.userType}
+                  classes={classes}
+                  activeStep={activeStep}
+                  steps={steps}
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                />
+                :
+                <ThirdStep 
+                  currentUser={match.params.userType}
+                  classes={classes}
+                  activeStep={activeStep}
+                  steps={steps}
+                  handleNext={handleNext}
+                  handleBack={handleBack}
+                />
+            }
+          </RegistrationDataProvider>
       </Box>
     </Box>
   );

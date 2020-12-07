@@ -44,12 +44,15 @@ export default function SecondStep(props) {
             >
               Back
           </Button>
-            <Button variant="contained" color="primary" onClick={handleNext}>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              onClick={handleNext}
+            >
               {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
             </Button>
           </Box>
         </Box>
-
       }
     </Box>
   );

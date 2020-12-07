@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { RegistrationDataContext } from '../../../../global/Contexts/RegistrationDataContext';
 
 import Button from '@material-ui/core/Button';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -12,10 +13,15 @@ export default function Agreement(props) {
   const { handleNext, classes } = props;
   const LoremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
+  const { setOpenRegistrationData } = useContext(RegistrationDataContext)
   const [ accepted, setAccepted ] = useState(false)
 
   const handleChange = (e) => {
     setAccepted(e.target.value)
+  }
+
+  const cancelReg = () => {
+    setOpenRegistrationData({})
   }
 
   return (
@@ -46,7 +52,7 @@ export default function Agreement(props) {
             className={classes.backButton}
             component={Link}
             to="/"
-            color="textSecondary"
+            onClick={cancelReg}
           >
             Cancel Registration
           </Button>
