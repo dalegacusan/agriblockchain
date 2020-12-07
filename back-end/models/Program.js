@@ -11,7 +11,7 @@ const programSchema = new mongoose.Schema({
     about: String,
     completed: Boolean,
     cityAddress: String,
-    ngo: { type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, "A program must have an NGO"] },
+    ngo: { type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, 'A program must have an NGO'] },
     status: String,
     stage: String,
     // FundingMeter and FundingStatus will be based off of these two properties
@@ -29,7 +29,7 @@ const programSchema = new mongoose.Schema({
   // Create a Requirement Schema
   produceRequirements: [produceRequirement.schema],
   farmersParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' }],
-  sponsors: [Sponsor],
+  sponsors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsor' }],
   sponsorshipOptions: {
     minor: Number,
     major: Number

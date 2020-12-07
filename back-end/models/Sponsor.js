@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Program = require('./Program').schema;
 
 const sponsorIndividualSchema = new mongoose.Schema({
+  sponsorType: {
+    type: String,
+    default: "individual"
+  },
+  sponsorshipOption: String,
   loginDetails: {
     username: String,
     password: String
@@ -26,14 +31,19 @@ const sponsorIndividualSchema = new mongoose.Schema({
     amountFunded: Number,
     dateFunded: Date,
     // For active program, just get the latest item on activePrograms array
-    activePrograms: [Program],
-    sponsoredPrograms: [Program],
-    completedPrograms: [Program],
+    activePrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
+    sponsoredPrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
+    completedPrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
   },
   walletBalance: Number
 });
 
 const sponsorCorporationSchema = new mongoose.Schema({
+  sponsorType: {
+    type: String,
+    default: "corporation"
+  },
+  sponsorshipOption: String,
   loginDetails: {
     username: String,
     password: String
@@ -56,9 +66,9 @@ const sponsorCorporationSchema = new mongoose.Schema({
     amountFunded: Number,
     dateFunded: Date,
     // For active program, just get the latest item on activePrograms array
-    activePrograms: [Program],
-    sponsoredPrograms: [Program],
-    completedPrograms: [Program],
+    activePrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
+    sponsoredPrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
+    completedPrograms: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Program' }],
   },
   walletBalance: Number
 });
@@ -80,6 +90,6 @@ sponsorCorporationSchema.set('toJSON', {
 })
 
 module.exports = {
-  sponsorIndividual: mongoose.model('SponsorIndividual', produceSchema),
-  sponsorCorporation: mongoose.model('SponsorCorporation', produceRequirementSchema)
+  sponsorIndividual: mongoose.model('SponsorIndividual', sponsorIndividualSchema),
+  sponsorCorporation: mongoose.model('SponsorCorporation', sponsorCorporationSchema)
 };
