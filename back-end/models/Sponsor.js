@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Program = require('./Program').schema;
 
 const sponsorIndividualSchema = new mongoose.Schema({
   sponsorType: {

@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const NGO = require('./NGO').schema;
-const { produceSchema, produceRequirement } = require('./Produce');
-const Farmer = require('./Farmer').schema;
-const Sponsor = require('./Sponsor').schema;
+const { produceRequirement } = require('./Produce');
 
 const programSchema = new mongoose.Schema({
   programAbout: {
@@ -26,7 +23,6 @@ const programSchema = new mongoose.Schema({
     procurementEndDate: Date,
     programDate: Date
   },
-  // Create a Requirement Schema
   produceRequirements: [produceRequirement.schema],
   farmersParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' }],
   sponsors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsor' }],

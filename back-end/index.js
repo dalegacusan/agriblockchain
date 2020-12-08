@@ -64,9 +64,27 @@ app.get('/api/farmers', (req, res) => {
     });
 })
 
+app.get('/api/individualsponsors', (req, res) => {
+  // Get all farmers from MongoDB
+  sponsorIndividual.find({})
+    .then(result => {
+      res.json(result);
+    });
+})
+
+app.get('/api/corporationsponsors', (req, res) => {
+  // Get all farmers from MongoDB
+  sponsorCorporation.find({})
+    .then(result => {
+      res.json(result);
+    });
+})
+
 // =================================
 //          ALTER Data Only
 // =================================
+
+// ======== Create Accounts ======== //
 
 app.get('/createngo', (req, res) => {
 
@@ -292,6 +310,8 @@ app.get('/createsponsor', (req, res) => {
   }
 
 })
+
+// ======== Update Accounts ======== //
 
 app.get('/addfarmerproduce', (req, res) => {
 
