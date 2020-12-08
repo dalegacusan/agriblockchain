@@ -19,6 +19,11 @@ const theme = createMuiTheme({
       contrastText: '#000000',
     },
     type: 'light',
+  },
+  overrides: {
+    MuiAppBar: {
+      colorDefault: '#efefef',
+    }
   }
 })
 

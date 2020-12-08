@@ -68,7 +68,7 @@ app.get('/api/farmers', (req, res) => {
 //          ALTER Data Only
 // =================================
 
-app.get('/createngo', (req, res) => {
+app.post('/api/create/ngo', (req, res) => {
 
   const testNGO = new NGO({
     loginDetails: {
@@ -106,13 +106,13 @@ app.get('/createngo', (req, res) => {
 
 })
 
-app.get('/createprogram', (req, res) => {
+app.post('/api/create/program', (req, res) => {
 
   NGO.find({})
     .then((result) => {
       const testProgram = new Program({
         programAbout: {
-          programPicture: '/assets/img',
+          // programPicture: '/assets/img',
           programName: 'Bantay Bata',
           about: 'To help children',
           completed: false,
@@ -125,11 +125,11 @@ app.get('/createprogram', (req, res) => {
           currentAmount: 0,
         },
         timeline: {
-          submissionDate: '2002-12-09',
-          fundingStartDate: '2001-12-09',
-          fundingEndDate: '2002-11-09',
-          procurementStartDate: '2000-12-09',
-          procurementEndDate: '2002-12-02',
+          // submissionDate: '2002-12-09',
+          // fundingStartDate: '2001-12-09',
+          // fundingEndDate: '2002-11-09',
+          // procurementStartDate: '2000-12-09',
+          // procurementEndDate: '2002-12-02',
           programDate: '2006-12-09',
         },
         // Create a Requirement Schema
@@ -157,7 +157,7 @@ app.get('/createprogram', (req, res) => {
 
 })
 
-app.get('/createfarmer', (req, res) => {
+app.post('/api/create/farmer', (req, res) => {
 
   const testFarmer = new Farmer({
     loginDetails: {
@@ -203,7 +203,7 @@ app.get('/createfarmer', (req, res) => {
 });
 
 // uses currentUser
-app.get('/createsponsor', (req, res) => {
+app.post('/api/create/sponsor', (req, res) => {
 
   if (currentUser === 'individual') {
 
@@ -293,7 +293,7 @@ app.get('/createsponsor', (req, res) => {
 
 })
 
-app.get('/addfarmerproduce', (req, res) => {
+app.post('/api/farmer/produce/add', (req, res) => {
 
   const testFarmerProduce = new produce({
     farmerId: '5fcde43aaa30ac31d86a20dd',
@@ -312,7 +312,7 @@ app.get('/addfarmerproduce', (req, res) => {
 
 })
 
-app.get('/addprogramproducerequirement', (req, res) => {
+app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
   const testProgramRequirementProduce = new produceRequirement({
     taken: false,
@@ -332,7 +332,7 @@ app.get('/addprogramproducerequirement', (req, res) => {
 })
 
 // uses currentUser
-app.get('/addprogramsponsor', (req, res) => {
+app.post('/api/add/program/sponsor', (req, res) => {
 
   if (currentUser === 'individual') {
 
