@@ -15,6 +15,7 @@ import ListItem from '@material-ui/core/ListItem';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
+import logo from './logo_01.svg';
 
 import { RegisterDialogContext } from '../Contexts/RegisterDialogContext';
 import { LoginDialogContext } from '../Contexts/LoginDialogContext';
@@ -91,14 +92,15 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" style={{ background: '#fefefe', color: '#0B5169' }}>
         <Toolbar>
           <IconButton onClick={handleDrawerOpen} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Bay-ANI-han
+            <a href="/"> <img src={logo} alt="Logo"  className={classes.logo} width="250px" /></a>
           </Typography>
+          
           <Box
             display={ loggedIn ? "none" : "block"}  
           >
