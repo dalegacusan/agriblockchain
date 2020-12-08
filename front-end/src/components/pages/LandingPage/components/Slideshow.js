@@ -18,10 +18,13 @@ export default function Slideshow() {
 
   const items = [
     {
-      image: '/images/people-finding-a-seat-on-a-passing-train.jpg',
+      image: '/images/carousel-01.png',
     },
     {
-      image: '/images/people-finding-a-seat-on-a-passing-train.jpg',
+      image: '/images/carousel-02.png',
+    },
+    {
+      image: '/images/carousel-03.png',
     }
   ]
 
