@@ -35,6 +35,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Programs() {
   const classes = useStyles();
 
+  const fabStyle = {
+    margin: 0,
+    top: 'auto',
+    right: 40,
+    bottom: 40,
+    left: 'auto',
+    position: 'fixed',
+  };
+
   // replace this with mock json object from axios post later
   const allPrograms = [
     {
@@ -87,7 +96,7 @@ export default function Programs() {
         ))}
       </Grid>
       <Link component={RouterLink} to="/program/create">
-        <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended">
+        <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended" style={fabStyle}>
           <AddIcon/>
           Create Program
         </Fab>
