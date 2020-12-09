@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+const axios = require('axios');
 
 // import ProgramTimelineForm from './components/ProgramTimelineForm';
 // import GeneralProgramInfoForm from './components/GeneralProgramInfoForm';
@@ -27,16 +28,15 @@ export default function CreateProgram() {
   const classes = useStyles();
   const history = useHistory();
 
+  // ====================================================================== //
+  //  "ngo" field assumes that the ID of the current NGO is being tracked   //
+  // ====================================================================== //
   const [ newProgram, setNewProgram ] = useState({
     programName: '',
     about: '',
-    completed: false,
     cityAddress: '',
-    ngo: 'the ngo name',
-    status: 'active',     // default upon completion of form
-    stage: 'crowdfunding',
+    ngo: '5fcdafdafcda8f250439db05',
     requiredAmount: 0,
-    currentAmount: 0,      // default
     programDate: new Date().toLocaleDateString(),
   });
 
@@ -52,6 +52,15 @@ export default function CreateProgram() {
       ...newProgram,
       programDate: date,
     })
+  }
+
+  const handleSubmit = () => {
+
+    axios.post('/api/create/program', newProgram)
+    .then(res => {
+      console.log(res);
+    });
+
   }
 
   return (
@@ -169,7 +178,7 @@ export default function CreateProgram() {
             {/* Must be able to add more than one produce */}
 
             <Box display="flex" flexDirection="row-reverse" mt={5}>
-              <Button color="primary" variant="contained">Submit</Button>
+              <Button onClick={handleSubmit} color="primary" variant="contained">Submit</Button>
             </Box>
           </form>
         </Grid>

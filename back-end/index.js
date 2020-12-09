@@ -124,52 +124,52 @@ app.post('/api/create/ngo', (req, res) => {
 
 app.post('/api/create/program', (req, res) => {
 
-  NGO.find({})
-    .then((result) => {
-      const testProgram = new Program({
-        programAbout: {
-          // programPicture: '/assets/img',
-          programName: 'Bantay Bata',
-          about: 'To help children',
-          completed: false,
-          cityAddress: 'Manila, Philippines',
-          // For testing purposes
-          ngo: result[0],
-          status: 'Completed',
-          stage: 'Procurement',
-          requiredAmount: 100000,
-          currentAmount: 0,
-        },
-        timeline: {
-          // submissionDate: '2002-12-09',
-          // fundingStartDate: '2001-12-09',
-          // fundingEndDate: '2002-11-09',
-          // procurementStartDate: '2000-12-09',
-          // procurementEndDate: '2002-12-02',
-          programDate: '2006-12-09',
-        },
-        // Create a Requirement Schema
-        produceRequirements: [],
-        produceGathered: [],
-        farmersParticipating: [],
-        // Contains Sponsors Schema
-        sponsors: [],
-        sponsorshipOptions: {
-          minor: 50000,
-          major: 100000
-        },
-      });
+  const {
+    programName,        // User
+    about,              // User
+    completed,          // DEFAULT = false
+    cityAddress,        // User
+    ngo,                // REQUIRED
+    status,             // DEFAULT = "active"
+    stage,              // DEFAULT = "crowdfunding"
+    requiredAmount,     // User 
+    programDate         // DEFAULT = new Date()
+  } = req.body;
 
-      // Save a farmer to MongoDB
-      testProgram.save()
-        .then(result => {
-          console.log('testProgram Saved to MongoDB!');
-          mongoose.connection.close();
-        })
-        .catch(err => {
-          console.log('Error: ', err.errors['programAbout.ngo'].message);
-        });
+  const newProgram = new Program({
+    programAbout: {
+      programName,
+      about,
+      cityAddress,
+      ngo,
+      requiredAmount,
+    },
+    timeline: {
+      // submissionDate: '2002-12-09',
+      // fundingStartDate: '2001-12-09',
+      // fundingEndDate: '2002-11-09',
+      // procurementStartDate: '2000-12-09',
+      // procurementEndDate: '2002-12-02',
+      programDate: programDate,
+    },
+    // Create a Requirement Schema
+    produceRequirements: [],
+    farmersParticipating: [],
+    // Contains Sponsors Schema
+    sponsors: [],
+    sponsorshipOptions: {},
+  });
+
+  // Save a farmer to MongoDB
+  newProgram.save()
+    .then(result => {
+      console.log(`Program ${programName}: Saved to MongoDB!`);
+      mongoose.connection.close();
+    })
+    .catch(err => {
+      console.log('Error: ', err.errors['programAbout.ngo'].message);
     });
+
 
 })
 
