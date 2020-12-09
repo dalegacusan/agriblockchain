@@ -32,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Programs() {
+export default function Programs(props) {
+  const { programs } = props;
   const classes = useStyles();
 
   const fabStyle = {
@@ -44,60 +45,37 @@ export default function Programs() {
     position: 'fixed',
   };
 
-  // replace this with mock json object from axios post later
-  const allPrograms = [
-    {
-      programName: 'Feeding Program 1',
-      programDate: 'December 19, 2020',
-      programDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-      programStage: 'crowdfunding',
-      programStatus: 'active',
-    },
-    {
-      programName: 'Feeding Program 2',
-      programDate: 'December 23, 2020',
-      programDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-      programStage: 'crowdfunding',
-      programStatus: 'active',
-    },
-    {
-      programName: 'Feeding Program 3',
-      programDate: 'December 9, 2020',
-      programDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-      programStage: 'execution',
-      programStatus: 'completed',
-    },
-    {
-      programName: 'Feeding Program 4',
-      programDate: 'December 5, 2020',
-      programDescription: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor',
-      programStage: 'leftover',
-      programStatus: 'cancelled',
-    },
-  ];
-
   return (
     <Container maxWidth="lg" component={Box} mt={5}>
       <Typography variant="h2" component="h1" gutterBottom>
         All Programs
       </Typography>
       <Grid container spacing={2}>
-        {allPrograms.map((program, index) => (
-          <Grid item xs={12} md={6} lg={4}>
-            <Program
-              programName={program.programName}
-              programDate={program.programDate}
-              programDescription={program.programDescription}
-              programStage={program.programStage}
-              programStatus={program.programStatus}
-              key={index}
-            /> 
-          </Grid>
-        ))}
+
+        {
+          programs.map((program, index) => {
+            const { programAbout, timeline } = program;
+            const { programName, about, stage, status } = programAbout;
+            const { programDate } = timeline;
+
+            return (
+              <Grid item xs={12} md={6} lg={4}>
+                <Program
+                  key={index}
+                  programName={programName}
+                  programDate={programDate}
+                  programDescription={about}
+                  programStage={stage}
+                  programStatus={status}
+                />
+              </Grid>
+            )
+          })
+        }
       </Grid>
       <Link component={RouterLink} to="/program/create">
         <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended" style={fabStyle}>
-          <AddIcon/>
+          <AddIcon />
           Create Program
         </Fab>
       </Link>

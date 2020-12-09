@@ -124,7 +124,6 @@ app.post('/api/create/ngo', (req, res) => {
   testNGO.save()
     .then(result => {
       console.log('testNGO Saved to MongoDB!');
-      mongoose.connection.close();
     })
     .catch(err => {
       console.log('Error: ', err.errors._message);
@@ -174,7 +173,7 @@ app.post('/api/create/program', (req, res) => {
   newProgram.save()
     .then(result => {
       console.log(`Program ${programName}: Saved to MongoDB!`);
-      mongoose.connection.close();
+      res.json(result);
     })
     .catch(err => {
       console.log('Error: ', err.errors['programAbout.ngo'].message);
@@ -220,7 +219,6 @@ app.post('/api/create/farmer', (req, res) => {
   testFarmer.save()
     .then(result => {
       console.log('testFarmer Saved to MongoDB!');
-      mongoose.connection.close();
     })
     .catch(err => {
       console.log('Error: ', err);
@@ -268,7 +266,6 @@ app.post('/api/create/sponsor', (req, res) => {
     testSponsorInvidivual.save()
       .then(result => {
         console.log('testSponsorInvidivual Saved to MongoDB!');
-        mongoose.connection.close();
       })
       .catch(err => {
         console.log('Error: ', err);
@@ -309,7 +306,6 @@ app.post('/api/create/sponsor', (req, res) => {
     testSponsorCorporation.save()
       .then(result => {
         console.log('testSponsorCorporation Saved to MongoDB!');
-        mongoose.connection.close();
       })
       .catch(err => {
         console.log('Error: ', err);

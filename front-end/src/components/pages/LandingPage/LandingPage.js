@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 
 import Slideshow from './components/Slideshow';
 import HowDoesItWork from './components/HowDoesItWork/HowDoesItWork';
-import Programs from './components/Programs/Programs.js';
+import Programs from './components/Programs/Programs';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function LandingPage() {
+function LandingPage(props) {
+    const { programs } = props;
     const classes = useStyles();
 
     return (
@@ -37,7 +38,7 @@ function LandingPage() {
                         Programs
                     </Typography>
                 </Box>
-                <Programs />
+                <Programs programs={programs} />
             </Container>
         </Box>
     )
