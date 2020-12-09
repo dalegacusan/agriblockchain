@@ -6,24 +6,32 @@ pragma solidity >=0.4.21 <0.8.0;
  * @title Crowdfunding Smart Contract
  *
  *
+ * Allows minting and burning of tokens.
  * Allows creation and tracking of pledges for crowdfunding.
+ *
+ * TO DO
+ * 1) Mint and Burn restrictions
+ * 2) Use Modifiers (suggested by Sir Teng)
+ * 3) Test all functions with Ganache, check for fail transactions
  **/
  
  contract Crowdfunding {
 
-     // Crowdfunded Program information are saved in this struct
-     struct Program {
-         address addr; // address of program
-         address ownerAddr; // address of who created the program, i.e. NGO
-         uint balance; // realtime balance, should be updated every pledge and revert
-         uint targetAmount; // set by the owner upon opening of program
-         bool isOpenForFunding; // if true, pledging and reverts should still be allowed
-         mapping(address => uint) pledges; // Mapping of Funder Address => Amount
-         mapping(address => uint) farmerPartnerships; // Mapping of partner farmer and agreed upon amount
+    CustomToken abcToken; // All wallets are handled by abcToken
 
-         mapping (uint => address) indexedFunderList;
-         uint funderCount;
-     }
+     // Crowdfunded Program information are saved in this struct
+    struct Program {
+        address addr; // address of program
+        address ownerAddr; // address of who created the program, i.e. NGO
+        uint balance; // realtime balance, should be updated every pledge and revert
+        uint targetAmount; // set by the owner upon opening of program
+        bool isOpenForFunding; // if true, pledging and reverts should still be allowed
+        mapping(address => uint) pledges; // Mapping of Funder Address => Amount
+        mapping(address => uint) farmerPartnerships; // Mapping of partner farmer and agreed upon amount
+        
+        mapping (uint => address) indexedFunderList;
+        uint funderCount;
+    }
      
     struct Farmer {
         address addr;
@@ -31,29 +39,59 @@ pragma solidity >=0.4.21 <0.8.0;
     }
 
     // List of all the created programs
-     mapping(address => Program) public programs;
+    mapping(address => Program) public programs;
      
     // List of farmers
     mapping(address => Farmer) public farmers;
      
     // Events
-     event NewProgram(address indexed _addr, address indexed _ownerAddr);
-     event Pledge(address indexed _programAddr, address _funderAddr, uint amount);
-     event RevertPledge(address indexed _programAddr, address _funderAddr, uint amount);
-     event CloseProgram(address indexed _addr);
-     event TransferFundsToFarmer(address programAddr, address farmerAddr, uint amount);
+    event NewProgram(address indexed _addr, address indexed _ownerAddr);
+    event Pledge(address indexed _programAddr, address _funderAddr, uint amount);
+    event RevertPledge(address indexed _programAddr, address _funderAddr, uint amount);
+    event CloseProgram(address indexed _addr);
+    event TransferFundsToFarmer(address programAddr, address farmerAddr, uint amount);
+    
+    event MintTokens(address indexed _addr, uint amount);
+    event BurnTokens(address indexed _addr, uint amount);
 
-    function getBalance(address programAddr) public view returns(uint balance){
-        balance = programs[programAddr].balance;
+    constructor() public {
+        abcToken = new CustomToken();
+    }
+    
+    /*
+    *   TO DO: Implement access control for Mint and Burn functions.
+    *   From Sir Teng:
+    *   Add mapping of funders (address, bool)
+    *   Tapos only funders can mintRequest and burnRequest
+    */
+    function mintRequest(address accountAddr, uint amount) public {
+        // TO DO: add require/ modifiers
+        
+        abcToken.mint(accountAddr, amount);
+        
+        emit MintTokens(accountAddr, amount);
+    }
+    
+    function burnRequest(address accountAddr, uint amount) public {
+        // TO DO: add require
+        
+        abcToken.burn(accountAddr, amount);
+        
+        emit BurnTokens(accountAddr, amount);
+    }
+    
+    
+    function getTotalSupply() public view returns(uint totalSupply) {
+        totalSupply = abcToken.getTotalSupply();
+    }
+
+    function getBalanceOf(address accountAddr) public view returns(uint balance){
+        balance = abcToken.getBalanceOf(accountAddr);
     }
 
     function getPledgeOf(address funderAddr, address programAddr) public view returns(uint pledgedAmount){
         Program storage program = programs[programAddr];
         pledgedAmount = program.pledges[funderAddr];
-    }
-    
-    function getFarmerBalance(address farmerAddr) public view returns (uint farmerBalance) {
-        farmerBalance = farmers[farmerAddr].balance;
     }
 
     function createNew(address programAddr, uint targetAmount) public {
@@ -73,6 +111,8 @@ pragma solidity >=0.4.21 <0.8.0;
     function pledge(address programAddr, uint amount) public {
         require(isProgramValid(programAddr), "Program Uninitialized.");
         require(programs[programAddr].isOpenForFunding, "Program is already closed for funding.");
+        
+        abcToken.transfer(msg.sender, programAddr, amount);
 
         Program storage program = programs[programAddr];
         program.balance += amount;
@@ -146,6 +186,8 @@ pragma solidity >=0.4.21 <0.8.0;
     
     // Private functions
     function revertFunderPledge(address programAddr, address funderAddr, uint amount) private {
+        abcToken.transfer(programAddr, funderAddr, amount);
+        
         Program storage program = programs[programAddr];
         program.balance -= amount;
         program.pledges[funderAddr] -= amount;
@@ -157,3 +199,67 @@ pragma solidity >=0.4.21 <0.8.0;
         isValid = programs[programAddr].addr != address(0);
     }
  }
+
+contract Ownable {
+    address private _owner; 
+
+    constructor() public {
+        _owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == _owner, "Must be called by owner");
+        _;
+    }
+
+    /**
+     * @dev Returns true if the caller is the current owner.
+     */
+    function isOwner() public view returns (bool) {
+        return msg.sender == _owner;
+    }
+}
+
+/**
+ * @dev CustomToken should be instantiated by Crowdfunding contract.
+ */
+contract CustomToken is Ownable{
+
+    uint _totalSupply;
+    mapping(address => uint) balances;
+
+    event TokenInitialization(address);
+
+    constructor() public {
+        super;
+        _totalSupply = 0;
+        emit TokenInitialization(msg.sender);
+    }
+
+    function getTotalSupply() public view onlyOwner returns (uint totalSupply) {
+        totalSupply = _totalSupply;
+    }
+    
+    function getBalanceOf(address account) public view onlyOwner returns (uint balance) {
+        balance = balances[account];
+    }
+    
+    function mint(address account, uint amount) public onlyOwner {
+        balances[account] += amount;
+        _totalSupply += amount;
+    }
+    
+    function burn(address account, uint amount) public onlyOwner {
+        require(balances[account] >= amount, "Must be have sufficient balance");
+        
+        balances[account] -= amount;
+        _totalSupply -= amount;
+    }
+    
+    function transfer(address accountFrom, address accountTo, uint amount) public onlyOwner {
+        require(balances[accountFrom] >= amount, "Must be have sufficient balance");
+        
+        balances[accountFrom] -= amount;
+        balances[accountTo] += amount;
+    }
+}
