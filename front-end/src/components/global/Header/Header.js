@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link as RouterLink, useHistory } from 'react-router-dom';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -15,8 +16,9 @@ import ListItem from '@material-ui/core/ListItem';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
-import logo from './logo_01.svg';
+import Link from '@material-ui/core/Link';
 
+import logo from './logo_01.svg';
 import { RegisterDialogContext } from '../Contexts/RegisterDialogContext';
 import { LoginDialogContext } from '../Contexts/LoginDialogContext';
 
@@ -25,6 +27,7 @@ const drawerWidth = 320;
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    marginBottom: "1rem",
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -48,9 +51,10 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ButtonAppBar() {
   const classes = useStyles();
+  const history = useHistory();
 
   const [open, setOpen] = useState(false);
-  const [ loggedIn, setLogginIn ] = useState(false)
+  const [ loggedIn, setLogginIn ] = useState(false);
   const { setOpenRegisterDialog } = useContext(RegisterDialogContext);
   const { setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext);
   
@@ -78,6 +82,7 @@ export default function ButtonAppBar() {
       type: '',
     });
     localStorage.removeItem('loginCreds');
+    history.push("/")
   }
 
   useEffect(() => {
@@ -92,15 +97,20 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ background: '#fefefe', color: '#0B5169' }}>
+      <AppBar 
+        position="static"
+        color="default"
+        style={{ color: "#0B5169" }}
+      >
         <Toolbar>
           <IconButton onClick={handleDrawerOpen} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            <a href="/"> <img src={logo} alt="Logo"  className={classes.logo} width="250px" /></a>
+            <Link component={RouterLink} to="/"> 
+              <img src={logo} alt="Logo"  className={classes.logo} width="250px" />
+            </Link>
           </Typography>
-          
           <Box
             display={ loggedIn ? "none" : "block"}  
           >

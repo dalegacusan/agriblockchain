@@ -3,7 +3,7 @@ const { produceRequirement } = require('./Produce');
 
 const programSchema = new mongoose.Schema({
   programAbout: {
-    programPicture: String,
+    // programPicture: String,
     programName: String,
     about: String,
     completed: Boolean,
@@ -16,11 +16,11 @@ const programSchema = new mongoose.Schema({
     currentAmount: Number,
   },
   timeline: {
-    submissionDate: Date,
-    fundingStartDate: Date,
-    fundingEndDate: Date,
-    procurementStartDate: Date,
-    procurementEndDate: Date,
+    // submissionDate: Date,
+    // fundingStartDate: Date,
+    // fundingEndDate: Date,
+    // procurementStartDate: Date,
+    // procurementEndDate: Date,
     programDate: Date
   },
   produceRequirements: [produceRequirement.schema],

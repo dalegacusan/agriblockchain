@@ -4,10 +4,10 @@ import './App.css';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import LandingPage from '../pages/LandingPage/LandingPage';
 import FarmersList from '../pages/FarmersList/FarmersList';
-import Login from '../pages/LoginRegister/Login/LoginDialog';
 import Register from '../pages/LoginRegister/Register/Register';
 import Profile from '../pages/Profile/Profile';
-import CreateProgram from '../pages/CreateProgram/CreateProgram';
+import Programs from '../pages/Programs/Programs';
+import CreateProgram from '../pages/Programs/CreateProgram/CreateProgram';
 import Header from '../global/Header/Header';
 import { RegisterDialogProvider } from '../global/Contexts/RegisterDialogContext';
 import { LoginDialogProvider } from '../global/Contexts/LoginDialogContext';
@@ -58,7 +58,7 @@ function App() {
 
             {/* Screen 006 */}
             {/* Screen 007 */}
-
+            <Route exact path='/programs' render={() =>  <Programs />} />
             {/* Screen 008 */}
             <Route exact path='/program/create' render={() =>  <CreateProgram />} />
           </Switch>
