@@ -56,6 +56,16 @@ app.get('/api/programs', (req, res) => {
     });
 })
 
+// Get an individual program
+app.get('/api/programs/:programId', (req, res) => {
+  const { programId } = req.params;
+
+  Program.findOne({_id: programId})
+  .then(program => {
+    res.json(program);
+  });
+})
+
 app.get('/api/farmers', (req, res) => {
   // Get all farmers from MongoDB
   Farmer.find({})
@@ -157,7 +167,7 @@ app.post('/api/create/program', (req, res) => {
     farmersParticipating: [],
     // Contains Sponsors Schema
     sponsors: [],
-    sponsorshipOptions: {},
+    // sponsorshipOptions: {},
   });
 
   // Save a farmer to MongoDB

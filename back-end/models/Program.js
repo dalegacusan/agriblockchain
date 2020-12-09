@@ -26,10 +26,10 @@ const programSchema = new mongoose.Schema({
   produceRequirements: [produceRequirement.schema],
   farmersParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' }],
   sponsors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Sponsor' }],
-  sponsorshipOptions: {
-    minor: {type: Number, default: 0},
-    major: {type: Number, default: 0}
-  },
+  // sponsorshipOptions: {
+  //   minor: {type: Number, default: 0},
+  //   major: {type: Number, default: 0}
+  // },
 });
 
 // const Program = mongoose.model('Program', programSchema);
