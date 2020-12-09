@@ -20,5 +20,7 @@
   "devDependencies": {
     "concurrently": "^5.3.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.57"
+  }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 
 import Slideshow from './components/Slideshow';
 import HowDoesItWork from './components/HowDoesItWork/HowDoesItWork';
-import Programs from './components/Programs/Programs';
+import Programs from './components/HomepagePrograms/Programs';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -19,8 +19,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function LandingPage(props) {
-    const { programs } = props;
+function LandingPage() {
     const classes = useStyles();
 
     return (
@@ -38,7 +37,7 @@ function LandingPage(props) {
                         Programs
                     </Typography>
                 </Box>
-                <Programs programs={programs} />
+                <Programs />
             </Container>
         </Box>
     )

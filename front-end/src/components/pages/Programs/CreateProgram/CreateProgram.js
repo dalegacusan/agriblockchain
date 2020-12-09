@@ -10,7 +10,10 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-const axios = require('axios');
+import axios from 'axios';
+import Alert from '@material-ui/lab/Alert';
+import Backdrop from '@material-ui/core/Backdrop';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 // import ProgramTimelineForm from './components/ProgramTimelineForm';
 // import GeneralProgramInfoForm from './components/GeneralProgramInfoForm';
@@ -21,7 +24,11 @@ const axios = require('axios');
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-  }
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 export default function CreateProgram() {
@@ -39,6 +46,9 @@ export default function CreateProgram() {
     requiredAmount: 0,
     programDate: new Date().toLocaleDateString(),
   });
+  const [ submitLoading, setSubmitLoading ] = useState(false);
+  const [ success, setSuccess ] = useState(false);
+  const [ error, setError ] = useState(false);
 
   const handleChange = e => {
     setNewProgram({
@@ -52,19 +62,43 @@ export default function CreateProgram() {
       ...newProgram,
       programDate: date,
     })
-  }
+  };
 
   const handleSubmit = () => {
-
+    setSubmitLoading(true)
     axios.post('/api/create/program', newProgram)
-    .then(res => {
-      console.log(res);
-    });
-
-  }
+      .then(res => {
+        console.log(res);
+        setSubmitLoading(false);
+        setError(false);
+        setSuccess(true);
+        setNewProgram({
+          programName: '',
+          about: '',
+          cityAddress: '',
+          ngo: '5fcdafdafcda8f250439db05',
+          requiredAmount: 0,
+          programDate: new Date().toLocaleDateString(),
+        })
+      })
+      .catch(err => {
+        console.error(err);
+        setSubmitLoading(false);
+        setError(true);
+        setSuccess(false);
+      })
+  };
 
   return (
     <Container maxWidth="md" component={Box} mb={5} className={classes.root}>
+      <Backdrop className={classes.backdrop} open={submitLoading}>
+        <CircularProgress size={28} color="inherit" />
+        <Box ml={2}>
+          <Typography variant="button">
+            Submitting
+          </Typography>
+        </Box>
+      </Backdrop>
       <Button 
         startIcon={<ArrowBackIcon/>}
         onClick={() => history.goBack()}
@@ -74,6 +108,12 @@ export default function CreateProgram() {
       <Typography component="h1" variant="h2" gutterBottom>
         Create Program
       </Typography>
+      <Box mb={2} display={error ? "block" : "none"}>
+        <Alert severity="error">Something went wrong. Please check logs.</Alert>
+      </Box>
+      <Box mb={2} display={success ? "block" : "none"}>
+        <Alert severity="success">Successful program creation!</Alert>
+      </Box>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <form noValidate autoComplete="off">
