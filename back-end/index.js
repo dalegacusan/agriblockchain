@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // Responsible to get the body off of network requests.
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const flatten = require('flat')
 
 // =================================
 //              Models
@@ -39,59 +40,7 @@ app.get('/', (req, res) => {
 const currentUser = 'individual';
 
 // =================================
-//          VIEW Data Only
-// =================================
-
-app.get('/api/ngo', (req, res) => {
-  NGO.find({})
-    .then(result => {
-      res.json(result);
-    });
-})
-
-app.get('/api/programs', (req, res) => {
-  Program.find({})
-    .then(result => {
-      res.json(result);
-    });
-})
-
-// Get an individual program
-app.get('/api/programs/:programId', (req, res) => {
-  const { programId } = req.params;
-
-  Program.findOne({_id: programId})
-  .then(program => {
-    res.json(program);
-  });
-})
-
-app.get('/api/farmers', (req, res) => {
-  // Get all farmers from MongoDB
-  Farmer.find({})
-    .then(result => {
-      res.json(result);
-    });
-})
-
-app.get('/api/individualsponsors', (req, res) => {
-  // Get all farmers from MongoDB
-  sponsorIndividual.find({})
-    .then(result => {
-      res.json(result);
-    });
-})
-
-app.get('/api/corporationsponsors', (req, res) => {
-  // Get all farmers from MongoDB
-  sponsorCorporation.find({})
-    .then(result => {
-      res.json(result);
-    });
-})
-
-// =================================
-//          ALTER Data Only
+//          CREATE Data Only
 // =================================
 
 app.post('/api/create/ngo', (req, res) => {
@@ -383,6 +332,107 @@ app.post('/api/add/program/sponsor', (req, res) => {
   }
 
 })
+
+// =================================
+//          READ Data Only
+// =================================
+
+app.get('/api/ngo', (req, res) => {
+  NGO.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+app.get('/api/programs', (req, res) => {
+  Program.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+// Get an individual program
+app.get('/api/programs/:programId', (req, res) => {
+  const { programId } = req.params;
+
+  Program.findOne({ _id: programId })
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+app.get('/api/farmers', (req, res) => {
+  // Get all farmers from MongoDB
+  Farmer.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+app.get('/api/individualsponsors', (req, res) => {
+  // Get all farmers from MongoDB
+  sponsorIndividual.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+app.get('/api/corporationsponsors', (req, res) => {
+  // Get all farmers from MongoDB
+  sponsorCorporation.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+// =================================
+//          UPDATE Data Only
+// =================================
+
+app.patch('/api/programs/:programId', (req, res) => {
+  const { programId } = req.params;
+
+  // Assuming that the form submits all the current data aswell
+  const { programName, about, cityAddress, requiredAmount } = req.body;
+
+  Program.findByIdAndUpdate(
+    { _id: programId },
+    {
+      $set: flatten(
+        {
+          programAbout: {
+            programName,
+            about,
+            cityAddress,
+            requiredAmount,
+          }
+        }
+      )
+    },
+    { new: true, useFindAndModify: false }
+  )
+    .then(res => {
+      console.log("Successfully updated");
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+  // Program.findOne({ _id: programId })
+  //   .then((programDocument) => {
+  //     programDocument.programAbout.programName = programName;
+
+  //     programDocument.save()
+  //       .then(() => { console.log('Success!') });
+  //   });
+
+})
+
+// =================================
+//          DELETE Data Only
+// =================================
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
