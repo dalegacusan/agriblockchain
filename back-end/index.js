@@ -389,10 +389,16 @@ app.get('/api/corporationsponsors', (req, res) => {
 //          UPDATE Data Only
 // =================================
 
+// Updates General Information ONLY (so far)
 app.patch('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
-  // Assuming that the form submits all the current data aswell
+  /*
+      req.body assumes that the information passed is the same
+      as the one with CreateProgram.js
+
+      WITHOUT: ngo, programDate
+  */
   const { programName, about, cityAddress, requiredAmount } = req.body;
 
   Program.findByIdAndUpdate(
