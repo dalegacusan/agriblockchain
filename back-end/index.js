@@ -389,7 +389,6 @@ app.get('/api/corporationsponsors', (req, res) => {
 //          UPDATE Data Only
 // =================================
 
-// Updates General Information ONLY (so far)
 app.patch('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
@@ -397,7 +396,13 @@ app.patch('/api/programs/:programId', (req, res) => {
       req.body assumes that the information passed is the same
       as the one with CreateProgram.js
 
-      WITHOUT: ngo, programDate
+      WITHOUT THE FOLLOWING:
+      
+      1) ngo
+         - The NGO is always a default
+      
+      2) programDate
+         - Will an NGO be able to change the programDate after creation?
   */
   const { programName, about, cityAddress, requiredAmount } = req.body;
 
