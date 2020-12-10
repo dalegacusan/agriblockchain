@@ -442,7 +442,23 @@ app.patch('/api/programs/:programId', (req, res) => {
 // =================================
 //          DELETE Data Only
 // =================================
+  //call /api/programs/, get the programId
+  app.delete('/api/programs/:programId', (req, res) => {
+    const { programId } = req.params;
 
+    //Find a program with the _id of programId to delete
+    Program.deleteOne({_id:programId})
+
+    //if successful, print Program Program ID delete from MongoDB
+    .then(result => {
+        console.log(`Program ${programId}: deleted from MongoDB`);
+        res.json(result);
+    })
+    //if delete op failed, print error message
+    .catch(err => {
+        console.log ('Error: ', err.errors['programAbout.ngo'].message);
+    })
+})
 
 
 app.listen(PORT, () => {
