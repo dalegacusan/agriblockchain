@@ -5,6 +5,7 @@ let instance;
 contract("Crowdfunding", accounts => {
     beforeEach("setup", async () => {
         instance = await Crowdfunding.new();
+        
     });
 
     describe("New Program Initialization", () => {
@@ -46,10 +47,33 @@ contract("Crowdfunding", accounts => {
     describe("Pledging", () => {
         let callerAddr = accounts[0];
         let programAddr = accounts[1];
+        let walletBalance = 1000;
         let targetAmount = 100;
         
         beforeEach("setup new program", async () => {
             return instance.createNew(programAddr, targetAmount, {from: callerAddr})
+            .then(() => {
+                return instance.addNewFunder(callerAddr)
+                .then (() => {
+                    instance.mintRequest(walletBalance, {from: callerAddr});
+                });
+            });
+        });
+
+        it("should not allow pledge if balance is insufficient", async () => {
+            let err;
+
+            try {
+                let amount = await instance.getBalanceOf.call(callerAddr);
+                amount++;
+                await instance.pledge(programAddr, amount, {from: callerAddr});
+            } catch(error) {
+                err = error;
+                pledgedAmount = await instance.getPledgeOf.call(callerAddr, programAddr);
+                assert.equal(pledgedAmount.toNumber(), 0);       
+            }
+
+            assert(err instanceof Error); 
         });
     
         it("should update balance and record pledge when an account pledges", async () => {
@@ -63,13 +87,13 @@ contract("Crowdfunding", accounts => {
             let expected_1 = 10;
             let expected_2 = 30;
     
-            return instance.getBalance.call(programAddr)
+            return instance.getBalanceOf.call(programAddr)
             .then(balance => {
                 previousBalance = balance;
                 return instance.pledge(programAddr, amount_1);
             })
             .then(() => {
-                return instance.getBalance.call(programAddr);
+                return instance.getBalanceOf.call(programAddr);
             })
             .then(balance => {
                 assert.equal(balance.toNumber(), expected_1);
@@ -80,7 +104,7 @@ contract("Crowdfunding", accounts => {
                 return instance.pledge(programAddr, amount_2);
             })
             .then(() => {
-                return instance.getBalance.call(programAddr);
+                return instance.getBalanceOf.call(programAddr);
             })
             .then(balance => {
                 assert.equal(balance.toNumber(), expected_2);
@@ -117,13 +141,13 @@ contract("Crowdfunding", accounts => {
             let amount_1 = 50;
             let amount_2 = 20;
     
-            return instance.getBalance.call(programAddr)
+            return instance.getBalanceOf.call(programAddr)
             .then(balance => {
                 previousBalance = balance;
                 return instance.pledge(programAddr, amount_1);
             })
             .then(() => {
-                return instance.getBalance.call(programAddr);
+                return instance.getBalanceOf.call(programAddr);
             })
             .then(balance => {
                 assert.equal(balance.toNumber(), previousBalance + amount_1);
@@ -134,7 +158,7 @@ contract("Crowdfunding", accounts => {
                 return instance.revertPledge(programAddr, amount_2);
             })
             .then(() => {
-                return instance.getBalance.call(programAddr);
+                return instance.getBalanceOf.call(programAddr);
             })
             .then(balance => {
                 assert.equal(balance.toNumber(), previousBalance + amount_1 - amount_2);
@@ -155,13 +179,13 @@ contract("Crowdfunding", accounts => {
             let amount_2 = 60;
             
             try {
-                await instance.getBalance.call(programAddr)
+                await instance.getBalanceOf.call(programAddr)
                 .then(balance => {
                     previousBalance = balance;
                     return instance.pledge(programAddr, amount_1);
                 })
                 .then(() => {
-                    return instance.getBalance.call(programAddr);
+                    return instance.getBalanceOf.call(programAddr);
                 })
                 .then(balance => {
                     assert.equal(balance.toNumber(), previousBalance + amount_1);
@@ -172,7 +196,7 @@ contract("Crowdfunding", accounts => {
                     return instance.revertPledge(programAddr, amount_2);
                 })
             } catch(error) {
-                await instance.getBalance.call(programAddr)
+                await instance.getBalanceOf.call(programAddr)
                 .then(balance => {
                     assert.equal(balance.toNumber(), previousBalance + amount_1);
                     return instance.getPledgeOf.call(callerAddr, programAddr);
@@ -185,18 +209,90 @@ contract("Crowdfunding", accounts => {
         });
     });
 
+    describe("Farmer-Program Transactions", async () => {
+        let ownerAddr = accounts[0];
+        let programAddr = accounts[1];
+        let farmerAddr = accounts[3];
+        let walletBalance = 1000;
+        let targetAmount = 1000;
+        
+        beforeEach("setup new program", async () => {
+            return instance.createNew(programAddr, targetAmount, {from: ownerAddr})
+            .then(() => {
+                return instance.addNewFunder(ownerAddr)
+                .then (() => {
+                    instance.mintRequest(walletBalance, {from: ownerAddr});
+                });
+            });
+        });
+
+        it("should allow program owner to add new farmer-prorgam partnership", async () => {
+            let amount = 100;
+            return instance.addFarmerPartnership(programAddr, farmerAddr, amount, {from: ownerAddr})
+            .then(() => {
+                return instance.getAmountOfFarmerPartnership(programAddr, farmerAddr);
+            })
+            .then(returnedAmount => {
+                assert.equal(returnedAmount, amount);
+            });
+        });
+
+        it("should not allow add new farmer-prorgam partnership if caller is not the owner", async () => {
+            let amount = 100;
+            let notOwnerAddr = accounts[2];
+            let err;
+
+            try{
+                await instance.addFarmerPartnership(programAddr, farmerAddr, amount, {from: notOwnerAddr});
+            } catch(error) {
+                err = error;
+                return instance.getAmountOfFarmerPartnership(programAddr, farmerAddr)
+                .then(returnedAmount => {
+                    assert.equal(returnedAmount, 0);
+                });
+            }
+
+            assert(err instanceof Error);
+        });
+
+        it("should allow transfer of funds to farmer", async () => {
+            let amount = 100;
+            return instance.pledge(programAddr, targetAmount, {from: ownerAddr})
+            .then(() => {
+                return instance.addFarmerPartnership(programAddr, farmerAddr, amount, {from: ownerAddr})
+            })
+            .then(() => {
+                return instance.transferFunds(programAddr, farmerAddr, amount);
+            })
+            .then(() => {
+                return instance.getBalanceOf(farmerAddr);
+            })
+            .then(returnedAmount => {
+                assert.equal(returnedAmount, amount);
+            });
+        });
+    });
+
     describe("Closing", () => {
         let ownerAddr = accounts[0];
         let programAddr = accounts[1];
+        let funderAddr = accounts[2];
+        let walletBalance = 1000;
         let targetAmount = 100;
         
         beforeEach("setup new program", async () => {
             instance = await Crowdfunding.new();
             return instance.createNew(programAddr, targetAmount, {from: ownerAddr})
+            .then(() => {
+                return instance.addNewFunder(funderAddr, {from: ownerAddr})
+            })
+            .then (() => {
+                instance.mintRequest(walletBalance, {from: funderAddr});
+            });
         });
 
         it("should automatically close program for funding once target amount is reached", () => {
-            return instance.pledge(programAddr, targetAmount)
+            return instance.pledge(programAddr, targetAmount, {from: funderAddr})
             .then(() => {
                 return instance.programs.call(programAddr);
             })
@@ -208,7 +304,7 @@ contract("Crowdfunding", accounts => {
         it("should allow owner to close program and refund pledges", async () => {
             let amount = 10;
 
-            await instance.pledge(programAddr, amount, {from: ownerAddr});
+            await instance.pledge(programAddr, amount, {from: funderAddr});
 
             return instance.closeAndRevertAll(programAddr, {from: ownerAddr})
             .then(() => {
@@ -249,37 +345,41 @@ contract("Crowdfunding", accounts => {
 
         it("should not allow pledge if program is closed", async () => {
             let amount = 100;
+            let err
 
             try {
-                await instance.pledge(programAddr, targetAmount, {from: ownerAddr});
+                await instance.pledge(programAddr, targetAmount, {from: funderAddr});
                 assert(false, "should revert");
-            } catch(err) {
-                assert(err instanceof Error);          
-            }
+            } catch(error) {
+                err = error;
 
-            return instance.programs(programAddr)
-            .then(returnedProgram => {
-                assert(!returnedProgram.isOpenForFunding);
-                assert.equal(returnedProgram.balance.toNumber(), targetAmount);
-            });
+                return instance.programs(programAddr)
+                .then(returnedProgram => {
+                    assert(!returnedProgram.isOpenForFunding);
+                    assert.equal(returnedProgram.balance.toNumber(), targetAmount);
+                });
+            }
+            assert(err instanceof Error);
         });
 
         it("should not allow revert pledge if program is closed", async () => {
             let amount = 100;
+            let err;
 
             try {
-                await instance.pledge(programAddr, targetAmount, {from: ownerAddr});
-                await instance.revertPledge(programAddr, amount, {from: ownerAddr});
+                await instance.pledge(programAddr, targetAmount, {from: funderAddr});
+                await instance.revertPledge(programAddr, amount, {from: funderAddr});
                 assert(false, "should revert");
-            } catch(err) {
-                assert(err instanceof Error);          
+            } catch(error) {
+                err = error;
+                return instance.programs(programAddr)
+                .then(returnedProgram => {
+                    assert(!returnedProgram.isOpenForFunding);
+                    assert.equal(returnedProgram.balance.toNumber(), targetAmount);
+                });       
             }
 
-            return instance.programs(programAddr)
-            .then(returnedProgram => {
-                assert(!returnedProgram.isOpenForFunding);
-                assert.equal(returnedProgram.balance.toNumber(), targetAmount);
-            });
+            assert(err instanceof Error);
         });
     });
 });

@@ -10,16 +10,17 @@ pragma solidity >=0.4.21 <0.8.0;
  * Allows creation and tracking of pledges for crowdfunding.
  *
  * TO DO
- * 1) Mint and Burn restrictions
+ * 1) [DONE] Mint and Burn restrictions
  * 2) Use Modifiers (suggested by Sir Teng)
  * 3) Test all functions with Ganache, check for fail transactions
  **/
  
  contract Crowdfunding {
 
-    CustomToken abcToken; // All wallets are handled by abcToken
+    address _owner;
+    CustomToken abcToken; // all wallets are handled by abcToken
 
-     // Crowdfunded Program information are saved in this struct
+    // Crowdfunded Program information are saved in this struct
     struct Program {
         address addr; // address of program
         address ownerAddr; // address of who created the program, i.e. NGO
@@ -27,22 +28,17 @@ pragma solidity >=0.4.21 <0.8.0;
         uint targetAmount; // set by the owner upon opening of program
         bool isOpenForFunding; // if true, pledging and reverts should still be allowed
         mapping(address => uint) pledges; // Mapping of Funder Address => Amount
-        mapping(address => uint) farmerPartnerships; // Mapping of partner farmer and agreed upon amount
+        mapping(address => uint) partnerFarmers; // Mapping of partner farmer and agreed upon amount
         
         mapping (uint => address) indexedFunderList;
         uint funderCount;
     }
-     
-    struct Farmer {
-        address addr;
-        uint balance; 
-    }
 
     // List of all the created programs
     mapping(address => Program) public programs;
-     
-    // List of farmers
-    mapping(address => Farmer) public farmers;
+
+    // List of funders/sponsors
+    mapping(address => bool) public funders;
      
     // Events
     event NewProgram(address indexed _addr, address indexed _ownerAddr);
@@ -56,44 +52,65 @@ pragma solidity >=0.4.21 <0.8.0;
 
     constructor() public {
         abcToken = new CustomToken();
+       _owner = msg.sender;
     }
     
-    /*
-    *   TO DO: Implement access control for Mint and Burn functions.
-    *   From Sir Teng:
-    *   Add mapping of funders (address, bool)
-    *   Tapos only funders can mintRequest and burnRequest
+    /**
+    * @dev Only Funders can call mintRequest
     */
-    function mintRequest(address accountAddr, uint amount) public {
-        // TO DO: add require/ modifiers
+    function mintRequest(uint amount) public {
+        require(funders[msg.sender], "Cannot mint tokens for this account.");
         
-        abcToken.mint(accountAddr, amount);
-        
-        emit MintTokens(accountAddr, amount);
+        abcToken.mint(msg.sender, amount);
+        emit MintTokens(msg.sender, amount);
     }
     
-    function burnRequest(address accountAddr, uint amount) public {
-        // TO DO: add require
+    /**
+    * @dev Only Funders and Farmers can call burnRequest
+    */
+    function burnRequest(uint amount) public {
+        require(programs[msg.sender].addr != msg.sender, "Cannot burn tokens for program wallet");
         
-        abcToken.burn(accountAddr, amount);
-        
-        emit BurnTokens(accountAddr, amount);
+        abcToken.burn(msg.sender, amount);
+        emit BurnTokens(msg.sender, amount);
     }
     
-    
+    /**
+    * @dev Returns amount of tokens in circulation
+    */
     function getTotalSupply() public view returns(uint totalSupply) {
         totalSupply = abcToken.getTotalSupply();
     }
 
+    /**
+    * @dev Returns amount of tokens in wallet of program/funder/farmer
+    */
     function getBalanceOf(address accountAddr) public view returns(uint balance){
         balance = abcToken.getBalanceOf(accountAddr);
     }
 
+    /**
+    * @dev Returns amount pledged by funder to the program
+    */
     function getPledgeOf(address funderAddr, address programAddr) public view returns(uint pledgedAmount){
         Program storage program = programs[programAddr];
         pledgedAmount = program.pledges[funderAddr];
     }
 
+    /**
+    * @dev Adds address as funder address, so funder can call mintRequest
+    */
+    function addNewFunder(address addr) public {
+        require(msg.sender == _owner, "Only contract owner can add funders.");
+        require(!funders[addr], "Address already registered.");
+        require(!isProgramValid(addr),"Invalid address.");
+        
+        funders[addr] = true;
+    }
+
+    /**
+    * @dev Creates new program
+    */
     function createNew(address programAddr, uint targetAmount) public {
          require(!isProgramValid(programAddr), "Program at address already created.");
 
@@ -106,8 +123,11 @@ pragma solidity >=0.4.21 <0.8.0;
          newProgram.funderCount = 0;
          
          emit NewProgram(programAddr, msg.sender);
-     }
+    }
 
+    /**
+    * @dev Funder calls this function to add a pledge to the program
+    */
     function pledge(address programAddr, uint amount) public {
         require(isProgramValid(programAddr), "Program Uninitialized.");
         require(programs[programAddr].isOpenForFunding, "Program is already closed for funding.");
@@ -129,6 +149,9 @@ pragma solidity >=0.4.21 <0.8.0;
         }
     }
 
+    /**
+    * @dev Funder calls this function to revert a previous pledge to the program
+    */
     function revertPledge(address programAddr, uint amount) public {
         require(programs[programAddr].isOpenForFunding, "Program is already closed, funds cannot be reverted.");
         require(programs[programAddr].pledges[msg.sender] >= amount, "Requested amount exceeds maximum pledged amount.");
@@ -136,6 +159,9 @@ pragma solidity >=0.4.21 <0.8.0;
         revertFunderPledge(programAddr, msg.sender, amount);
     }
 
+    /**
+    * @dev Program owner calls this function to close program and revert pledges
+    */
     function closeAndRevertAll(address programAddr) public {
         require(isProgramValid(programAddr), "Program Uninitialized");
         require(programs[programAddr].ownerAddr == msg.sender, "Only program owner can close the program.");
@@ -154,32 +180,44 @@ pragma solidity >=0.4.21 <0.8.0;
         emit CloseProgram(programAddr);
     }
     
-    // Functions for program-farmer
+    /**
+    * @dev Returns agreed upon amount for the program
+    */ 
+    function getAmountOfFarmerPartnership(address programAddr, address farmerAddr) public view returns (uint amount){
+        Program storage program = programs[programAddr];
+        amount = program.partnerFarmers[farmerAddr];
+    }
+
+    /**
+    * @dev Adds farmer as partner for the program
+    */ 
     function addFarmerPartnership(address programAddr, address farmerAddr, uint amount) public {
         require(isProgramValid(programAddr), "Program Uninitialized.");
         require(programs[programAddr].ownerAddr == msg.sender, "Only program owner can add farmer.");
-        require(programs[programAddr].farmerPartnerships[farmerAddr] == 0, "Already a partner farmer.");
+        require(programs[programAddr].partnerFarmers[farmerAddr] == 0, "Already a partner farmer.");
         require(amount > 0, "Amount cannot be 0.");
 
         Program storage program = programs[programAddr];
-        program.farmerPartnerships[farmerAddr] = amount;
+        program.partnerFarmers[farmerAddr] = amount;
     }
-    
+
+    /**
+    * @dev Transfers funds from program to farmer
+    */ 
     function transferFunds(address programAddr, address farmerAddr, uint amount) public {
         Program storage program = programs[programAddr];
-        Farmer storage farmer = farmers[farmerAddr]; 
         
         // Require Statements
         require(isProgramValid(programAddr), "Program Uninitialized.");
-        require(program.ownerAddr == msg.sender, "Only program owner can add farmer.");
+        require(program.ownerAddr == msg.sender, "Only program owner can transfer funds to farmer.");
         require(program.balance >= amount, "Program must have sufficient funds to transfer.");
-        require(program.farmerPartnerships[farmerAddr] > 0, "Cannot transact with non partner farmer.");
+        require(program.partnerFarmers[farmerAddr] > 0, "Cannot transact with non partner farmer.");
         
         // Deduct AMOUNT from PROGRAM
         program.balance = program.balance - amount;
         
-        // Push AMOUNT to FARMER
-        farmer.balance = farmer.balance + amount;
+        // Transfer AMOUNT to FARMER
+        abcToken.transfer(programAddr, farmerAddr, amount);
 
         emit TransferFundsToFarmer(programAddr, farmerAddr, amount);
     } 

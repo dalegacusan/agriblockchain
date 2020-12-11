@@ -46,7 +46,7 @@ web3.eth.net.isListening()
 
             const balance = await crowdfundingContract
                 .methods
-                .getBalance(address)
+                .getBalanceOf(address)
                 .call({from: address});
             
             res.status(200).json({
