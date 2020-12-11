@@ -352,14 +352,6 @@ app.get('/api/sponsors', (req, res) => {
     });
 })
 
-// app.get('/api/corporationsponsors', (req, res) => {
-//   // Get all farmers from MongoDB
-//   sponsorCorporation.find({})
-//     .then(result => {
-//       res.status(200).json(result);
-//     });
-// })
-
 // =================================
 //          UPDATE Data Only
 // =================================
