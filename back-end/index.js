@@ -258,13 +258,37 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     dateFunded: new Date(),
   }
 
-  Program.updateOne({ _id: programId }, { $push: { sponsors: sponsorToPush } })
-    .then(() => {
+  const newAmount = {
+    programAbout: {
+      currentAmount: amountFunded
+    }
+  }
+
+  Program.updateOne(
+    { _id: programId },
+    {
+      $push: { sponsors: sponsorToPush },
+      $inc: flatten(newAmount)
+    })
+    .then((program) => {
       console.log("Successfully added sponsor to Program's Sponsors Array");
 
       Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
         .then(() => {
           console.log("Added program to sponsoredPrograms array");
+
+          // const { programAbout } = program;
+          // const { currentAmount, requiredAmount } = programAbout;
+
+          // if (currentAmount >= requiredAmount) {
+          //   program.programAbout.stage = "procurement"
+
+          //   program.save()
+          //     .then(() => {
+          //       console.log("Program is now in Procurement Phase!");
+          //     })
+          // }
+
         })
         .catch(err => {
           console.log(err);
@@ -360,19 +384,19 @@ app.patch('/api/programs/:programId', (req, res) => {
   */
   const { programName, about, cityAddress, requiredAmount } = req.body;
 
+  const updatedProgram = {
+    programAbout: {
+      programName,
+      about,
+      cityAddress,
+      requiredAmount,
+    }
+  }
+
   Program.findByIdAndUpdate(
     { _id: programId },
     {
-      $set: flatten(
-        {
-          programAbout: {
-            programName,
-            about,
-            cityAddress,
-            requiredAmount,
-          }
-        }
-      )
+      $set: flatten(updatedProgram)
     },
     { new: true, useFindAndModify: false }
   )
