@@ -37,8 +37,6 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 })
 
-const currentUser = 'individual';
-
 // =================================
 //          CREATE Data Only
 // =================================
@@ -208,24 +206,29 @@ app.post('/api/create/sponsor', (req, res) => {
 
 })
 
-app.post('/api/farmer/produce/add', (req, res) => {
+//New
+app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
 
-  const testFarmerProduce = new produce({
-    farmerId: '5fcde43aaa30ac31d86a20dd',
-    name: 'Rice',
-    price: 100,
-    quantity: 500
-  });
+  const { farmerId } = req.params;
+  const { produceName, producePrice, produceQuantity } = req.body
 
-  Farmer.updateOne({ _id: testFarmerProduce.farmerId }, { $push: { producePortfolio: testFarmerProduce } })
-    .then(() => {
-      console.log('Successfully Updated Farmer Produce List');
-    })
-    .catch(err => {
-      console.log(err);
-    })
+  const produceToPush = {
+    farmerId,
+    produceName,
+    producePrice,
+    produceQuantity,
+  }
+
+Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
+  .then(() => {
+    console.log('Successfully Updated Farmer Produce List');
+  })
+  .catch(err => {
+    console.log(err);
+  })
 
 })
+///New
 
 app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
