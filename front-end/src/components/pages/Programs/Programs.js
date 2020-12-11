@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
@@ -11,8 +11,10 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Alert from '@material-ui/lab/Alert';
 
-import Program from './Program';
+import ProgramCard from './ProgramCard';
+import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,15 +40,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Programs() {
   const classes = useStyles();
 
-  const fabStyle = {
-    margin: 0,
-    top: 'auto',
-    right: 40,
-    bottom: 40,
-    left: 'auto',
-    position: 'fixed',
-  };
-
+  const { loginData } = useContext(LoginDialogContext);
   const [ programs, setPrograms ] = useState([])
 
   useEffect(() => {
@@ -63,39 +57,47 @@ export default function Programs() {
       <Typography variant="h2" component="h1" gutterBottom>
         All Programs
       </Typography>
-      <Grid container spacing={2}>
-        {
-          programs.length !== 0 ?
-            programs.map((program, index) => {
-              const { programAbout, timeline } = program;
-              const { programName, about, stage, status } = programAbout;
-              const { programDate } = timeline;
+      <Box display={ loginData.username === '' && loginData.type === '' ? "block" : "none" }>
+        <Alert severity="info">Log in to Bayanihan to get more details about the programs</Alert>
+      </Box>
+      <Box my={3}>
+        <Grid container spacing={2}>
+          {
+            programs.length !== 0 ?
+              programs.map((program, index) => {
+                const { programAbout, timeline, id } = program;
+                const { programName, about, stage, status } = programAbout;
+                const { programDate } = timeline;
 
-              return (
-                <Grid item xs={12} md={6} lg={4}>
-                  <Program
-                    key={index}
-                    programName={programName}
-                    programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
-                    programDescription={about}
-                    programStage={stage}
-                    programStatus={status}
-                  />
-                </Grid>
-              )
-            }) 
-            :
-            <Box width="100%" textAlign="center">
-              <CircularProgress/>
-            </Box>
-        }
-      </Grid>
-      <Link component={RouterLink} to="/program/create">
-        <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended" style={fabStyle}>
-          <AddIcon />
-          Create Program
-        </Fab>
-      </Link>
+                return (
+                  <Grid item xs={12} md={6} lg={4}>
+                    <ProgramCard
+                      key={index}
+                      programName={programName}
+                      programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
+                      programDescription={about}
+                      programStage={stage}
+                      programStatus={status}
+                      programId={id}
+                    />
+                  </Grid>
+                )
+              }) 
+              :
+              <Box width="100%" textAlign="center">
+                <CircularProgress/>
+              </Box>
+          }
+        </Grid>
+      </Box>
+      <Box display={ loginData.type === 'ngo' ? 'block' : 'none' }>
+        <Link component={RouterLink} to="/program/create">
+          <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended">
+            <AddIcon />
+            Create Program
+          </Fab>
+        </Link>
+      </Box>
     </Container>
   );
 }

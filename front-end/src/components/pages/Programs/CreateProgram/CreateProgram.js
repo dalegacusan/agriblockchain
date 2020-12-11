@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
@@ -14,6 +14,8 @@ import axios from 'axios';
 import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+
+import { LoginDialogContext } from '../../../global/Contexts/LoginDialogContext';
 
 // import ProgramTimelineForm from './components/ProgramTimelineForm';
 // import GeneralProgramInfoForm from './components/GeneralProgramInfoForm';
@@ -35,6 +37,8 @@ export default function CreateProgram() {
   const classes = useStyles();
   const history = useHistory();
 
+  const { loginData } = useContext(LoginDialogContext)
+
   // ====================================================================== //
   //  "ngo" field assumes that the ID of the current NGO is being tracked   //
   // ====================================================================== //
@@ -42,7 +46,7 @@ export default function CreateProgram() {
     programName: '',
     about: '',
     cityAddress: '',
-    ngo: '5fcdafdafcda8f250439db05',
+    ngo: loginData.uid,             // must be ngo: '5fcdafdafcda8f250439db05'
     requiredAmount: 0,
     programDate: new Date().toLocaleDateString(),
   });
@@ -66,7 +70,8 @@ export default function CreateProgram() {
 
   const handleSubmit = () => {
     setSubmitLoading(true)
-    axios.post('/api/create/program', newProgram)
+    if (loginData.uid === '5fcdafdafcda8f250439db05') {
+      axios.post('/api/create/program', newProgram)
       .then(res => {
         console.log(res);
         setSubmitLoading(false);
@@ -76,7 +81,7 @@ export default function CreateProgram() {
           programName: '',
           about: '',
           cityAddress: '',
-          ngo: '5fcdafdafcda8f250439db05',
+          ngo: loginData.uid,         // must be ngo: '5fcdafdafcda8f250439db05'
           requiredAmount: 0,
           programDate: new Date().toLocaleDateString(),
         })
@@ -87,6 +92,12 @@ export default function CreateProgram() {
         setError(true);
         setSuccess(false);
       })
+    } else {
+      console.error('Not logged in as an NGO!');
+      setSubmitLoading(false);
+      setError(true);
+      setSuccess(false);
+    }
   };
 
   return (

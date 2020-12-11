@@ -15,11 +15,12 @@ import { LoginDialogContext } from '../../../global/Contexts/LoginDialogContext'
 
 export default function LoginDialog() {
 
-  const { openLoginDialog, setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext)
+  const { openLoginDialog, setOpenLoginDialog, setLoginData } = useContext(LoginDialogContext)
   const [ tempData, setTempData ] = useState({
     username: '',
     password: '',
     type: '',
+    uid: '',
   })
 
   const handleChange = (e) => {
@@ -56,7 +57,6 @@ export default function LoginDialog() {
             </Box>
             <Box mb={2}>
               <TextField
-                autoFocus
                 id="password"
                 name="password"
                 label="Password"
@@ -88,6 +88,18 @@ export default function LoginDialog() {
                   <MenuItem value="corporation">Sponsor - Corporation</MenuItem>
                 </Select>
               </FormControl>
+            </Box>
+            <Box mb={2}>
+              <TextField
+                id="uid"
+                name="uid"
+                label="Unique ID"
+                type="uid"
+                fullWidth
+                variant="outlined"
+                onChange={handleChange}
+                value={tempData.uid}
+              />
             </Box>
           </DialogContent>
           <DialogActions>

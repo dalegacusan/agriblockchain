@@ -6,7 +6,7 @@ import Container from '@material-ui/core/Container';
 import moment from 'moment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import Program from './Program';
+import ProgramCard from './ProgramCard';
 
 export default function Programs() {
   const [ programs, setPrograms ] = useState([])
@@ -32,7 +32,7 @@ export default function Programs() {
 
               return (
                 <Grid item xs={12} md={6} lg={3}>
-                  <Program
+                  <ProgramCard
                     key={index}
                     programName={programName}
                     programDate={moment(programDate).format('dddd, MMMM Do YYYY')}

@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { Link as RouterLink } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+
+import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,16 +29,17 @@ const useStyles = makeStyles((theme) => ({
   stage:{
     display: 'inline-block',
     backgroundColor: theme.palette.secondary.main,
-    padding: '0.3rem',
+    padding: '0.2rem 0.5rem',
     marginBottom: '0.5rem',
     color: theme.palette.secondary.contrastText,
   },
 }));
 
-export default function OutlinedCard(props) {
+export default function ProgramCard(props) {
   const classes = useStyles();
-  const { programName, programDate, programDescription, programStatus, programStage } = props;
+  const { programName, programDate, programDescription, programStatus, programStage, programId } = props;
 
+  const { loginData } = useContext(LoginDialogContext);
   const [ stage, setStage ] = useState('');
   const [ status, setStatus ] = useState('');
   
@@ -87,7 +92,23 @@ export default function OutlinedCard(props) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Learn More</Button>
+        {
+          loginData.username === '' && loginData.type === '' ? 
+            <Button 
+              disabled
+              size="small"
+            >
+              Learn More
+            </Button>
+            :
+            <Link component={RouterLink} to={`/program/${programId}`} underline='none'>
+              <Button 
+                size="small"
+              >
+                Learn More
+              </Button>
+            </Link>
+        }
       </CardActions>
     </Card>
   );

@@ -327,7 +327,7 @@ app.get('/api/programs', (req, res) => {
 })
 
 // Get an individual program
-app.get('/api/programs/:programId', (req, res) => {
+app.get('/api/program/:programId', (req, res) => {
   const { programId } = req.params;
 
   Program.findOne({ _id: programId })

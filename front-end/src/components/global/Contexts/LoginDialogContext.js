@@ -8,6 +8,7 @@ export const LoginDialogProvider = props => {
         username: '',
         password: '',
         type: '',
+        uid: '',
     })
 
     useEffect(() => {
