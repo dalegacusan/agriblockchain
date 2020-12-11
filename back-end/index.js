@@ -259,12 +259,13 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
   }
 
   // Add amountFunded to currentAmount of Program
+  // Used in $inc
   const newAmount = {
     programAbout: {
       currentAmount: amountFunded
     }
   }
-  
+
   Program.findOneAndUpdate(
     { _id: programId },
     {
@@ -304,16 +305,6 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     .catch(err => {
       console.log(err);
     });
-
-
-
-  // Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { sponsors: currentSponsor } })
-  //   .then(() => {
-  //     console.log('Successfully Updated Program Sponsors List');
-  //   })
-  //   .catch(err => {
-  //     console.log(err);
-  //   })
 
 })
 
