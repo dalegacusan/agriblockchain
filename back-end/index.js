@@ -13,7 +13,7 @@ const Farmer = require('./models/Farmer');
 const Program = require('./models/Program');
 const NGO = require('./models/NGO');
 const { produce, produceRequirement } = require('./models/Produce');
-const { sponsorIndividual, sponsorCorporation } = require('./models/Sponsor');
+const Sponsor = require('./models/Sponsor');
 
 const URL = process.env.MONGODB_URL;
 
@@ -175,92 +175,36 @@ app.post('/api/create/farmer', (req, res) => {
 
 });
 
-// uses currentUser
 app.post('/api/create/sponsor', (req, res) => {
 
-  if (currentUser === 'individual') {
+  const newSponsor = new Sponsor({
+    loginDetails: {
+      username: "johndoe@gmail.com",
+      password: "johndoe456"
+    },
+    sponsorAbout: {
+      corporationName: "John Doe",
+      addressLine1: "Manila, Philippines",
+      addressLine2: "Cavite, Philippines",
+      region: "NCR",
+      city: "Paranaque",
+      country: "Philippines"
+    },
+    contactDetails: {
+      authorizedRepresentative: "Mark Zuckerberg",
+      contactNumber: "01234567890",
+    },
+    // sponsoredPrograms: Array,      // DEFAULT = []
+    // walletBalance: Number          // DEFAULT = 0
+  });
 
-    const testSponsorInvidivual = new sponsorIndividual({
-      loginDetails: {
-        username: 'hermansara',
-        password: 'hermansara123'
-      },
-      corporationAbout: {
-        profilePicture: '/assets/img',
-        firstName: 'Herman',
-        middleName: 'Co',
-        lastName: 'Sara',
-        suffix: 'S',
-        addressLine1: 'Manila',
-        addressLine2: 'Quezon',
-        region: 'NCR',
-        city: 'Manila',
-        country: 'Philippines'
-      },
-      contactDetails: {
-        contactNumber: '1234567890',
-        emailAddress: 'herman@sara.com'
-      },
-      programStatistics: {
-        amountFunded: 20000,
-        dateFunded: null,
-        // For active program, just get the latest item on activePrograms array
-        activePrograms: [],
-        sponsoredPrograms: [],
-        completedPrograms: [],
-      },
-      walletBalance: 0
-    });
-
-    testSponsorInvidivual.save()
-      .then(result => {
-        console.log('testSponsorInvidivual Saved to MongoDB!');
-      })
-      .catch(err => {
-        console.log('Error: ', err);
-      });
-
-  } else if (currentUser === 'corporation') {
-
-    const testSponsorCorporation = new sponsorCorporation({
-      loginDetails: {
-        username: 'adminaccount',
-        password: 'admin123'
-      },
-      corporationAbout: {
-        profilePicture: '/assets/img',
-        corporationName: 'PLDT Corporation',
-        addressLine1: 'Taguig',
-        addressLine2: 'Makati',
-        region: 'NCR',
-        city: 'Manila',
-        country: 'Philippines'
-      },
-      contactDetails: {
-        authorizedRepresentative: 'Bill Gates',
-        contactNumber: '1234567890',
-        emailAddress: 'admin@account.com'
-      },
-      programStatistics: {
-        amountFunded: 20000,
-        dateFunded: null,
-        // For active program, just get the latest item on activePrograms array
-        activePrograms: [],
-        sponsoredPrograms: [],
-        completedPrograms: [],
-      },
-      walletBalance: 0
+  newSponsor.save()
+    .then(result => {
+      console.log('Sponsor Saved to MongoDB!');
     })
-
-    testSponsorCorporation.save()
-      .then(result => {
-        console.log('testSponsorCorporation Saved to MongoDB!');
-      })
-      .catch(err => {
-        console.log('Error: ', err);
-      });
-
-  }
+    .catch(err => {
+      console.log('Error: ', err);
+    });
 
 })
 
@@ -302,34 +246,44 @@ app.post('/api/program/produce/add', (req, res) => {
     });
 })
 
-// uses currentUser
-app.post('/api/add/program/sponsor', (req, res) => {
+// ADD a sponsor to a program
+app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 
-  if (currentUser === 'individual') {
+  const { programId, sponsorId } = req.params;
+  const { amountFunded } = req.body;
 
-    sponsorIndividual.find({ _id: '5fcdffa242dd1d2e4c231b7f' })
-      .then(currentSponsor => {
-        Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { sponsors: currentSponsor } })
-          .then(() => {
-            console.log('Successfully Updated Program Sponsors List - Individual');
-          })
-          .catch(err => {
-            console.log(err);
-          })
-      })
-
-  } else if (currentUser === 'corporation') {
-    sponsorCorporation.find({ _id: '5fcdffc9141f1532f4dbb37f' })
-      .then(currentSponsor => {
-        Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { sponsors: currentSponsor } })
-          .then(() => {
-            console.log('Successfully Updated Program Sponsors List - Corporation');
-          })
-          .catch(err => {
-            console.log(err);
-          })
-      })
+  const sponsorToPush = {
+    sponsorId,
+    amountFunded,
+    dateFunded: new Date(),
   }
+
+  Program.updateOne({ _id: programId }, { $push: { sponsors: sponsorToPush } })
+    .then(() => {
+      console.log("Successfully added sponsor to Program's Sponsors Array");
+
+      Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
+        .then(() => {
+          console.log("Added program to sponsoredPrograms array");
+        })
+        .catch(err => {
+          console.log(err);
+        })
+
+    })
+    .catch(err => {
+      console.log(err);
+    });
+
+
+
+  // Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { sponsors: currentSponsor } })
+  //   .then(() => {
+  //     console.log('Successfully Updated Program Sponsors List');
+  //   })
+  //   .catch(err => {
+  //     console.log(err);
+  //   })
 
 })
 
@@ -369,21 +323,21 @@ app.get('/api/farmers', (req, res) => {
     });
 })
 
-app.get('/api/individualsponsors', (req, res) => {
+app.get('/api/sponsors', (req, res) => {
   // Get all farmers from MongoDB
-  sponsorIndividual.find({})
+  Sponsor.find({})
     .then(result => {
       res.status(200).json(result);
     });
 })
 
-app.get('/api/corporationsponsors', (req, res) => {
-  // Get all farmers from MongoDB
-  sponsorCorporation.find({})
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
+// app.get('/api/corporationsponsors', (req, res) => {
+//   // Get all farmers from MongoDB
+//   sponsorCorporation.find({})
+//     .then(result => {
+//       res.status(200).json(result);
+//     });
+// })
 
 // =================================
 //          UPDATE Data Only
@@ -442,21 +396,22 @@ app.patch('/api/programs/:programId', (req, res) => {
 // =================================
 //          DELETE Data Only
 // =================================
-  //call /api/programs/, get the programId
-  app.delete('/api/programs/:programId', (req, res) => {
-    const { programId } = req.params;
 
-    //Find a program with the _id of programId to delete
-    Program.deleteOne({_id:programId})
+//call /api/programs/, get the programId
+app.delete('/api/programs/:programId', (req, res) => {
+  const { programId } = req.params;
+
+  //Find a program with the _id of programId to delete
+  Program.deleteOne({ _id: programId })
 
     //if successful, print Program Program ID delete from MongoDB
     .then(result => {
-        console.log(`Program ${programId}: deleted from MongoDB`);
-        res.json(result);
+      console.log(`Program ${programId}: deleted from MongoDB`);
+      res.json(result);
     })
     //if delete op failed, print error message
     .catch(err => {
-        console.log ('Error: ', err.errors['programAbout.ngo'].message);
+      console.log('Error: ', err);
     })
 })
 

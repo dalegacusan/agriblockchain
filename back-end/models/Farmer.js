@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Program = require('./Program').schema;
 const { produce } = require('./Produce');
 
 const farmerSchema = new mongoose.Schema({
@@ -29,10 +28,11 @@ const farmerSchema = new mongoose.Schema({
     expectedAmountToReceive: Number,
     dateParticipated: Date,
     // For active program, just get the latest item on activePrograms array
-    activePrograms: [Program],
-    programsParticipated: [Program],
-    completedPrograms: [Program]
-  }
+    // activePrograms: [Program],
+    // programsParticipated: [Program],
+    // completedPrograms: [Program]
+  },
+  walletBalance: { type: Number, default: 0 }
 });
 
 farmerSchema.set('toJSON', {
