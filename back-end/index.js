@@ -320,6 +320,15 @@ app.get('/api/ngo', (req, res) => {
     });
 })
 
+app.get('/api/ngo/:ngoId', (req, res) => {
+  const { ngoId } = req.params;
+
+  NGO.findById({ _id: ngoId })
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
 app.get('/api/programs', (req, res) => {
   Program.find({})
     .then(result => {
@@ -328,7 +337,7 @@ app.get('/api/programs', (req, res) => {
 })
 
 // Get an individual program
-app.get('/api/program/:programId', (req, res) => {
+app.get('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
   Program.findOne({ _id: programId })
@@ -345,9 +354,27 @@ app.get('/api/farmers', (req, res) => {
     });
 })
 
+app.get('/api/farmers/:farmerId', (req, res) => {
+  const { farmerId } = req.params;
+
+  Farmer.findById({ _id: farmerId })
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
 app.get('/api/sponsors', (req, res) => {
   // Get all farmers from MongoDB
   Sponsor.find({})
+    .then(result => {
+      res.status(200).json(result);
+    });
+})
+
+app.get('/api/sponsors/:sponsorId', (req, res) => {
+  const { sponsorId } = req.params;
+
+  Sponsor.findById({ _id: sponsorId })
     .then(result => {
       res.status(200).json(result);
     });
