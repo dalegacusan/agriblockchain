@@ -22,7 +22,7 @@ const farmerSchema = new mongoose.Schema({
     emailAddress: String,
     contactNumber: String
   },
-  producePortfolio: [produce.schema],
+  producePortfolio: { type: Array, default: [] },
   walletBalance: { type: Number, default: 0 }
 });
 

@@ -206,29 +206,27 @@ app.post('/api/create/sponsor', (req, res) => {
 
 })
 
-//New
 app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
 
   const { farmerId } = req.params;
-  const { produceName, producePrice, produceQuantity } = req.body
+  const { name, price, quantity } = req.body;
 
   const produceToPush = {
     farmerId,
-    produceName,
-    producePrice,
-    produceQuantity,
+    name,
+    price,
+    quantity,
   }
 
-Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
-  .then(() => {
-    console.log('Successfully Updated Farmer Produce List');
-  })
-  .catch(err => {
-    console.log(err);
-  })
+  Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
+    .then(() => {
+      console.log('Successfully Updated Farmer Produce List');
+    })
+    .catch(err => {
+      console.log(err);
+    })
 
 })
-///New
 
 app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
