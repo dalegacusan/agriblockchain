@@ -23,15 +23,6 @@ const farmerSchema = new mongoose.Schema({
     contactNumber: String
   },
   producePortfolio: [produce.schema],
-  // Not sure about this
-  programStatistics: {
-    expectedAmountToReceive: Number,
-    dateParticipated: Date,
-    // For active program, just get the latest item on activePrograms array
-    // activePrograms: [Program],
-    // programsParticipated: [Program],
-    // completedPrograms: [Program]
-  },
   walletBalance: { type: Number, default: 0 }
 });
 
