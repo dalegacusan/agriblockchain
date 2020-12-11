@@ -13,6 +13,7 @@ pragma solidity >=0.4.21 <0.8.0;
  * 1) [DONE] Mint and Burn restrictions
  * 2) Use Modifiers (suggested by Sir Teng)
  * 3) Test all functions with Ganache, check for fail transactions
+ * 4) Function to return leftover
  **/
  
  contract Crowdfunding {
@@ -288,14 +289,14 @@ contract CustomToken is Ownable{
     }
     
     function burn(address account, uint amount) public onlyOwner {
-        require(balances[account] >= amount, "Must be have sufficient balance");
+        require(balances[account] >= amount, "Must have sufficient balance");
         
         balances[account] -= amount;
         _totalSupply -= amount;
     }
     
     function transfer(address accountFrom, address accountTo, uint amount) public onlyOwner {
-        require(balances[accountFrom] >= amount, "Must be have sufficient balance");
+        require(balances[accountFrom] >= amount, "Must have sufficient balance");
         
         balances[accountFrom] -= amount;
         balances[accountTo] += amount;

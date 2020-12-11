@@ -40,6 +40,99 @@ web3.eth.net.isListening()
     app.use(cors());
     app.use(bodyParser.json());
 
+    app.post('/api/crowdfunding/mint/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const amount = req.body.amount;
+
+
+            const data = crowdfundingContract
+              .methods
+              .mintRequest(
+                  parseInt(amount),
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully minted ' + amount + ' for ' + callerAddress,
+            });
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).json({
+            message: 'Failed to mint tokens to account.'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/burn/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const amount = req.body.amount;
+
+
+            const data = crowdfundingContract
+              .methods
+              .burnRequest(
+                  parseInt(amount),
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully burned ' + amount + ' from ' + callerAddress,
+            });
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).json({
+            message: 'Failed to burn tokens.'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/addNewFunder/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const funderAddress = req.body.funderAddress;
+
+
+            const data = crowdfundingContract
+              .methods
+              .addNewFunder(
+                  funderAddress,
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully added funder.',
+            });
+        } catch (error) {
+            console.error(error);
+
+            res.status(500).json({
+            message: 'Failed to add funder.'
+            });
+        }
+    });
+
     app.get('/api/crowdfunding/balance/:address', async function (req, res) {
         try {
             const address = req.params.address;
@@ -165,13 +258,144 @@ web3.eth.net.isListening()
           );
 
             res.status(200).json({
-                message: 'Successfully created pledged ' + amount + ' for ' + address,
+                message: 'Successfully pledged ' + amount + ' for ' + address,
             });
         } catch (error) {
-            console.error(error);
+            console.log(error);
 
             res.status(500).json({
-            message: 'Failed to create new program.'
+                message: 'Failed to create pledge.'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/revertPledge/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const address = req.body.programAddress;
+            const amount = req.body.amount;
+
+
+            const data = crowdfundingContract
+              .methods
+              .revertPledge(
+                  address,
+                  parseInt(amount),
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully reverted pledge of ' + amount + ' for ' + address,
+            });
+        } catch (error) {
+            console.log(error);
+
+            res.status(500).json({
+            message: 'Failed to revert pledge'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/closeAndRevertAll/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const address = req.body.programAddress;
+
+            const data = crowdfundingContract
+              .methods
+              .closeAndRevertAll(
+                  address,
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully closed and reverted pledges',
+            });
+        } catch (error) {
+            console.log(error);
+
+            res.status(500).json({
+            message: 'Failed to close'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/addFarmerPartnership/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const programAddress = req.body.programAddress;
+            const farmerAddress = req.body.farmerAddress;
+            const amount = req.body.amount;
+
+            const data = crowdfundingContract
+              .methods
+              .addFarmerPartnership(
+                programAddress,
+                farmerAddress,
+                parseInt(amount)
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully added farmer',
+            });
+        } catch (error) {
+            console.log(error)
+
+            res.status(500).json({
+                message: 'Failed to add farmer.'
+            });
+        }
+    });
+
+    app.post('/api/crowdfunding/transferFunds/', async function (req, res){
+        try {
+            const callerAddress = req.body.callerAddress;
+            const callerKey = req.body.callerKey;
+            const programAddress = req.body.programAddress;
+            const farmerAddress = req.body.farmerAddress;
+            const amount = req.body.amount;
+
+            const data = crowdfundingContract
+              .methods
+              .transferFunds(
+                programAddress,
+                farmerAddress,
+                parseInt(amount)
+              )
+              .encodeABI();
+          transactionHash = await buildSendTransaction(
+              callerAddress,
+              callerKey,
+              data,
+          );
+
+            res.status(200).json({
+                message: 'Successfully trasnferred tokens to farmer',
+            });
+        } catch (error) {
+            console.log(error)
+
+            res.status(500).json({
+            message: 'Failed to transfer.'
             });
         }
     });
