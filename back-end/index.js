@@ -258,36 +258,42 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     dateFunded: new Date(),
   }
 
+  // Add amountFunded to currentAmount of Program
   const newAmount = {
     programAbout: {
       currentAmount: amountFunded
     }
   }
-
-  Program.updateOne(
+  
+  Program.findOneAndUpdate(
     { _id: programId },
     {
       $push: { sponsors: sponsorToPush },
       $inc: flatten(newAmount)
-    })
+    }, { new: true })
     .then((program) => {
-      console.log("Successfully added sponsor to Program's Sponsors Array");
+      console.log("Successfully added sponsor to Program's Sponsors array");
 
+      // Push programId to sponsoredPrograms array of Sponsor
       Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
         .then(() => {
           console.log("Added program to sponsoredPrograms array");
 
-          // const { programAbout } = program;
-          // const { currentAmount, requiredAmount } = programAbout;
+          const { programAbout } = program;
+          const { currentAmount, requiredAmount } = programAbout;
 
-          // if (currentAmount >= requiredAmount) {
-          //   program.programAbout.stage = "procurement"
+          /* 
+            Check if currentAmount of Program is >= required amount
+            IF TRUE, set Program's stage to "procurement"
+          */
+          if (currentAmount >= requiredAmount) {
+            program.programAbout.stage = "procurement"
 
-          //   program.save()
-          //     .then(() => {
-          //       console.log("Program is now in Procurement Phase!");
-          //     })
-          // }
+            program.save()
+              .then(() => {
+                console.log("Program is now in Procurement Phase!");
+              })
+          }
 
         })
         .catch(err => {
