@@ -106,8 +106,6 @@ export default withRouter(function ProgramPage(props) {
     },
     "id": "",
  })
-  const [ sponsors, setSponsors ] = useState([]);
-  const [ farmers, setFarmers ] = useState([]);
   const [ pledgeDialog, setPledgeDialog ] = useState({
     loading: false,
     open: false,
@@ -264,22 +262,18 @@ export default withRouter(function ProgramPage(props) {
           res.data.sponsors.forEach(sponsor => {
             axios.get(`/api/sponsors/${sponsor.sponsorId}`)
               .then(res => {
-                setSponsors(initialArray => [...initialArray, res.data])
+                sponsor.sponsorAbout = res.data.sponsorAbout
               })
-              .catch(err => 
-                console.error(err)  
-              );
+              .catch(err => console.error(err));
           });
         }
         if (res.data.farmersParticipating.length !== 0) {
           res.data.farmersParticipating.forEach(farmer => {
             axios.get(`/api/farmers/${farmer.farmerId}`)
               .then(res => {
-                setFarmers(initialArray => [...initialArray, res.data])
+                farmer.farmerAbout = res.data.farmerAbout
               })
-              .catch(err => 
-                console.error(err)  
-              );
+              .catch(err => console.error(err));
           });
         }
       })
@@ -407,9 +401,12 @@ export default withRouter(function ProgramPage(props) {
           {
             program.sponsors.map((programSponsor, index) => (
               <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
-                <Avatar>{sponsors[index] && sponsors[index].sponsorAbout.corporationName[0]}</Avatar>
+                <Avatar>
+                  {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName[0]}
+                </Avatar>
                 <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
-                  {sponsors[index] && sponsors[index].sponsorAbout.corporationName} (&#8369;{programSponsor.amountFunded})
+                  {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName}
+                  (&#8369;{programSponsor.amountFunded})
                 </Typography>
               </Box>
             ))
@@ -421,12 +418,12 @@ export default withRouter(function ProgramPage(props) {
           {
             program.farmersParticipating.map((programFarmer, index) => (
               <Box key={index} display="flex" flexDirection="row" alignItems="center" my={2}>
-                <Avatar>F</Avatar>
+                <Avatar>
+                  {programFarmer.farmerAbout && programFarmer.farmerAbout.firstName[0]}
+                </Avatar>
                 <Box ml={1}>
                   <Typography variant="subtitle1">
-                    {farmers[index] && 
-                     `${farmers[index].farmerAbout.firstName} ${farmers[index].farmerAbout.middleName} ${farmers[index].farmerAbout.lastName}`
-                    }
+                    {programFarmer.farmerAbout && programFarmer.farmerAbout.firstName}&nbsp;{programFarmer.farmerAbout && programFarmer.farmerAbout.middletName}&nbsp;{programFarmer.farmerAbout && programFarmer.farmerAbout.lastName}
                   </Typography>
                   <Typography variant="caption">
                     {programFarmer.quantity} kg of {programFarmer.name}
