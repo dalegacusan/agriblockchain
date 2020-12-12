@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-// Responsible to get the body off of network requests.
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const flatten = require('flat')
@@ -41,6 +40,7 @@ app.get('/', (req, res) => {
 //          CREATE Data Only
 // =================================
 
+// TEST ACCOUNT //
 app.post('/api/create/ngo', (req, res) => {
 
   const testNGO = new NGO({
@@ -101,19 +101,11 @@ app.post('/api/create/program', (req, res) => {
       requiredAmount,
     },
     timeline: {
-      // submissionDate: '2002-12-09',
-      // fundingStartDate: '2001-12-09',
-      // fundingEndDate: '2002-11-09',
-      // procurementStartDate: '2000-12-09',
-      // procurementEndDate: '2002-12-02',
       programDate: programDate,
     },
-    // Create a Requirement Schema
     produceRequirements: [],
     farmersParticipating: [],
-    // Contains Sponsors Schema
     sponsors: [],
-    // sponsorshipOptions: {},
   });
 
   // Save a farmer to MongoDB
@@ -126,108 +118,9 @@ app.post('/api/create/program', (req, res) => {
       console.log('Error: ', err.errors['programAbout.ngo'].message);
     });
 
-
 })
 
-app.post('/api/create/farmer', (req, res) => {
-
-  const testFarmer = new Farmer({
-    loginDetails: {
-      username: 'mangjose',
-      password: 'mangjosepassword'
-    },
-    farmerAbout: {
-      profilePicture: '/assets/img',
-      firstName: 'Jose',
-      middleName: 'El',
-      lastName: 'Manalo',
-      suffix: 'P',
-      addressLine1: 'Cotabato',
-      addressLine2: 'Davao',
-      region: 'NCR',
-      city: 'Cavite',
-      country: 'Philippines',
-    },
-    contactDetails: {
-      emailAddress: 'mangjose@gmail.com',
-      contactNumber: '1234567890'
-    },
-    producePortfolio: [],
-    programStatistics: {
-      expectedAmountToReceive: 0,
-      dateParticipated: null,
-      // For active program, just get the latest item on activePrograms array
-      activePrograms: [],
-      programsParticipated: [],
-      completedPrograms: []
-    }
-  });
-
-  testFarmer.save()
-    .then(result => {
-      console.log('testFarmer Saved to MongoDB!');
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-    });
-
-});
-
-app.post('/api/create/sponsor', (req, res) => {
-
-  const newSponsor = new Sponsor({
-    loginDetails: {
-      username: "johndoe@gmail.com",
-      password: "johndoe456"
-    },
-    sponsorAbout: {
-      corporationName: "John Doe",
-      addressLine1: "Manila, Philippines",
-      addressLine2: "Cavite, Philippines",
-      region: "NCR",
-      city: "Paranaque",
-      country: "Philippines"
-    },
-    contactDetails: {
-      authorizedRepresentative: "Mark Zuckerberg",
-      contactNumber: "01234567890",
-    },
-    // sponsoredPrograms: Array,      // DEFAULT = []
-    // walletBalance: Number          // DEFAULT = 0
-  });
-
-  newSponsor.save()
-    .then(result => {
-      console.log('Sponsor Saved to MongoDB!');
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-    });
-
-})
-
-app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
-
-  const { farmerId } = req.params;
-  const { name, price, quantity } = req.body;
-
-  const produceToPush = {
-    farmerId,
-    name,
-    price,
-    quantity,
-  }
-
-  Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
-    .then(() => {
-      console.log('Successfully Updated Farmer Produce List');
-    })
-    .catch(err => {
-      console.log(err);
-    })
-
-})
-
+// TEST ACCOUNT //
 app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
   const testProgramRequirementProduce = new produceRequirement({
@@ -247,7 +140,7 @@ app.post('/api/program/produce/add', (req, res) => {
     });
 })
 
-// ADD a sponsor to a program
+// ADD a Sponsor to a Program
 app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 
   const { programId, sponsorId } = req.params;
@@ -317,6 +210,108 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 
 })
 
+// TEST ACCOUNT //
+app.post('/api/create/farmer', (req, res) => {
+
+  const testFarmer = new Farmer({
+    loginDetails: {
+      username: 'mangjose',
+      password: 'mangjosepassword'
+    },
+    farmerAbout: {
+      profilePicture: '/assets/img',
+      firstName: 'Jose',
+      middleName: 'El',
+      lastName: 'Manalo',
+      suffix: 'P',
+      addressLine1: 'Cotabato',
+      addressLine2: 'Davao',
+      region: 'NCR',
+      city: 'Cavite',
+      country: 'Philippines',
+    },
+    contactDetails: {
+      emailAddress: 'mangjose@gmail.com',
+      contactNumber: '1234567890'
+    },
+    producePortfolio: [],
+    programStatistics: {
+      expectedAmountToReceive: 0,
+      dateParticipated: null,
+      // For active program, just get the latest item on activePrograms array
+      activePrograms: [],
+      programsParticipated: [],
+      completedPrograms: []
+    }
+  });
+
+  testFarmer.save()
+    .then(result => {
+      console.log('testFarmer Saved to MongoDB!');
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    });
+
+});
+
+// ADD a Produce to a Farmer
+app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
+
+  const { farmerId } = req.params;
+  const { name, price, quantity } = req.body;
+
+  const produceToPush = {
+    farmerId,
+    name,
+    price,
+    quantity,
+  }
+
+  Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
+    .then(() => {
+      console.log('Successfully Updated Farmer Produce List');
+    })
+    .catch(err => {
+      console.log(err);
+    })
+
+})
+
+// TEST ACCOUNT //
+app.post('/api/create/sponsor', (req, res) => {
+
+  const newSponsor = new Sponsor({
+    loginDetails: {
+      username: "johndoe@gmail.com",
+      password: "johndoe456"
+    },
+    sponsorAbout: {
+      corporationName: "John Doe",
+      addressLine1: "Manila, Philippines",
+      addressLine2: "Cavite, Philippines",
+      region: "NCR",
+      city: "Paranaque",
+      country: "Philippines"
+    },
+    contactDetails: {
+      authorizedRepresentative: "Mark Zuckerberg",
+      contactNumber: "01234567890",
+    },
+    // sponsoredPrograms: Array,      // DEFAULT = []
+    // walletBalance: Number          // DEFAULT = 0
+  });
+
+  newSponsor.save()
+    .then(result => {
+      console.log('Sponsor Saved to MongoDB!');
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    });
+
+})
+
 // =================================
 //          READ Data Only
 // =================================
@@ -344,7 +339,6 @@ app.get('/api/programs', (req, res) => {
     });
 })
 
-// Get an individual program
 app.get('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
@@ -392,6 +386,7 @@ app.get('/api/sponsors/:sponsorId', (req, res) => {
 //          UPDATE Data Only
 // =================================
 
+// Update Basic Program Information
 app.patch('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
@@ -446,24 +441,22 @@ app.patch('/api/programs/:programId', (req, res) => {
 //          DELETE Data Only
 // =================================
 
-//call /api/programs/, get the programId
 app.delete('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
-  //Find a program with the _id of programId to delete
+  // Find a program with the _id of programId to delete
   Program.deleteOne({ _id: programId })
 
-    //if successful, print Program Program ID delete from MongoDB
+    // if successful, print Program ID deleted from MongoDB
     .then(result => {
       console.log(`Program ${programId}: deleted from MongoDB`);
-      res.json(result);
+      res.status(200).json(result);
     })
-    //if delete op failed, print error message
+    // if failed, print error message
     .catch(err => {
       console.log('Error: ', err);
     })
 })
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
