@@ -24,7 +24,7 @@ const programSchema = new mongoose.Schema({
     programDate: Date
   },
   produceRequirements: [produceRequirement.schema],
-  farmersParticipating: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Farmer' }],
+  farmersParticipating: { type: Array, default: [] },
   sponsors: { type: Array, default: [] },
   // sponsorshipOptions: {
   //   minor: {type: Number, default: 0},
