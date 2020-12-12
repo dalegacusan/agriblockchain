@@ -104,8 +104,8 @@ app.post('/api/create/program', (req, res) => {
       programDate: programDate,
     },
     produceRequirements: [],
-    farmersParticipating: [],
-    sponsors: [],
+    farmersParticipating: [],    // DEFAULT
+    sponsors: [],                // DEFAULT
   });
 
   // Save a farmer to MongoDB
