@@ -214,7 +214,7 @@ pragma solidity >=0.4.21 <0.8.0;
     }
 
     /**
-    * @dev Program owner calls this function to close program and revert pledges
+    * @dev Program owner calls this function refund the funders from the leftover balance
     */
     function returnLeftoverToFunders(address programAddr) onlyProgramOwner(programAddr) public {
         Program storage program = programs[programAddr];
