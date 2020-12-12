@@ -215,34 +215,27 @@ app.post('/api/create/farmer', (req, res) => {
 
   const testFarmer = new Farmer({
     loginDetails: {
-      username: 'mangjose',
-      password: 'mangjosepassword'
+      username: "mangjose",
+      password: "josemang123"
     },
     farmerAbout: {
-      profilePicture: '/assets/img',
-      firstName: 'Jose',
-      middleName: 'El',
-      lastName: 'Manalo',
-      suffix: 'P',
-      addressLine1: 'Cotabato',
-      addressLine2: 'Davao',
-      region: 'NCR',
-      city: 'Cavite',
-      country: 'Philippines',
+      firstName: "Juan",
+      middleName: "Sy",
+      lastName: "Jose",
+      suffix: "M",
+      addressLine1: "Cotabato City",
+      addressLine2: "Paranaque City",
+      region: "NCR",
+      city: "Manila",
+      country: "Philippines",
     },
     contactDetails: {
-      emailAddress: 'mangjose@gmail.com',
-      contactNumber: '1234567890'
+      emailAddress: "mangjose@gmail.com",
+      contactNumber: "1234567890"
     },
-    producePortfolio: [],
-    programStatistics: {
-      expectedAmountToReceive: 0,
-      dateParticipated: null,
-      // For active program, just get the latest item on activePrograms array
-      activePrograms: [],
-      programsParticipated: [],
-      completedPrograms: []
-    }
+    // producePortfolio: { type: Array, default: [] },        // DEFAULT
+    // programsParticipated: { type: Array, default: [] },    // DEFAULT
+    // walletBalance: { type: Number, default: 0 }            // DEFAULT
   });
 
   testFarmer.save()
@@ -363,6 +356,22 @@ app.get('/api/farmers/:farmerId', (req, res) => {
     .then(result => {
       res.status(200).json(result);
     });
+})
+
+// Get Programs a Farmer is participating
+app.get('/api/farmers/:farmerId/programs', (req, res) => {
+
+  const { farmerId } = req.params;
+
+  Farmer.findById({ _id: farmerId })
+    .then((result) => {
+
+      const { programsParticipated } = result;
+
+      console.log(programsParticipated);
+
+    });
+
 })
 
 app.get('/api/sponsors', (req, res) => {

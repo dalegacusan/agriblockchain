@@ -7,7 +7,7 @@ const farmerSchema = new mongoose.Schema({
     password: String
   },
   farmerAbout: {
-    profilePicture: String,
+    // profilePicture: String,
     firstName: String,
     middleName: String,
     lastName: String,
@@ -23,6 +23,7 @@ const farmerSchema = new mongoose.Schema({
     contactNumber: String
   },
   producePortfolio: { type: Array, default: [] },
+  programsParticipated: { type: Array, default: [] },
   walletBalance: { type: Number, default: 0 }
 });
 
