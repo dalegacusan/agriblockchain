@@ -14,6 +14,7 @@ import axios from 'axios';
 import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import InputAdornment from '@material-ui/core/InputAdornment';
 
 import { LoginDialogContext } from '../../../global/Contexts/LoginDialogContext';
 
@@ -193,6 +194,9 @@ export default function CreateProgram() {
                 name="requiredAmount"
                 value={newProgram.requiredAmount}
                 onChange={handleChange}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">&#8369;</InputAdornment>,
+                }}
               />
             </Box>
             <Box my={1}>
@@ -210,7 +214,7 @@ export default function CreateProgram() {
                   value={newProgram.programDate}
                   onChange={handleDateChange}
                   KeyboardButtonProps={{
-                    'aria-label': 'change date',
+                    "aria-label": "change date",
                   }}
                 />
               </MuiPickersUtilsProvider>
