@@ -8,11 +8,34 @@ contract("Crowdfunding", accounts => {
         
     });
 
-    describe("New Program Initialization", () => {
-        it("should deploy crowdfunding contract", async () => {
-            assert(instance);
+    describe("Minting", async () => {
+        it("should allow contract owner to add funder", async () => {
+            let contractOwner = accounts[0];
+            let funderAddress = accounts[1];
+
+            return instance.addNewFunder(funderAddress, {from: contractOwner})
+            .then(() => {
+                assert(instance.funders.call(funderAddress));
+            });
         });
-    
+
+        it("should not allow to add funder if not contract owner", async () => {
+            let notContractOwner = accounts[0];
+            let funderAddress = accounts[1];
+            let err;
+
+            try {
+                return instance.addNewFunder(funderAddress, {from: notContractOwner})
+            } catch (error) {
+                err = error;
+                assert(!instance.funders.call(funderAddress));
+            }
+
+            assert(err instanceof Error);
+        });
+    });
+
+    describe("New Program Initialization", async () => {
         it("should create a new crowdfunding program with target amount and is open", async () => {
             let callerAddr = accounts[0];
             let programAddr = accounts[1];
@@ -44,7 +67,7 @@ contract("Crowdfunding", accounts => {
         });
     });
 
-    describe("Pledging", () => {
+    describe("Pledging", async () => {
         let callerAddr = accounts[0];
         let programAddr = accounts[1];
         let walletBalance = 1000;
@@ -257,7 +280,7 @@ contract("Crowdfunding", accounts => {
 
         it("should allow transfer of funds to farmer", async () => {
             let amount = 100;
-            return instance.pledge(programAddr, targetAmount, {from: ownerAddr})
+            return instance.pledge(programAddr, amount, {from: ownerAddr})
             .then(() => {
                 return instance.addFarmerPartnership(programAddr, farmerAddr, amount, {from: ownerAddr})
             })
@@ -273,7 +296,7 @@ contract("Crowdfunding", accounts => {
         });
     });
 
-    describe("Closing", () => {
+    describe("Closing", async () => {
         let ownerAddr = accounts[0];
         let programAddr = accounts[1];
         let funderAddr = accounts[2];
