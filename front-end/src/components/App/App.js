@@ -14,6 +14,7 @@ import { LoginDialogProvider } from '../global/Contexts/LoginDialogContext';
 import RegisterDialog from '../pages/LoginRegister/Register/RegisterDialog';
 import LoginDialog from '../pages/LoginRegister/Login/LoginDialog';
 import ProgramPage from '../pages/Programs/ProgramPage';
+import AboutPage from '../pages/AboutPage/AboutPage';
 
 function App() {
 
@@ -69,6 +70,9 @@ function App() {
               <Route exact path='/program/create' render={() => <CreateProgram />} />
               {/* Screen 009 */}
               <Route exact path='/program/:programId' render={() => <ProgramPage />} />
+
+              {/* Screen 010 */}
+              <Route exact path='/about' render={() => <AboutPage />} />
             </Switch>
           </LoginDialogProvider>
         </Router>
