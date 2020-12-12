@@ -4,7 +4,7 @@
   "description": "maya na natin lagyan to",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd back-end && npm run dev\" \"cd front-end && npm start\" ",
+    "dev": "concurrently \"cd back-end && npm run dev\" \"cd services && npm run dev\" \"cd front-end && npm start\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
