@@ -19,6 +19,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import Alert from '@material-ui/lab/Alert';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
 
@@ -34,6 +36,10 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: '0.5rem',
     color: theme.palette.secondary.contrastText,
     textTransform: 'capitalize'
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer * 100,
+    color: '#fff',
   },
 }));
 
@@ -77,9 +83,12 @@ export default withRouter(function ProgramPage(props) {
   });
   const [ sponsors, setSponsors ] = useState([]);
   const [ pledgeDialog, setPledgeDialog ] = useState({
+    loading: false,
     open: false,
     pledgeAmount: 0,
   });
+  const [ success, setSuccess ] = useState(false);
+  const [ error, setError ] = useState(false);
 
   const handleOpen = () => {
     setPledgeDialog({ ...pledgeDialog, open: true })
@@ -89,7 +98,52 @@ export default withRouter(function ProgramPage(props) {
     setPledgeDialog({ ...pledgeDialog, open: false })
   }
 
-  useEffect(() => {
+  const submitPledge = () => {
+    if (loginData.type === "corporation" || loginData.type === "individual") {
+      setPledgeDialog({
+        ...pledgeDialog,
+        loading: true
+      })
+      axios.post(`/api/program/${match.params.programId}/sponsor/${loginData.uid}/add`, {
+        amountFunded: pledgeDialog.pledgeAmount
+      }, { params: {
+        programId: match.params.programId,
+        sponsorId: loginData.uid
+      }})
+      .then(res => {
+        console.log(res.data)
+        setSuccess(true)
+        setPledgeDialog({
+          loading: false,
+          open: false,
+          pledgeAmount: 0
+        })
+        getProgramDetails()
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setPledgeDialog({
+          loading: false,
+          open: false,
+          pledgeAmount: 0
+        })
+        getProgramDetails()
+      })
+    } else {
+      console.error('Not logged in as a sponsor!');
+      setError(true);
+      setSuccess(false);
+      setPledgeDialog({
+        loading: false,
+        open: false,
+        pledgeAmount: 0
+      })
+      getProgramDetails()
+    }
+  }
+
+  const getProgramDetails = () => {
     axios.get(`/api/programs/${match.params.programId}`)
       .then((res) => {
         setProgram(res.data);
@@ -105,11 +159,23 @@ export default withRouter(function ProgramPage(props) {
           });
         }
       })
-      .catch(err => console.log(err))
+      .catch(err => console.log(err));
+  }
+
+  useEffect(() => {
+    getProgramDetails()
   }, [match.params.programId]);
 
   return (
     <>
+      <Backdrop className={classes.backdrop} open={pledgeDialog.loading}>
+        <CircularProgress size={28} color="inherit" />
+        <Box ml={2}>
+          <Typography variant="button">
+            Making a Pledge
+          </Typography>
+        </Box>
+      </Backdrop>
       <Container maxWidth="md" component={Box} mb={5}>
         <Button 
           startIcon={<ArrowBackIcon/>}
@@ -182,6 +248,12 @@ export default withRouter(function ProgramPage(props) {
         </Grid>
         <Divider/>
         <Box pt={3}>
+          <Box mb={2} display={error ? "block" : "none"}>
+            <Alert severity="error">Something went wrong. Please check logs.</Alert>
+          </Box>
+          <Box mb={2} display={success ? "block" : "none"}>
+            <Alert severity="success">You have successfully pledged to this program!</Alert>
+          </Box>
           <Typography component="p" variant="body1" paragraph>
             {program.programAbout.about}
           </Typography>
@@ -219,9 +291,9 @@ export default withRouter(function ProgramPage(props) {
           </DialogContentText>
           <TextField
             autoFocus
-            margin="dense"
             label="Pledge Amount"
             fullWidth
+            variant="outlined"
             id="pledgeAmount"
             name="pledgeAmount"
             type="number"
@@ -236,7 +308,7 @@ export default withRouter(function ProgramPage(props) {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={submitPledge} color="primary">
             Pledge
           </Button>
         </DialogActions>

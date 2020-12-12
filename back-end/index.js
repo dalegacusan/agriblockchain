@@ -275,6 +275,10 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     }, { new: true })
     .then((program) => {
       console.log("Successfully added sponsor to Program's Sponsors array");
+      res.status(200).json({
+        status: "success",
+        data: program
+      });
 
       // Push programId to sponsoredPrograms array of Sponsor
       Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
@@ -305,6 +309,10 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     })
     .catch(err => {
       console.log(err);
+      res.status(400).json({
+        status: "error",
+        response: err
+      });
     });
 
 })
