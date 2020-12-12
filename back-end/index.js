@@ -211,7 +211,6 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 })
 
 // ADD a farmer to a program - START
-// ADD a farmer to a program
 app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, res) => {
 
   const { programId, farmerId } = req.params;
@@ -225,16 +224,10 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
     dateParticipated: new Date(),
   }
 
-  // Add amountFunded to currentAmount of Program
-  // Used in $inc
-  const newParticipation = {
-    farmersParticipating: producePledge
-  }
-
   Program.findOneAndUpdate(
     { _id: programId },
     {
-      $push: newParticipation,
+      $push: producePledge,
     }, { new: true })
     .then((program) => {
       console.log("Successfully added Farmer to the Program's Farmers Participating array");
