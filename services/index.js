@@ -24,13 +24,13 @@ const {
 ));*/
 
 // Use this for local chain
-const web3 = new Web3('ws://localhost:7545');
+const web3 = new Web3(`ws://${WEB3_PROVIDER}`);
 
 web3.eth.net.isListening()
     .then(function () {
 
         // Contract details
-        console.log("connected");
+        console.log("truffle connected");
         const crowdfundingContract = new web3.eth.Contract(
             crowdfunding.abi,
             CONTRACT_ADDRESS

@@ -81,21 +81,74 @@ export default withRouter(function ProgramPage(props) {
     "produceRequirements": [],
     "id": ""    
   });
+  const [ ngo, setNgo ] = useState({
+    "loginDetails": {
+      "username": "",
+      "password": "",
+    },
+    "ngoAbout": {
+      "ngoPicture": "",
+      "ngoName": "",
+      "addressLine1": "",
+      "addressLine2": "",
+      "ngoRegion": "",
+      "ngoCity": "",
+      "ngoCountry": "",
+    },
+    "programs": {
+      "activePrograms": [],
+      "completedPrograms": [],
+    },
+    "ngoContactDetails": {
+      "authorizedRepresentative": "",
+      "ngoContactNumber": "",
+      "ngoEmailAddress": ""
+    },
+    "id": "",
+ })
   const [ sponsors, setSponsors ] = useState([]);
+  const [ farmers, setFarmers ] = useState([]);
   const [ pledgeDialog, setPledgeDialog ] = useState({
     loading: false,
     open: false,
     pledgeAmount: 0,
   });
+  const [ produceDialog, setProduceDialog ] = useState({
+    loading: false,
+    open: false,
+    produce: {
+      name: "",
+      price: 0,
+      quantity: 0,
+    }
+  });
   const [ success, setSuccess ] = useState(false);
   const [ error, setError ] = useState(false);
 
-  const handleOpen = () => {
+  const handlePledgeOpen = () => {
     setPledgeDialog({ ...pledgeDialog, open: true })
   }
   
-  const handleClose = () => {
+  const handlePledgeClose = () => {
     setPledgeDialog({ ...pledgeDialog, open: false })
+  }
+
+  const handleProduceChange = e => {
+    setProduceDialog({
+      ...produceDialog,
+      produce: {
+        ...produceDialog.produce,
+        [e.target.name]: e.target.value
+      }
+    })
+  }
+
+  const handleProduceOpen = () => {
+    setProduceDialog({ ...produceDialog, open: true })
+  }
+  
+  const handleProduceClose = () => {
+    setProduceDialog({ ...produceDialog, open: false })
   }
 
   const submitPledge = () => {
@@ -143,15 +196,86 @@ export default withRouter(function ProgramPage(props) {
     }
   }
 
+  const submitProduce = () => {
+    if (loginData.type === "farmer") {
+      setProduceDialog({
+        ...produceDialog,
+        loading: true
+      })
+      axios.post(`/api/programs/${match.params.programId}/farmersParticipating/${loginData.uid}/add`, produceDialog.produce, { params: {
+        programId: match.params.programId,
+        farmerId: loginData.uid
+      }})
+      .then(res => {
+        console.log(res.data)
+        setSuccess(true)
+        setProduceDialog({
+          loading: false,
+          open: false,
+          produce: {
+            name: "",
+            price: 0,
+            quantity: 0,
+          }
+        })
+        getProgramDetails()
+      })
+      .catch(err => {
+        console.error(err)
+        setError(true)
+        setProduceDialog({
+          loading: false,
+          open: false,
+          produce: {
+            name: "",
+            price: 0,
+            quantity: 0,
+          }
+        })
+        getProgramDetails()
+      })
+    } else {
+      console.error('Not logged in as a farmer!');
+      setError(true);
+      setSuccess(false);
+      setProduceDialog({
+        loading: false,
+        open: false,
+        produce: {
+          name: "",
+          price: 0,
+          quantity: 0,
+        }
+      })
+      getProgramDetails()
+    }
+  }
+
   const getProgramDetails = () => {
     axios.get(`/api/programs/${match.params.programId}`)
       .then((res) => {
         setProgram(res.data);
+        if (res.data.programAbout && res.data.programAbout.ngo !== "") {
+          axios.get(`/api/ngo/${res.data.programAbout.ngo}`)
+            .then(res => setNgo(res.data))
+            .catch(err => console.error(err))
+        }
         if (res.data.sponsors.length !== 0) {
           res.data.sponsors.forEach(sponsor => {
             axios.get(`/api/sponsors/${sponsor.sponsorId}`)
               .then(res => {
                 setSponsors(initialArray => [...initialArray, res.data])
+              })
+              .catch(err => 
+                console.error(err)  
+              );
+          });
+        }
+        if (res.data.farmersParticipating.length !== 0) {
+          res.data.farmersParticipating.forEach(farmer => {
+            axios.get(`/api/farmers/${farmer.farmerId}`)
+              .then(res => {
+                setFarmers(initialArray => [...initialArray, res.data])
               })
               .catch(err => 
                 console.error(err)  
@@ -168,14 +292,15 @@ export default withRouter(function ProgramPage(props) {
 
   return (
     <>
-      <Backdrop className={classes.backdrop} open={pledgeDialog.loading}>
+      <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading}>
         <CircularProgress size={28} color="inherit" />
         <Box ml={2}>
           <Typography variant="button">
-            Making a Pledge
+            Submitting
           </Typography>
         </Box>
       </Backdrop>
+      
       <Container maxWidth="md" component={Box} mb={5}>
         <Button 
           startIcon={<ArrowBackIcon/>}
@@ -190,8 +315,9 @@ export default withRouter(function ProgramPage(props) {
                 <Typography component="h1" variant="h2" gutterBottom>
                   {program.programAbout.programName}
                 </Typography>
-                <Typography component="h6" variant="h6" gutterBottom>
-                  NGO: {program.programAbout.ngo}
+                <Typography component="h5" variant="h5" color="textSecondary" gutterBottom>
+                  NGO: {ngo.ngoAbout.ngoName}&nbsp; 
+                  ({ngo && ngo.loginDetails.username})
                 </Typography>
                 <Box>
                   <Typography display="inline" variant="subtitle2" gutterBottom>
@@ -205,7 +331,7 @@ export default withRouter(function ProgramPage(props) {
                   <Typography display="inline" variant="subtitle2">
                     Stage: &nbsp;&nbsp;
                   </Typography>
-                  <Typography display="inline" variant="subtitle1" className={classes.stage}>
+                  <Typography display="inline" variant="subtitle2" className={classes.stage}>
                     {program.programAbout.stage}
                   </Typography>
                 </Box>
@@ -228,21 +354,39 @@ export default withRouter(function ProgramPage(props) {
                   &#8369;{program.programAbout.currentAmount} of &#8369;{program.programAbout.requiredAmount} pledged
                 </Typography>
               </Box>
-              {
-                loginData.username !== "" && ( loginData.type === "individual" || loginData.type === "corporation" ) ?
-                  <Button 
-                    variant="contained" 
-                    color="primary"
-                    disabled={ program.programAbout.stage === "procurement" ? true : false }
-                    onClick={handleOpen}
-                  > 
-                    Make a Pledge
-                  </Button>
-                  :
-                  <Typography variant="button" component="div" color="textSecondary">
-                    You must be sponsor to make a pledge
-                  </Typography>
-              }
+              <Box display={ program.programAbout.stage === "crowdfunding" ? "block" : "none" }>
+                {
+                  loginData.username !== "" && ( loginData.type === "individual" || loginData.type === "corporation" ) ?
+                    <Button 
+                      variant="contained" 
+                      color="primary"
+                      disabled={ program.programAbout.stage === "procurement" ? true : false }
+                      onClick={handlePledgeOpen}
+                    > 
+                      Make a Pledge
+                    </Button>
+                    :
+                    <Typography variant="button" component="div" color="textSecondary">
+                      You must be sponsor to make a pledge
+                    </Typography>
+                }
+              </Box>
+              <Box display={ program.programAbout.stage === "procurement" ? "block" : "none" }>
+                {
+                  loginData.username !== "" && loginData.type === "farmer" ?
+                    <Button 
+                      variant="contained" 
+                      color="primary"
+                      onClick={handleProduceOpen}
+                    > 
+                      Offer Produce
+                    </Button>
+                    :
+                    <Typography variant="button" component="div" color="textSecondary">
+                      You must be a farmer to offer produce
+                    </Typography>
+                }
+              </Box>
             </Box>
           </Grid>
         </Grid>
@@ -261,11 +405,11 @@ export default withRouter(function ProgramPage(props) {
             Current sponsors          
           </Typography>
           {
-            program.sponsors.map((sponsor, index) => (
-              <Box display="flex" flexDirection="row" alignItems="center" my={1}>
+            program.sponsors.map((programSponsor, index) => (
+              <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
                 <Avatar>{sponsors[index] && sponsors[index].sponsorAbout.corporationName[0]}</Avatar>
-                <Typography variant="subtitle1" key={index} style={{ marginLeft: 8 }}>
-                  {sponsors[index] && sponsors[index].sponsorAbout.corporationName} (&#8369;{sponsor.amountFunded})
+                <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
+                  {sponsors[index] && sponsors[index].sponsorAbout.corporationName} (&#8369;{programSponsor.amountFunded})
                 </Typography>
               </Box>
             ))
@@ -275,15 +419,27 @@ export default withRouter(function ProgramPage(props) {
             Farmers participating
           </Typography>
           {
-            program.farmersParticipating.map((farmer, index) => (
-              <Typography variant="subtitle1" key={index}>
-                farmer here
-              </Typography>
+            program.farmersParticipating.map((programFarmer, index) => (
+              <Box key={index} display="flex" flexDirection="row" alignItems="center" my={2}>
+                <Avatar>F</Avatar>
+                <Box ml={1}>
+                  <Typography variant="subtitle1">
+                    {farmers[index] && 
+                     `${farmers[index].farmerAbout.firstName} ${farmers[index].farmerAbout.middleName} ${farmers[index].farmerAbout.lastName}`
+                    }
+                  </Typography>
+                  <Typography variant="caption">
+                    {programFarmer.quantity} kg of {programFarmer.name}
+                  </Typography>
+                </Box>
+                
+              </Box>
             ))
           }
         </Box>
       </Container>
-      <Dialog open={pledgeDialog.open} onClose={handleClose} aria-labelledby="form-dialog-pledge">
+
+      <Dialog open={pledgeDialog.open} onClose={handlePledgeClose} aria-labelledby="form-dialog-pledge">
         <DialogTitle id="form-dialog-pledge">Make a Pledge</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -305,11 +461,68 @@ export default withRouter(function ProgramPage(props) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handlePledgeClose} color="primary">
             Cancel
           </Button>
           <Button onClick={submitPledge} color="primary">
             Pledge
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={produceDialog.open} onClose={handleProduceClose} aria-labelledby="form-dialog-produce">
+        <DialogTitle id="form-dialog-produce">Offer Produce</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To offer produce to this program, please enter the details below.
+          </DialogContentText>
+          <Box my={2}>
+            <TextField
+              autoFocus
+              label="Produce name"
+              fullWidth
+              variant="outlined"
+              id="produceName"
+              name="name"
+              value={produceDialog.produce.name}
+              onChange={handleProduceChange}
+            />
+          </Box>
+          <Box my={2}>
+            <TextField
+              autoFocus
+              label="Produce quantity"
+              fullWidth
+              variant="outlined"
+              id="produceQuantity"
+              name="quantity"
+              value={produceDialog.produce.quantity}
+              onChange={handleProduceChange}
+            />
+          </Box>
+          <Box my={2}>
+            <TextField
+              autoFocus
+              label="Price per quantity"
+              fullWidth
+              variant="outlined"
+              type="number"
+              id="price"
+              name="price"
+              value={produceDialog.produce.price}
+              onChange={handleProduceChange}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">&#8369;</InputAdornment>,
+              }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleProduceClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={submitProduce} color="primary">
+            Submit Offer
           </Button>
         </DialogActions>
       </Dialog>

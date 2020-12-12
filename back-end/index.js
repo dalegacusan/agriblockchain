@@ -201,7 +201,7 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 
     })
     .catch(err => {
-      console.log(err);
+      console.error(err);
       res.status(400).json({
         status: "error",
         response: err
@@ -238,6 +238,10 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
     }, { new: true })
     .then((program) => {
       console.log("Successfully added Farmer to the Program's Farmers Participating array");
+      res.status(200).json({
+        status: "success",
+        data: program
+      });
 
       // Push programId to programsParticipated array of Farmer
       Farmer.updateOne({ _id: farmerId }, { $push: { programsParticipated: programId } })
@@ -270,7 +274,11 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
 
     })
     .catch(err => {
-      console.log(err);
+      console.error(err);
+      res.status(400).json({
+        status: "error",
+        response: err
+      });
     });
 
 })
@@ -375,6 +383,7 @@ app.post('/api/create/sponsor', (req, res) => {
 //          READ Data Only
 // =================================
 
+// Get all NGOs
 app.get('/api/ngo', (req, res) => {
   NGO.find({})
     .then(result => {
@@ -382,6 +391,7 @@ app.get('/api/ngo', (req, res) => {
     });
 })
 
+// Get one NGO
 app.get('/api/ngo/:ngoId', (req, res) => {
   const { ngoId } = req.params;
 
@@ -391,6 +401,7 @@ app.get('/api/ngo/:ngoId', (req, res) => {
     });
 })
 
+// Get all programs
 app.get('/api/programs', (req, res) => {
   Program.find({})
     .then(result => {
@@ -398,6 +409,7 @@ app.get('/api/programs', (req, res) => {
     });
 })
 
+// Get one program
 app.get('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
@@ -407,6 +419,7 @@ app.get('/api/programs/:programId', (req, res) => {
     });
 })
 
+// Get all farmers
 app.get('/api/farmers', (req, res) => {
   // Get all farmers from MongoDB
   Farmer.find({})
@@ -415,6 +428,7 @@ app.get('/api/farmers', (req, res) => {
     });
 })
 
+// Get one farmer
 app.get('/api/farmers/:farmerId', (req, res) => {
   const { farmerId } = req.params;
 
@@ -440,6 +454,7 @@ app.get('/api/farmers/:farmerId/programs', (req, res) => {
 
 })
 
+// Get all sponsors
 app.get('/api/sponsors', (req, res) => {
   // Get all farmers from MongoDB
   Sponsor.find({})
@@ -448,6 +463,7 @@ app.get('/api/sponsors', (req, res) => {
     });
 })
 
+// Get one sponsor
 app.get('/api/sponsors/:sponsorId', (req, res) => {
   const { sponsorId } = req.params;
 
