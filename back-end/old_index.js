@@ -104,8 +104,8 @@ app.post('/api/create/program', (req, res) => {
       programDate: programDate,
     },
     produceRequirements: [],
-    farmersParticipating: [],    // DEFAULT
-    sponsors: [],                // DEFAULT
+    farmersParticipating: [],
+    sponsors: [],
   });
 
   // Save a farmer to MongoDB
@@ -209,72 +209,6 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     });
 
 })
-
-// ADD a farmer to a program - START
-// ADD a farmer to a program
-app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, res) => {
-
-  const { programId, farmerId } = req.params;
-  const { name, price, quantity } = req.body;
-
-  const producePledge = {
-    farmerId,
-    name,
-    price,
-    quantity,
-    dateParticipated: new Date(),
-  }
-
-  // Add amountFunded to currentAmount of Program
-  // Used in $inc
-  const newParticipation = {
-    farmersParticipating: producePledge
-  }
-
-  Program.findOneAndUpdate(
-    { _id: programId },
-    {
-      $push: newParticipation,
-    }, { new: true })
-    .then((program) => {
-      console.log("Successfully added Farmer to the Program's Farmers Participating array");
-
-      // Push programId to programsParticipated array of Farmer
-      Farmer.updateOne({ _id: farmerId }, { $push: { programsParticipated: programId } })
-        .then(() => {
-          console.log("Added program to programsParticipated array");
-
-          /**
-           * 
-           * const { programAbout } = program;
-           * //const { currentAmount, requiredAmount } = programAbout;
-
-          /* 
-            Check if currentAmount of Program is >= required amount
-            IF TRUE, set Program's stage to "procurement"
-          */
-
-          // if (currentAmount >= requiredAmount) {
-          //   program.programAbout.stage = "procurement"
-
-          //    program.save()
-          //     .then(() => {
-          //        console.log("Program is now in Procurement Phase!");
-          //      })
-          //  } **/
-
-        })
-        .catch(err => {
-          console.log(err);
-        })
-
-    })
-    .catch(err => {
-      console.log(err);
-    });
-
-})
-// Add a farmer to program - END
 
 // TEST ACCOUNT //
 app.post('/api/create/farmer', (req, res) => {
