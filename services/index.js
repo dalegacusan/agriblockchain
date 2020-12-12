@@ -400,6 +400,36 @@ web3.eth.net.isListening()
             }
         });
 
+        app.post('/api/crowdfunding/returnLeftover/', async function (req, res) {
+            try {
+                const callerAddress = req.body.callerAddress;
+                const callerKey = req.body.callerKey;
+                const address = req.body.programAddress;
+
+                const data = crowdfundingContract
+                    .methods
+                    .returnLeftoverToFunders(
+                        address,
+                    )
+                    .encodeABI();
+                transactionHash = await buildSendTransaction(
+                    callerAddress,
+                    callerKey,
+                    data,
+                );
+
+                res.status(200).json({
+                    message: 'Successfully returned funds.',
+                });
+            } catch (error) {
+                console.log(error);
+
+                res.status(500).json({
+                    message: 'Failed to return funds.'
+                });
+            }
+        });
+
         const PORT = 8081;
 
         app.listen(PORT, () => {
