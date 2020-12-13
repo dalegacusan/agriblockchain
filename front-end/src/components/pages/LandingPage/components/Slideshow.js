@@ -9,7 +9,8 @@ const useStyles = makeStyles({
     width: '100vw',
   },
   carouselImage: {
-    width: 500,
+    width: '75%',
+    minwidth: 500,
   }
 });
 

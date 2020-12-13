@@ -5,7 +5,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 
 const useStyles = makeStyles({
@@ -24,17 +23,26 @@ const useStyles = makeStyles({
 
 export default function HDIWCard(props) {
   const { description } = props;
+  const { title } = props;
+  const { image } = props;
   const classes = useStyles();
 
   return (
     <Box my={2} mx={2}>
       <Card>
         <CardContent>
-          <Box px={1} display='flex' flexDirection='row' alignItems='center' justifyContent='space-between'>
-            <Typography variant="body2" component="p">
-              {description}
-            </Typography>
-            <img src='/images/dummy_icon.png' alt='icon' width={100} />
+          <Box px={1} py={2} display='flex' flexDirection='row' alignItems='center'>
+            <Box px={5} justifyContent='space-between'>
+              <img src={image} alt='icon' width={100} />
+            </Box>
+            <Box px={1} justifyContent='space-between'>
+              <Typography variant="h5" component="p">
+                {title}
+              </Typography>
+              <Typography variant="body2" component="p">
+                {description}
+              </Typography>
+            </Box>
           </Box>
         </CardContent>
       </Card>
