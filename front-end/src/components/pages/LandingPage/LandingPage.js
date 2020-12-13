@@ -26,7 +26,7 @@ function LandingPage() {
         <Box>
             <Slideshow classes={classes} />
             <Container component={Box} maxWidth="md" my={1} py={2}>
-                <Typography component='h1' variant='h4' className={classes.centerText}>
+                <Typography component='h1' variant='h2' className={classes.centerText}>
                     How does it work?
                 </Typography>
                 <HowDoesItWork classes={classes} />
