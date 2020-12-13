@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.contrastText,
     backgroundColor: theme.palette.secondary.main,
     textTransform: "uppercase",
+  },
+  logo: {
+    minWidth: 130,
+    maxWidth: 200,
   }
 }));
 
@@ -53,7 +57,7 @@ export default function ButtonAppBar() {
   const classes = useStyles();
   const history = useHistory();
 
-  const [open, setOpen] = useState(false);
+  const [ open, setOpen ] = useState(false);
   const [ loggedIn, setLogginIn ] = useState(false);
   const { setOpenRegisterDialog } = useContext(RegisterDialogContext);
   const { setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext);
@@ -108,7 +112,7 @@ export default function ButtonAppBar() {
           </IconButton>
           <Typography variant="h6" className={classes.title}>
             <Link component={RouterLink} to="/"> 
-              <img src={logo} alt="Logo"  className={classes.logo} width="250px" />
+              <img src={logo} alt="Logo"  className={classes.logo} />
             </Link>
           </Typography>
           <Box
@@ -116,9 +120,6 @@ export default function ButtonAppBar() {
           >
             <Button color="inherit" onClick={handleLoginDialog}>
               Log In
-            </Button>
-            <Button color="inherit" onClick={chooseRegisterType}>
-              Register
             </Button>
           </Box>
           <Box
@@ -128,14 +129,14 @@ export default function ButtonAppBar() {
               <Avatar className={classes.avatar}>
                 { loginData.username && loginData.username !== '' ? loginData.username.substring(0, 2) : '' }
               </Avatar>
-              <Typography style={{ 
-                marginLeft: "0.5rem",
-                marginRight: "0.5rem",
-                borderRight: "1px solid #efefef",
-                paddingRight: "0.5rem",
-              }}>
-                { loginData.username && loginData.username !== '' ? loginData.username : '' }
-              </Typography>
+              <Box mx={1} pr={1} borderRight="1px solid #efefef">
+                <Typography >
+                  { loginData.username && loginData.username !== '' ? loginData.username : '' }
+                </Typography>
+                <Typography variant="caption">
+                  Wallet: { loginData.walletBalance }
+                </Typography>
+              </Box>
               <Button color="inherit" onClick={handleLogout} size="small">
                 Log Out
               </Button>
@@ -164,9 +165,6 @@ export default function ButtonAppBar() {
           <ListItemLink to='/login' onClick={handleDrawerClose}>
             <ListItemText primary='Login' />
           </ListItemLink>
-          <ListItem button onClick={chooseRegisterType}>
-            <ListItemText primary='Register' />
-          </ListItem>
           <ListItemLink to='/programs' onClick={handleDrawerClose}>
             <ListItemText primary='Programs' />
           </ListItemLink>

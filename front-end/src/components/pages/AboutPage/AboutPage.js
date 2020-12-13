@@ -49,7 +49,7 @@ const members = [
     {
         name: 'Stephen',
         image: '/images/avatars/stephen.png',
-        text: '<caption/role>',
+        text: '<adjective> Front-end developer',
     }
   ]
 

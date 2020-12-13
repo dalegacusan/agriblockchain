@@ -1,4 +1,6 @@
+import Axios from 'axios';
 import React, { createContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const LoginDialogContext = createContext(null);
 
@@ -9,6 +11,7 @@ export const LoginDialogProvider = props => {
         password: '',
         type: '',
         uid: '',
+        walletBalance: 0,
     })
 
     useEffect(() => {
@@ -21,6 +24,22 @@ export const LoginDialogProvider = props => {
             setLoginData(JSON.parse(localStorage.getItem('loginCreds')))
         }
     }, [])
+
+    useEffect(() => {
+        if (loginData.username !== '' && loginData.password !== '' && loginData.uid !== '' ) {
+            if (loginData.type === 'corporation' || loginData.type === 'individual') {
+                console.log('sponsor')
+                axios.get(`/api/sponsors/${loginData.uid}`)
+                    .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
+                    .catch(err => console.error(err))
+            } else if (loginData.type === 'farmer') {
+                console.log('farmer')
+                axios.get(`/api/farmers/${loginData.uid}`)
+                    .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
+                    .catch(err => console.error(err))
+            } 
+        } 
+    }, [loginData.username])
 
     return (
         <LoginDialogContext.Provider 
