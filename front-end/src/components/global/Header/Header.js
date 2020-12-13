@@ -17,6 +17,7 @@ import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
+import { useConfirm } from 'material-ui-confirm';
 
 import logo from './logo_01.svg';
 import { RegisterDialogContext } from '../Contexts/RegisterDialogContext';
@@ -56,6 +57,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ButtonAppBar() {
   const classes = useStyles();
   const history = useHistory();
+  const confirm = useConfirm();
 
   const [ open, setOpen ] = useState(false);
   const [ loggedIn, setLogginIn ] = useState(false);
@@ -80,13 +82,23 @@ export default function ButtonAppBar() {
   };
 
   const handleLogout = () => {
-    setLoginData({
-      username: '',
-      password: '',
-      type: '',
-    });
-    localStorage.removeItem('loginCreds');
-    history.push("/")
+    confirm({ 
+      description: 'This will log you out of the system.',
+      title: 'Log out of Bayanihan?',
+      cancellationButtonProps: {
+        color: 'primary',
+      }
+    })
+      .then(() => {
+        setLoginData({
+          username: '',
+          password: '',
+          type: '',
+        });
+        localStorage.removeItem('loginCreds');
+        history.push('/');
+      })
+      .catch(() => console.log('Log out cancelled'));
   }
 
   useEffect(() => {
@@ -165,6 +177,9 @@ export default function ButtonAppBar() {
           <ListItemLink to='/login' onClick={handleDrawerClose}>
             <ListItemText primary='Login' />
           </ListItemLink>
+          <ListItem button onClick={chooseRegisterType}>
+            <ListItemText primary='Register' />
+          </ListItem>
           <ListItemLink to='/programs' onClick={handleDrawerClose}>
             <ListItemText primary='Programs' />
           </ListItemLink>

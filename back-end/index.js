@@ -341,35 +341,53 @@ app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
 // TEST ACCOUNT //
 app.post('/api/create/sponsor', (req, res) => {
 
+  const {
+    username,        
+    password,              
+    corporationName,          
+    addressLine1,        
+    addressLine2,                
+    region,    
+    city,      
+    country,
+    authorizedRepresentative,   
+    contactNumber      
+  } = req.body;
+
   const newSponsor = new Sponsor({
     loginDetails: {
-      username: "johndoe@gmail.com",
-      password: "johndoe456"
+      username: username,
+      password: password
     },
     sponsorAbout: {
-      corporationName: "John Doe",
-      addressLine1: "Manila, Philippines",
-      addressLine2: "Cavite, Philippines",
-      region: "NCR",
-      city: "Paranaque",
-      country: "Philippines"
+      corporationName: corporationName,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
+      region: region,
+      city: city,
+      country: country
     },
     contactDetails: {
-      authorizedRepresentative: "Mark Zuckerberg",
-      contactNumber: "01234567890",
+      authorizedRepresentative: authorizedRepresentative,
+      contactNumber: contactNumber,
     },
-    // sponsoredPrograms: Array,      // DEFAULT = []
-    // walletBalance: Number          // DEFAULT = 0
   });
 
   newSponsor.save()
     .then(result => {
       console.log('Sponsor Saved to MongoDB!');
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
     })
     .catch(err => {
-      console.log('Error: ', err);
+      console.log('Error saving sponsor: ', err);
+      res.status(400).json({
+        status: "error",
+        response: err
+      });
     });
-
 })
 
 // =================================
@@ -534,11 +552,36 @@ app.delete('/api/programs/:programId', (req, res) => {
     // if successful, print Program ID deleted from MongoDB
     .then(result => {
       console.log(`Program ${programId}: deleted from MongoDB`);
-      res.status(200).json(result);
+      res.status(200).json({ 
+        status: 'success',
+        data: result,
+       });
     })
     // if failed, print error message
     .catch(err => {
       console.log('Error: ', err);
+      res.status(400).json(err);
+    })
+})
+
+app.delete('/api/sponsors/:sponsorId', (req, res) => {
+  const { sponsorId } = req.params;
+
+  // Find a program with the _id of programId to delete
+  Sponsor.deleteOne({ _id: sponsorId })
+
+    // if successful, print Program ID deleted from MongoDB
+    .then(result => {
+      console.log(`Sponsor ${sponsorId}: deleted from MongoDB`);
+      res.status(200).json({ 
+        status: 'success',
+        data: result,
+       });
+    })
+    // if failed, print error message
+    .catch(err => {
+      console.log('Error: ', err);
+      res.status(400).json(err);
     })
 })
 

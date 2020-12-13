@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
-
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -9,7 +10,8 @@ import { RegistrationDataContext } from '../../../../global/Contexts/Registratio
 
 
 export default function ThirdStep(props) {
-  const { classes, activeStep, steps, handleBack, handleNext } = props;
+  const history = useHistory();
+  const { classes, activeStep, handleBack } = props;
 
   const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
   
@@ -18,6 +20,23 @@ export default function ThirdStep(props) {
       ...openRegistrationData,
       [e.target.name]: e.target.value,
     })
+  }
+
+  const handleSubmit = () => {
+    let type = '';
+    if (openRegistrationData.type === 'ngo' || openRegistrationData.type === 'farmer') {
+      type = openRegistrationData.type;
+    } else if (openRegistrationData.type === 'corporation' || openRegistrationData.type === 'individual') {
+      type = 'sponsor'
+    }
+    axios.post(`/api/create/${type}`, openRegistrationData)
+      .then(res => {
+        console.log(res);
+        alert('Successful registration!')
+        setOpenRegistrationData({})
+        history.push('/');
+      }) 
+      .catch(err => console.error(err))
   }
 
   return (
@@ -78,10 +97,10 @@ export default function ThirdStep(props) {
             <Button 
               variant="contained" 
               color="primary" 
-              onClick={handleNext}
+              onClick={handleSubmit}
               disabled={openRegistrationData.username === '' || openRegistrationData.password === '' ? true : false}
             >
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+              Finish
             </Button>
           </Box>
         </Box>

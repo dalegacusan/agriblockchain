@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { ConfirmProvider } from 'material-ui-confirm';
 import './index.css';
 import App from './components/App/App';
 
@@ -30,7 +31,9 @@ const theme = createMuiTheme({
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <App />
+      <ConfirmProvider>
+        <App />
+      </ConfirmProvider>
     </ThemeProvider>
   </React.StrictMode>,
   document.getElementById('root')

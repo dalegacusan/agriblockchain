@@ -92,7 +92,7 @@ export default function LoginDialog() {
         setAllSponsors(res.data)
       })
       .catch(err => console.error(err))
-  }, [])
+  }, [openLoginDialog])
 
   return (
     <Dialog aria-labelledby="LoginDialogTitle" open={openLoginDialog} fullWidth={true} maxWidth="xs">
@@ -213,7 +213,7 @@ export default function LoginDialog() {
                   secondary={
                     <Fragment>
                       <Typography>
-                        Username: {sponsor.loginDetails.username}
+                        Username: {sponsor.loginDetails && sponsor.loginDetails.username}
                       </Typography>
                       <Typography variant="caption">
                         System ID: {sponsor.id}

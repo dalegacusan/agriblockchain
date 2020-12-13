@@ -21,6 +21,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
+import { useConfirm } from "material-ui-confirm";
 
 import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
 
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 export default withRouter(function ProgramPage(props) {
   const classes = useStyles();
   const history = useHistory();
+  const confirm = useConfirm();
   const { match } = props;
 
   const { loginData } = useContext(LoginDialogContext);
@@ -249,6 +251,20 @@ export default withRouter(function ProgramPage(props) {
     }
   }
 
+  const moveToExecution = () => {
+    confirm({ 
+      title: 'Move to Execution Stage?',
+      description: 'This will automatically make the pledged funds available to be disbursed to farmers according to their contributions.',
+      cancellationButtonProps: {
+        color: 'primary',
+      }
+    })
+      .then(() => {
+        console.log("Moved to execution stage FAKE")
+      })
+      .catch(() => console.log("Canceled move to execution"));
+  }
+
   const getProgramDetails = () => {
     axios.get(`/api/programs/${match.params.programId}`)
       .then((res) => {
@@ -286,6 +302,7 @@ export default withRouter(function ProgramPage(props) {
 
   return (
     <>
+      {/* Backdrop Status */}
       <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading}>
         <CircularProgress size={28} color="inherit" />
         <Box ml={2}>
@@ -295,6 +312,7 @@ export default withRouter(function ProgramPage(props) {
         </Box>
       </Backdrop>
       
+      {/* Main content */}
       <Container maxWidth="md" component={Box} mb={5}>
         <Button 
           startIcon={<ArrowBackIcon/>}
@@ -365,7 +383,7 @@ export default withRouter(function ProgramPage(props) {
                     </Typography>
                 }
               </Box>
-              <Box display={ program.programAbout.stage === "procurement" ? "block" : "none" }>
+              <Box display={ program.programAbout.stage === "procurement" ? "block" : "none" } textAlign="center">
                 {
                   loginData.username !== "" && loginData.type === "farmer" ?
                     <Button 
@@ -376,9 +394,21 @@ export default withRouter(function ProgramPage(props) {
                       Offer Produce
                     </Button>
                     :
-                    <Typography variant="button" component="div" color="textSecondary">
+                    <Typography variant="button" component="div" color="textSecondary" gutterBottom>
                       You must be a farmer to offer produce
                     </Typography>
+                }
+                {
+                  loginData.username !== "" && loginData.type === "ngo" ?
+                    <Button 
+                      variant="contained" 
+                      color="primary"
+                      onClick={moveToExecution}
+                    > 
+                      Move to Execution
+                    </Button>
+                    :
+                    ""
                 }
               </Box>
             </Box>
@@ -390,7 +420,7 @@ export default withRouter(function ProgramPage(props) {
             <Alert severity="error">Something went wrong. Please check logs.</Alert>
           </Box>
           <Box mb={2} display={success ? "block" : "none"}>
-            <Alert severity="success">You have successfully pledged to this program!</Alert>
+            <Alert severity="success">Action successful!</Alert>
           </Box>
           <Typography component="p" variant="body1" paragraph>
             {program.programAbout.about}
@@ -436,6 +466,7 @@ export default withRouter(function ProgramPage(props) {
         </Box>
       </Container>
 
+      {/* Pledge dialog for sponsors */}
       <Dialog open={pledgeDialog.open} onClose={handlePledgeClose} aria-labelledby="form-dialog-pledge">
         <DialogTitle id="form-dialog-pledge">Make a Pledge</DialogTitle>
         <DialogContent>
@@ -467,6 +498,7 @@ export default withRouter(function ProgramPage(props) {
         </DialogActions>
       </Dialog>
 
+      {/* Offer produce dialog for farmers */}
       <Dialog open={produceDialog.open} onClose={handleProduceClose} aria-labelledby="form-dialog-produce">
         <DialogTitle id="form-dialog-produce">Offer Produce</DialogTitle>
         <DialogContent>
