@@ -71,7 +71,7 @@ export default function CreateProgram() {
 
   const handleSubmit = () => {
     setSubmitLoading(true)
-    if (loginData.uid === '5fcdafdafcda8f250439db05') {
+    if (loginData.type === 'ngo') {
       axios.post('/api/crowdfunding/createNewProgram/', newProgram)
       .then(res => {
         console.log(res);

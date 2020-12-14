@@ -122,6 +122,7 @@ export default withRouter(function ProgramPage(props) {
       quantity: 0,
     }
   });
+  const [ executionLoading, setExecutionLoading ] = useState(false);
   const [ success, setSuccess ] = useState(false);
   const [ error, setError ] = useState(false);
 
@@ -157,8 +158,9 @@ export default withRouter(function ProgramPage(props) {
         ...pledgeDialog,
         loading: true
       })
-      axios.post(`/api/program/${match.params.programId}/sponsor/${loginData.uid}/add`, {
-        amountFunded: pledgeDialog.pledgeAmount
+      // /api/crowdfunding/pledge/:programId/:sponsorId
+      axios.post(`/api/crowdfunding/pledge/${match.params.programId}/${loginData.uid}`, {
+        amount: pledgeDialog.pledgeAmount
       }, { params: {
         programId: match.params.programId,
         sponsorId: loginData.uid
@@ -202,38 +204,36 @@ export default withRouter(function ProgramPage(props) {
         ...produceDialog,
         loading: true
       })
-      axios.post(`/api/programs/${match.params.programId}/farmersParticipating/${loginData.uid}/add`, produceDialog.produce, { params: {
-        programId: match.params.programId,
-        farmerId: loginData.uid
-      }})
-      .then(res => {
-        console.log(res.data)
-        setSuccess(true)
-        setProduceDialog({
-          loading: false,
-          open: false,
-          produce: {
-            name: "",
-            price: 0,
-            quantity: 0,
-          }
+      // /api/crowdfunding/addFarmerPartnership/:programId/:farmerId
+      axios.post(`/api/crowdfunding/addFarmerPartnership/${match.params.programId}/${loginData.uid}`, produceDialog.produce)
+        .then(res => {
+          console.log(res.data)
+          setSuccess(true)
+          setProduceDialog({
+            loading: false,
+            open: false,
+            produce: {
+              name: "",
+              price: 0,
+              quantity: 0,
+            }
+          })
+          getProgramDetails()
         })
-        getProgramDetails()
-      })
-      .catch(err => {
-        console.error(err)
-        setError(true)
-        setProduceDialog({
-          loading: false,
-          open: false,
-          produce: {
-            name: "",
-            price: 0,
-            quantity: 0,
-          }
+        .catch(err => {
+          console.error(err)
+          setError(true)
+          setProduceDialog({
+            loading: false,
+            open: false,
+            produce: {
+              name: "",
+              price: 0,
+              quantity: 0,
+            }
+          })
+          getProgramDetails()
         })
-        getProgramDetails()
-      })
     } else {
       console.error('Not logged in as a farmer!');
       setError(true);
@@ -260,20 +260,40 @@ export default withRouter(function ProgramPage(props) {
       }
     })
       .then(() => {
-        console.log("Moved to execution stage FAKE")
+        setExecutionLoading(true)
+        program.farmersParticipating.forEach(farmer => {
+          axios.post(`/api/crowdfunding/transferFunds/${match.params.programId}/${farmer.farmerId}`)
+          .then((res) => {
+            setSuccess(true)
+            console.log(res.data)
+            getProgramDetails()
+            setExecutionLoading(false)
+          })
+          .catch(err => {
+            setError(true);
+            setSuccess(false);
+            console.error(err)
+            getProgramDetails()
+            setExecutionLoading(false)
+          })
+        })
+        
       })
-      .catch(() => console.log("Canceled move to execution"));
+      .catch(() => {
+        console.log("Canceled move to execution")
+        setExecutionLoading(false)
+      });
   }
 
   const getProgramDetails = () => {
     axios.get(`/api/programs/${match.params.programId}`)
       .then((res) => {
         setProgram(res.data);
-        if (res.data.programAbout && res.data.programAbout.ngo !== "") {
-          axios.get(`/api/ngo/${res.data.programAbout.ngo}`)
-            .then(res => setNgo(res.data))
-            .catch(err => console.error(err))
-        }
+        // if (res.data.programAbout && res.data.programAbout.ngo !== "") {
+        //   axios.get(`/api/ngo/${res.data.programAbout.ngo}`)
+        //     .then(res => setNgo(res.data))
+        //     .catch(err => console.error(err))
+        // }
         if (res.data.sponsors.length !== 0) {
           res.data.sponsors.forEach(sponsor => {
             axios.get(`/api/sponsors/${sponsor.sponsorId}`)
@@ -303,7 +323,7 @@ export default withRouter(function ProgramPage(props) {
   return (
     <>
       {/* Backdrop Status */}
-      <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading}>
+      <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading || executionLoading}>
         <CircularProgress size={28} color="inherit" />
         <Box ml={2}>
           <Typography variant="button">
@@ -328,8 +348,9 @@ export default withRouter(function ProgramPage(props) {
                   {program.programAbout.programName}
                 </Typography>
                 <Typography component="h5" variant="h5" color="textSecondary" gutterBottom>
-                  NGO: {ngo.ngoAbout.ngoName}&nbsp; 
-                  ({ngo && ngo.loginDetails.username})
+                  {/* NGO: {ngo.ngoAbout.ngoName}&nbsp; 
+                  ({ngo && ngo.loginDetails.username}) */}
+                  NGO: Juan Foundation
                 </Typography>
                 <Box>
                   <Typography display="inline" variant="subtitle2" gutterBottom>
@@ -429,17 +450,19 @@ export default withRouter(function ProgramPage(props) {
             Current sponsors          
           </Typography>
           {
-            program.sponsors.map((programSponsor, index) => (
-              <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
-                <Avatar>
-                  {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName[0]}
-                </Avatar>
-                <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
-                  {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName}
-                  (&#8369;{programSponsor.amountFunded})
-                </Typography>
-              </Box>
-            ))
+            program.sponsors.map((programSponsor, index) => {
+              // alert(JSON.stringify(programSponsor))
+              return (
+                <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
+                  <Avatar>
+                    {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName[0]}
+                  </Avatar>
+                  <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
+                    {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName}
+                    (&#8369;{programSponsor.amountFunded})
+                  </Typography>
+                </Box>
+            )})
           }
           <br/>
           <Typography variant="subtitle2">

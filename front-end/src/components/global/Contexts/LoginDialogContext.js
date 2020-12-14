@@ -25,21 +25,21 @@ export const LoginDialogProvider = props => {
         }
     }, [])
 
-    useEffect(() => {
-        if (loginData.uid !== '' ) {
-            if (loginData.type === 'corporation' || loginData.type === 'individual') {
-                console.log('sponsor')
-                axios.get(`/api/sponsors/${loginData.uid}`)
-                    .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
-                    .catch(err => console.error(err))
-            } else if (loginData.type === 'farmer') {
-                console.log('farmer')
-                axios.get(`/api/farmers/${loginData.uid}`)
-                    .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
-                    .catch(err => console.error(err))
-            } 
-        } 
-    }, [loginData.username])
+    // useEffect(() => {
+    //     if (loginData.uid !== '' ) {
+    //         if (loginData.type === 'corporation' || loginData.type === 'individual') {
+    //             console.log('sponsor')
+    //             axios.get(`/api/sponsors/${loginData.uid}`)
+    //                 .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
+    //                 .catch(err => console.error(err))
+    //         } else if (loginData.type === 'farmer') {
+    //             console.log('farmer')
+    //             axios.get(`/api/farmers/${loginData.uid}`)
+    //                 .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
+    //                 .catch(err => console.error(err))
+    //         } 
+    //     } 
+    // }, [loginData.username])
 
     return (
         <LoginDialogContext.Provider 

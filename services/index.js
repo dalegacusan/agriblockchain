@@ -160,11 +160,12 @@ web3.eth.net.isListening()
             } = req.body;
 
             try {
-                ganacheAddressIndex += 1;
+                // ganacheAddressIndex += 1;
                 // Enter your own OWNER_ADDRESS and OWNER_PRIVATE_KEY in .env
                 const callerAddress = OWNER_ADDRESS;
                 const callerKey = OWNER_PRIVATE_KEY;
-                const funderAddress = ganacheAddresses[ganacheAddressIndex];
+                // const funderAddress = ganacheAddresses[ganacheAddressIndex];
+                const funderAddress = OWNER_ADDRESS;
 
                 const newSponsor = new Sponsor({
                     blockchain: {
@@ -675,12 +676,14 @@ web3.eth.net.isListening()
                 Program.findById({ _id: programId })
                     .then(async result => {
                         const { blockchain: programBlockchainObj } = result;
+                        // const { blockchain: farmerDBAddress } = result;
                         const { address: programDBAddress } = programBlockchainObj;
 
                         Farmer.findById({ _id: farmerId })
                             .then(async result => {
-                                const { blockchain: farmerBlockchainObj } = result;
-                                const { address: farmerDBAddress } = farmerBlockchainObj;
+                                // const { blockchain: farmerBlockchainObj } = result;
+                                const { blockchain: farmerDBAddress } = result;
+                                // const { address: farmerDBAddress } = farmerBlockchainObj;
 
                                 const callerAddress = OWNER_ADDRESS;
                                 const callerKey = OWNER_PRIVATE_KEY;
@@ -772,7 +775,7 @@ web3.eth.net.isListening()
         // ************ Working BUT NEEDS VERIFICATION ============= //
         app.post('/api/crowdfunding/transferFunds/:programId/:farmerId', async function (req, res) {
 
-            const { programId } = req.params;
+            const { programId, farmerId } = req.params;
 
             try {
 
@@ -783,8 +786,10 @@ web3.eth.net.isListening()
 
                         Farmer.findById({ _id: farmerId })
                             .then(async result => {
-                                const { blockchain: farmerBlockchainObj } = result;
-                                const { address: farmerDBAddress } = farmerBlockchainObj;
+                                // const { blockchain: farmerBlockchainObj } = result;
+                                console.log(result)
+                                const { blockchain: farmerDBAddress } = result;
+                                // const { address: farmerDBAddress } = farmerBlockchainObj;
 
                                 const callerAddress = OWNER_ADDRESS;
                                 const callerKey = OWNER_PRIVATE_KEY;
@@ -946,22 +951,42 @@ web3.eth.net.isListening()
                 blockchain: {
                     address: OWNER_ADDRESS
                 },
-                ngoAbout: {
-                    ngoName: name,
-                    addressLine1: address1,
-                    addressLine2: address2,
-                    ngoRegion: region,
-                    ngoCity: city,
-                    ngoCountry: country,
-                },
-                ngoContactDetails: {
-                    authorizedRepresentative: representativeName,
-                    ngoContactNumber: contactNumber,
-                },
-                programs: {
+                loginDetails: {
+                    username: "zubirijuan",
+                    password: "josemang123",
+                  },
+                  ngoAbout: {
+                    ngoName: "Juan Foundation",
+                    addressLine1: "Cotabato City",
+                    addressLine2: "Paranaque City",
+                    region: "NCR",
+                    city: "Manila",
+                    country: "Philippines",
+                  },
+                  ngoContactDetails: {
+                    authorizedRepresentative: "Juan Miguel Zubiri",
+                    ngoContactNumber: 09123456789,
+                  },
+                  programs: {
                     activePrograms: [],
                     completedPrograms: [],
                 }
+                // ngoAbout: {
+                //     ngoName: name,
+                //     addressLine1: address1,
+                //     addressLine2: address2,
+                //     ngoRegion: region,
+                //     ngoCity: city,
+                //     ngoCountry: country,
+                // },
+                // ngoContactDetails: {
+                //     authorizedRepresentative: representativeName,
+                //     ngoContactNumber: contactNumber,
+                // },
+                // programs: {
+                //     activePrograms: [],
+                //     completedPrograms: [],
+                // }
             });
 
             newNGO.save()
