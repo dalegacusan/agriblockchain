@@ -678,7 +678,7 @@ web3.eth.net.isListening()
                         const { address: programDBAddress } = programBlockchainObj;
 
                         Farmer.findById({ _id: farmerId })
-                            .then(result => {
+                            .then(async result => {
                                 const { blockchain: farmerBlockchainObj } = result;
                                 const { address: farmerDBAddress } = farmerBlockchainObj;
 
@@ -782,7 +782,7 @@ web3.eth.net.isListening()
                         const { address: programDBAddress } = programBlockchainObj;
 
                         Farmer.findById({ _id: farmerId })
-                            .then(result => {
+                            .then(async result => {
                                 const { blockchain: farmerBlockchainObj } = result;
                                 const { address: farmerDBAddress } = farmerBlockchainObj;
 
