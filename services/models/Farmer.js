@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const { produce } = require('./Produce');
 
 const farmerSchema = new mongoose.Schema({
+  blockchain: Object,
   loginDetails: {
     username: String,
     password: String

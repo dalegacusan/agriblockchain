@@ -154,18 +154,25 @@ web3.eth.net.isListening()
                 address2,
                 region,
                 city,
-                country
+                country,
+                username,
+                password
             } = req.body;
 
             try {
+                ganacheAddressIndex += 1;
                 // Enter your own OWNER_ADDRESS and OWNER_PRIVATE_KEY in .env
                 const callerAddress = OWNER_ADDRESS;
                 const callerKey = OWNER_PRIVATE_KEY;
-                const funderAddress = OWNER_ADDRESS;
+                const funderAddress = ganacheAddresses[ganacheAddressIndex];
 
                 const newSponsor = new Sponsor({
                     blockchain: {
                         address: funderAddress
+                    },
+                    loginDetails: {
+                        username,
+                        password
                     },
                     sponsorAbout: {
                         corporationName: name,
@@ -670,100 +677,86 @@ web3.eth.net.isListening()
                         const { blockchain } = result;
                         const { address } = blockchain;
 
-                        ganacheAddressIndex += 1;
+                        Farmer.findById({ _id: farmerId })
+                            .then(result => {
+                                const { blockchain } = result;
 
-                        const callerAddress = OWNER_ADDRESS;
-                        const callerKey = OWNER_PRIVATE_KEY;
-                        const programAddress = address;
-                        // Get address from Ganache accounts based on current instance of index
-                        const farmerAddress = ganacheAddresses[ganacheAddressIndex];
-                        const amount = price * quantity;
+                                const callerAddress = OWNER_ADDRESS;
+                                const callerKey = OWNER_PRIVATE_KEY;
+                                const programAddress = address;
+                                // Get address from Ganache accounts based on current instance of index
+                                const farmerAddress = blockchain.address;
+                                const amount = price * quantity;
 
-                        const producePledge = {
-                            farmerId,
-                            name,
-                            price,
-                            quantity,
-                            dateParticipated: new Date(),
-                        }
+                                const producePledge = {
+                                    farmerId,
+                                    name,
+                                    price,
+                                    quantity,
+                                    dateParticipated: new Date(),
+                                }
 
-                        const data = crowdfundingContract
-                            .methods
-                            .addFarmerPartnership(
-                                programAddress,
-                                farmerAddress,
-                                parseInt(amount)
-                            )
-                            .encodeABI();
-                        transactionHash = await buildSendTransaction(
-                            callerAddress,
-                            callerKey,
-                            data,
-                        );
+                                const data = crowdfundingContract
+                                    .methods
+                                    .addFarmerPartnership(
+                                        programAddress,
+                                        farmerAddress,
+                                        parseInt(amount)
+                                    )
+                                    .encodeABI();
+                                transactionHash = await buildSendTransaction(
+                                    callerAddress,
+                                    callerKey,
+                                    data,
+                                );
 
-                        Program.findOneAndUpdate(
-                            { _id: programId },
-                            {
-                                $push: { farmersParticipating: producePledge },
-                            }, { new: true })
-                            .then((program) => {
-                                console.log(program);
-                                console.log("Successfully added Farmer to the Program's Farmers Participating array");
-
-                                // Push programId to programsParticipated array of Farmer
-                                Farmer.updateOne(
-                                    { _id: farmerId },
+                                Program.findOneAndUpdate(
+                                    { _id: programId },
                                     {
-                                        $push:
-                                        {
-                                            programsParticipated: {
-                                                programId,
-                                                name,
-                                                price,
-                                                quantity
-                                            }
-                                        }
-                                    })
-                                    .then(() => {
-                                        console.log("Added program to programsParticipated array");
+                                        $push: { farmersParticipating: producePledge },
+                                    }, { new: true })
+                                    .then((program) => {
+                                        console.log(program);
+                                        console.log("Successfully added Farmer to the Program's Farmers Participating array");
 
-                                        /**
-                                         * 
-                                         * const { programAbout } = program;
-                                         * //const { currentAmount, requiredAmount } = programAbout;
-                              
-                                        /* 
-                                          Check if currentAmount of Program is >= required amount
-                                          IF TRUE, set Program's stage to "procurement"
-                                        */
+                                        // Push programId to programsParticipated array of Farmer
+                                        Farmer.updateOne(
+                                            { _id: farmerId },
+                                            {
+                                                $push:
+                                                {
+                                                    programsParticipated: {
+                                                        programId,
+                                                        name,
+                                                        price,
+                                                        quantity
+                                                    }
+                                                }
+                                            })
+                                            .then(() => {
+                                                console.log("Added program to programsParticipated array");
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
+                                            })
 
-                                        // if (currentAmount >= requiredAmount) {
-                                        //   program.programAbout.stage = "procurement"
-
-                                        //    program.save()
-                                        //     .then(() => {
-                                        //        console.log("Program is now in Procurement Phase!");
-                                        //      })
-                                        //  } **/
+                                        res.status(200).json({
+                                            message: 'Successfully added farmer',
+                                        });
 
                                     })
                                     .catch(err => {
-                                        console.log(err);
-                                    })
-
-                                res.status(200).json({
-                                    message: 'Successfully added farmer',
-                                });
-
+                                        console.error(err);
+                                        res.status(400).json({
+                                            status: "error",
+                                            response: err
+                                        });
+                                    });
                             })
-                            .catch(err => {
-                                console.error(err);
-                                res.status(400).json({
-                                    status: "error",
-                                    response: err
-                                });
-                            });
 
+                    })
+                    .catch(err => {
+                        console.log('Error', err);
                     })
 
             } catch (error) {
@@ -888,7 +881,10 @@ web3.eth.net.isListening()
         // =================================
         app.post('/api/create/farmer', (req, res) => {
 
+            ganacheAddressIndex += 1;
+
             const testFarmer = new Farmer({
+                blockchain: ganacheAddresses[ganacheAddressIndex],
                 loginDetails: {
                     username: "mangjose",
                     password: "josemang123"

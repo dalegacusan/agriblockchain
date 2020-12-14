@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 const sponsorSchema = new mongoose.Schema({
   blockchain: Object,
+  loginDetails: {
+    username: String,
+    password: String
+  },
   sponsorAbout: {
     // profilePicture: String,
     corporationName: String,
@@ -15,7 +19,7 @@ const sponsorSchema = new mongoose.Schema({
     authorizedRepresentative: String,
     contactNumber: String,
   },
-  sponsoredPrograms: {type: Array, default: []},
+  sponsoredPrograms: { type: Array, default: [] },
   walletBalance: { type: Number, default: 0 }
 });
 

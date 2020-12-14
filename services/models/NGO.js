@@ -3,6 +3,10 @@ const Program = require('./Program').schema;
 
 const ngoSchema = new mongoose.Schema({
   blockchain: Object,
+  loginDetails: {
+    username: String,
+    password: String
+  },
   ngoAbout: {
     // ngoPicture: String,
     ngoName: String,
