@@ -674,18 +674,19 @@ web3.eth.net.isListening()
             try {
                 Program.findById({ _id: programId })
                     .then(async result => {
-                        const { blockchain } = result;
-                        const { address } = blockchain;
+                        const { blockchain: programBlockchainObj } = result;
+                        const { address: programDBAddress } = programBlockchainObj;
 
                         Farmer.findById({ _id: farmerId })
                             .then(result => {
-                                const { blockchain } = result;
+                                const { blockchain: farmerBlockchainObj } = result;
+                                const { address: farmerDBAddress } = farmerBlockchainObj;
 
                                 const callerAddress = OWNER_ADDRESS;
                                 const callerKey = OWNER_PRIVATE_KEY;
-                                const programAddress = address;
+                                const programAddress = programDBAddress;
                                 // Get address from Ganache accounts based on current instance of index
-                                const farmerAddress = blockchain.address;
+                                const farmerAddress = farmerDBAddress;
                                 const amount = price * quantity;
 
                                 const producePledge = {
@@ -769,7 +770,7 @@ web3.eth.net.isListening()
         });
 
         // ************ Working BUT NEEDS VERIFICATION ============= //
-        app.post('/api/crowdfunding/transferFunds/:programId', async function (req, res) {
+        app.post('/api/crowdfunding/transferFunds/:programId/:farmerId', async function (req, res) {
 
             const { programId } = req.params;
 
@@ -777,45 +778,54 @@ web3.eth.net.isListening()
 
                 Program.findById({ _id: programId })
                     .then(async result => {
-                        const { blockchain } = result;
+                        const { blockchain: programBlockchainObj } = result;
+                        const { address: programDBAddress } = programBlockchainObj;
 
-                        const callerAddress = OWNER_ADDRESS;
-                        const callerKey = OWNER_PRIVATE_KEY;
-                        const programAddress = blockchain.address;
-                        const farmerAddress = ganacheAddresses[ganacheAddressIndex];
-                        const amount = req.body.amount;
-
-                        const data = crowdfundingContract
-                            .methods
-                            .transferFunds(
-                                programAddress,
-                                farmerAddress,
-                                parseInt(amount)
-                            )
-                            .encodeABI();
-                        transactionHash = await buildSendTransaction(
-                            callerAddress,
-                            callerKey,
-                            data,
-                        );
-
-                        const decrement = {
-                            programAbout: {
-                                currentAmount: -amount
-                            }
-                        }
-
-                        Program.findOneAndUpdate(
-                            { _id: programId },
-                            { $inc: flatten(decrement) }
-                        )
+                        Farmer.findById({ _id: farmerId })
                             .then(result => {
-                                console.log("Successfully updated currentAmount of Program")
+                                const { blockchain: farmerBlockchainObj } = result;
+                                const { address: farmerDBAddress } = farmerBlockchainObj;
+
+                                const callerAddress = OWNER_ADDRESS;
+                                const callerKey = OWNER_PRIVATE_KEY;
+                                const programAddress = programDBAddress;
+                                const farmerAddress = farmerDBAddress;
+                                const amount = req.body.amount;
+
+                                const data = crowdfundingContract
+                                    .methods
+                                    .transferFunds(
+                                        programAddress,
+                                        farmerAddress,
+                                        parseInt(amount)
+                                    )
+                                    .encodeABI();
+                                transactionHash = await buildSendTransaction(
+                                    callerAddress,
+                                    callerKey,
+                                    data,
+                                );
+
+                                const decrement = {
+                                    programAbout: {
+                                        currentAmount: -amount
+                                    }
+                                }
+
+                                Program.findOneAndUpdate(
+                                    { _id: programId },
+                                    { $inc: flatten(decrement) }
+                                )
+                                    .then(result => {
+                                        console.log("Successfully updated currentAmount of Program")
+                                    })
+
+                                res.status(200).json({
+                                    message: 'Successfully trasnferred tokens to farmer',
+                                });
                             })
 
-                        res.status(200).json({
-                            message: 'Successfully trasnferred tokens to farmer',
-                        });
+
                     });
 
             } catch (error) {
