@@ -102,7 +102,7 @@ export default function ButtonAppBar() {
   }
 
   useEffect(() => {
-    if (loginData.username !== '' && loginData.password !== '' && loginData.type !== '') {
+    if (loginData.type !== '' && loginData.uid !== '') {
       // logged in
       setLogginIn(true)
     } else {

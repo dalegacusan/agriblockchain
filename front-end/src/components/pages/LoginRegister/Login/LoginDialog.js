@@ -35,8 +35,6 @@ export default function LoginDialog() {
 
   const { openLoginDialog, setOpenLoginDialog, setLoginData } = useContext(LoginDialogContext)
   const [ tempData, setTempData ] = useState({
-    username: '',
-    password: '',
     type: '',
     uid: '',
     walletBalance: 0,
@@ -63,7 +61,6 @@ export default function LoginDialog() {
     setSelectedIndex("")
     setTempData({
       username: '',
-      password: '',
       type: '',
       uid: '',
       walletBalance: 0,
@@ -113,9 +110,8 @@ export default function LoginDialog() {
                         selected={selectedIndex === ngo.id} 
                         onClick={(e) => { 
                                   handleListItemClick(e, ngo.id, { 
-                                    username: ngo.loginDetails.username,
-                                    password: ngo.loginDetails.password,
                                     type: "ngo",
+                                    username: ngo.ngoAbout.ngoName,
                                     uid: ngo.id,
                                    }) 
                                 }}
@@ -130,9 +126,6 @@ export default function LoginDialog() {
                   primary={ngo.ngoAbout.ngoName}
                   secondary={
                     <Fragment>
-                      <Typography>
-                        Username: {ngo.loginDetails.username}
-                      </Typography>
                       <Typography variant="caption">
                         System ID: {ngo.id}
                       </Typography>
@@ -154,9 +147,8 @@ export default function LoginDialog() {
                         selected={selectedIndex === farmer.id} 
                         onClick={(e) => { 
                                   handleListItemClick(e, farmer.id, { 
-                                    username: farmer.loginDetails.username,
-                                    password: farmer.loginDetails.password,
                                     type: "farmer",
+                                    username: farmer.farmerAbout.firstName,
                                     uid: farmer.id,
                                   }) 
                                 }}
@@ -171,9 +163,6 @@ export default function LoginDialog() {
                   primary={`${farmer.farmerAbout.firstName} ${farmer.farmerAbout.middleName} ${farmer.farmerAbout.lastName}`}
                   secondary={
                     <Fragment>
-                      <Typography>
-                        Username: {farmer.loginDetails.username}
-                      </Typography>
                       <Typography variant="caption">
                         System ID: {farmer.id}
                       </Typography>
@@ -195,9 +184,8 @@ export default function LoginDialog() {
                         selected={selectedIndex === sponsor.id} 
                         onClick={(e) => { 
                                   handleListItemClick(e, sponsor.id, { 
-                                    username: sponsor.loginDetails.username,
-                                    password: sponsor.loginDetails.password,
                                     type: "corporation",
+                                    username: sponsor.sponsorAbout.corporationName,
                                     uid: sponsor.id,
                                   }) 
                                 }}
@@ -212,9 +200,6 @@ export default function LoginDialog() {
                   primary={sponsor.sponsorAbout.corporationName}
                   secondary={
                     <Fragment>
-                      <Typography>
-                        Username: {sponsor.loginDetails && sponsor.loginDetails.username}
-                      </Typography>
                       <Typography variant="caption">
                         System ID: {sponsor.id}
                       </Typography>

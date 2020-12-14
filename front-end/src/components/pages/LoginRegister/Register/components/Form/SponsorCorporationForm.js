@@ -41,9 +41,9 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
-        id="corporationName"
-        name="corporationName"
-        value={openRegistrationData.corporationName}
+        id="name"
+        name="name"
+        value={openRegistrationData.name}
         onChange={handleChange}
       />
 

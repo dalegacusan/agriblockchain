@@ -26,7 +26,7 @@ export const LoginDialogProvider = props => {
     }, [])
 
     useEffect(() => {
-        if (loginData.username !== '' && loginData.password !== '' && loginData.uid !== '' ) {
+        if (loginData.uid !== '' ) {
             if (loginData.type === 'corporation' || loginData.type === 'individual') {
                 console.log('sponsor')
                 axios.get(`/api/sponsors/${loginData.uid}`)
