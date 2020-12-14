@@ -2,12 +2,9 @@ const mongoose = require('mongoose');
 const Program = require('./Program').schema;
 
 const ngoSchema = new mongoose.Schema({
-  loginDetails: {
-    username: String,
-    password: String
-  },
+  blockchain: Object,
   ngoAbout: {
-    ngoPicture: String,
+    // ngoPicture: String,
     ngoName: String,
     addressLine1: String,
     addressLine2: String,
@@ -18,7 +15,6 @@ const ngoSchema = new mongoose.Schema({
   contactDetails: {
     authorizedRepresentative: String,
     contactNumber: String,
-    emailAddress: String
   },
   programs: {
     // For active program, just get the latest item on activePrograms array

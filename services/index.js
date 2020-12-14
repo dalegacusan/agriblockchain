@@ -834,28 +834,39 @@ web3.eth.net.isListening()
             }
         });
 
-        
-        app.post('/api/crowdfunding/returnLeftover/', async function (req, res) {
+        // ************ Verify ************ //
+        app.post('/api/crowdfunding/returnLeftover/:programId', async function (req, res) {
+
+            const { programId } = req.params;
+
             try {
-                const callerAddress = req.body.callerAddress;
-                const callerKey = req.body.callerKey;
-                const address = req.body.programAddress;
 
-                const data = crowdfundingContract
-                    .methods
-                    .returnLeftoverToFunders(
-                        address,
-                    )
-                    .encodeABI();
-                transactionHash = await buildSendTransaction(
-                    callerAddress,
-                    callerKey,
-                    data,
-                );
+                Program.findById({ _id: programId })
+                    .then(async result => {
+                        const { blockchain } = result;
 
-                res.status(200).json({
-                    message: 'Successfully returned funds.',
-                });
+                        const callerAddress = OWNER_ADDRESS;
+                        const callerKey = OWNER_PRIVATE_KEY;
+                        const address = blockchain.address;
+
+                        const data = crowdfundingContract
+                            .methods
+                            .returnLeftoverToFunders(
+                                address,
+                            )
+                            .encodeABI();
+                        transactionHash = await buildSendTransaction(
+                            callerAddress,
+                            callerKey,
+                            data,
+                        );
+
+                        res.status(200).json({
+                            message: 'Successfully returned funds.',
+                        });
+
+                    })
+
             } catch (error) {
                 console.log(error);
 
@@ -911,6 +922,51 @@ web3.eth.net.isListening()
                 });
 
         });
+
+        app.post('/api/create/ngo', (req, res) => {
+
+            const {
+                name,
+                contactNumber,
+                representativeName,
+                address1,
+                address2,
+                region,
+                city,
+                country
+            } = req.body;
+
+            const newNGO = new NGO({
+                blockchain: {
+                    address: OWNER_ADDRESS
+                },
+                ngoAbout: {
+                    ngoName: name,
+                    addressLine1: address1,
+                    addressLine2: address2,
+                    ngoRegion: region,
+                    ngoCity: city,
+                    ngoCountry: country,
+                },
+                ngoContactDetails: {
+                    authorizedRepresentative: representativeName,
+                    ngoContactNumber: contactNumber,
+                },
+                programs: {
+                    activePrograms: [],
+                    completedPrograms: [],
+                }
+            });
+
+            newNGO.save()
+                .then(result => {
+                    console.log('newNGO Saved to MongoDB!');
+                })
+                .catch(err => {
+                    console.log('Error: ', err);
+                });
+
+        })
 
         // =================================
         //          READ Data Only
