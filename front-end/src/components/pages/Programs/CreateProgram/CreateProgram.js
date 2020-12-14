@@ -72,7 +72,7 @@ export default function CreateProgram() {
   const handleSubmit = () => {
     setSubmitLoading(true)
     if (loginData.uid === '5fcdafdafcda8f250439db05') {
-      axios.post('/api/create/program', newProgram)
+      axios.post('/api/crowdfunding/createNewProgram/', newProgram)
       .then(res => {
         console.log(res);
         setSubmitLoading(false);

@@ -6,7 +6,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 export default function RegisterStepper(props) {
-  const { classes, activeStep, setActiveStep, steps, handleNext, handleBack, handleReset } = props;
+  const { classes, activeStep, steps, handleReset } = props;
 
   return (
     <div className={classes.root}>

@@ -41,15 +41,20 @@ export default function Programs() {
   const classes = useStyles();
 
   const { loginData } = useContext(LoginDialogContext);
-  const [ programs, setPrograms ] = useState([])
+  const [ programs, setPrograms ] = useState([]);
+  const [ loading, setLoading ] = useState(true)
 
   useEffect(() => {
     axios.get('/api/programs')
       .then((res) => {
         console.log(res.data);
+        setLoading(false);
         setPrograms(res.data);
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        setLoading(false);
+      });
   }, []);
 
   return (
@@ -61,34 +66,41 @@ export default function Programs() {
         <Alert severity="info">Log in to Bayanihan to get more details about the programs</Alert>
       </Box>
       <Box my={3}>
-        <Grid container spacing={2}>
-          {
-            programs.length !== 0 ?
-              programs.map((program, index) => {
-                const { programAbout, timeline, id } = program;
-                const { programName, about, stage, status } = programAbout;
-                const { programDate } = timeline;
+        {
+          loading ? 
+          <Box width="100%" textAlign="center">
+            <CircularProgress/>
+          </Box>
+          :
+          <Grid container spacing={2}>
+            {
+              programs.length !== 0 ?
+                programs.map((program, index) => {
+                  const { programAbout, timeline, _id } = program;
+                  const { programName, about, stage, status } = programAbout;
+                  const { programDate } = timeline;
 
-                return (
-                  <Grid item xs={12} md={6} lg={4}>
-                    <ProgramCard
-                      key={index}
-                      programName={programName}
-                      programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
-                      programDescription={about}
-                      programStage={stage}
-                      programStatus={status}
-                      programId={id}
-                    />
-                  </Grid>
-                )
-              }) 
-              :
-              <Box width="100%" textAlign="center">
-                <CircularProgress/>
-              </Box>
+                  return (
+                    <Grid item xs={12} md={6} lg={4}>
+                      <ProgramCard
+                        key={index}
+                        programName={programName}
+                        programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
+                        programDescription={about}
+                        programStage={stage}
+                        programStatus={status}
+                        programId={_id}
+                      />
+                    </Grid>
+                  )
+                }) 
+                :
+                <Alert severity="info">
+                  No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
+                </Alert>
+            }
+           </Grid> 
           }
-        </Grid>
       </Box>
       <Box display={ loginData.type === 'ngo' ? 'block' : 'none' }>
         <Link component={RouterLink} to="/program/create">

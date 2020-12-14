@@ -293,7 +293,7 @@ export default withRouter(function ProgramPage(props) {
           });
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => console.error(err));
   }
 
   useEffect(() => {
