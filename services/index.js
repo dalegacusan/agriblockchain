@@ -73,18 +73,24 @@ web3.eth.net.isListening()
         app.use(cors());
         app.use(bodyParser.json());
 
+        const userModel = {
+            program: Program, // assign po natin sa corresponding path parameter na user
+            ngo: NGO,
+            farmer: Farmer,
+            sponsor: Sponsor,
+        };
+
         // ===================================================================== //
         //                       START: BLOCKCHAIN ENDPOINTS                     //
         // ===================================================================== //
 
         // ******* WORKING ******* //
         // Mints to address specified in .env ONLY
-        app.post('/api/crowdfunding/mint/', async function (req, res) {
+        app.post('/api/crowdfunding/mint/:user/:userId', async function (req, res) {
             try {
                 const callerAddress = OWNER_ADDRESS;
                 const callerKey = OWNER_PRIVATE_KEY;
                 const amount = req.body.amount;
-
 
                 const data = crowdfundingContract
                     .methods
@@ -224,19 +230,29 @@ web3.eth.net.isListening()
         });
 
         // ******* WORKING ******* //
-        app.get('/api/crowdfunding/balance/:address', async function (req, res) {
+        // app.get('/api/crowdfunding/balance/:address', async function (req, res) {
+        app.get('/api/crowdfunding/balance/:userType/:userId', async function (req, res) {
+
+            const { userType, userId } = req.params;
+
             try {
-                const address = req.params.address;
 
-                const balance = await crowdfundingContract
-                    .methods
-                    .getBalanceOf(address)
-                    .call({ from: address });
+                userModel[userType].findById({ _id: userId })
+                    .then(async result => {
+                        const { blockchain } = result;
 
-                res.status(200).json({
-                    message: 'Successfully retrieved balance.',
-                    balance: balance,
-                });
+                        const address = blockchain.address;
+
+                        const balance = await crowdfundingContract
+                            .methods
+                            .getBalanceOf(address)
+                            .call({ from: address });
+
+                        res.status(200).json({
+                            message: 'Successfully retrieved balance.',
+                            balance: balance,
+                        });
+                    })
 
             } catch (error) {
                 console.error(error);
@@ -991,6 +1007,10 @@ web3.eth.net.isListening()
             NGO.findById({ _id: ngoId })
                 .then(result => {
                     res.status(200).json(result);
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(404).json(err);
                 });
         })
 
