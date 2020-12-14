@@ -2,13 +2,14 @@ const mongoose = require('mongoose');
 const { produceRequirement } = require('./Produce');
 
 const programSchema = new mongoose.Schema({
+  blockchain: Object,
   programAbout: {
     // programPicture: String,
     programName: String,
     about: String,
     completed: { type: Boolean, default: false },
     cityAddress: String,
-    ngo: { type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, 'A program must have an NGO'] },
+    ngo: { type: String, required: [true, 'A program must have an NGO'] },
     status: { type: String, default: "active" },
     stage: { type: String, default: "crowdfunding" },
     // FundingMeter and FundingStatus will be based off of these two properties
@@ -21,7 +22,7 @@ const programSchema = new mongoose.Schema({
     // fundingEndDate: Date,
     // procurementStartDate: Date,
     // procurementEndDate: Date,
-    programDate: Date
+    programDate: { type: Date, default: new Date() }
   },
   produceRequirements: [produceRequirement.schema],
   farmersParticipating: { type: Array, default: [] },

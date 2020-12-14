@@ -34,7 +34,7 @@ const members = [
     {
         name: 'Dale',
         image: '/images/avatars/dale.png',
-        text: '<caption/role>',
+        text: 'Developer',
     },
     {
         name: 'Dobi',

@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const flatten = require('flat')
+const flatten = require('flat');
 
 // =================================
 //              Models
@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 //          CREATE Data Only
 // =================================
 
-// TEST ACCOUNT //
+// ===========================START TEST ACCOUNT=========================== //
 app.post('/api/create/ngo', (req, res) => {
 
   const testNGO = new NGO({
@@ -77,6 +77,112 @@ app.post('/api/create/ngo', (req, res) => {
     });
 
 })
+app.post('/api/program/produce/add', (req, res) => {
+  // Produce Requirements
+  const testProgramRequirementProduce = new produceRequirement({
+    taken: false,
+    takenByFarmerId: '',
+    name: 'Carrots',
+    price: 20,
+    quantity: 40,
+  });
+
+  Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { produceRequirements: testProgramRequirementProduce } })
+    .then(() => {
+      console.log('Successfully Updated Program Produce Requirements List');
+    })
+    .catch(err => {
+      console.log(err);
+    });
+})
+app.post('/api/create/farmer', (req, res) => {
+
+  const testFarmer = new Farmer({
+    loginDetails: {
+      username: "mangjose",
+      password: "josemang123"
+    },
+    farmerAbout: {
+      firstName: "Juan",
+      middleName: "Sy",
+      lastName: "Jose",
+      suffix: "M",
+      addressLine1: "Cotabato City",
+      addressLine2: "Paranaque City",
+      region: "NCR",
+      city: "Manila",
+      country: "Philippines",
+    },
+    contactDetails: {
+      emailAddress: "mangjose@gmail.com",
+      contactNumber: "1234567890"
+    },
+    // producePortfolio: { type: Array, default: [] },        // DEFAULT
+    // programsParticipated: { type: Array, default: [] },    // DEFAULT
+    // walletBalance: { type: Number, default: 0 }            // DEFAULT
+  });
+
+  testFarmer.save()
+    .then(result => {
+      console.log('testFarmer Saved to MongoDB!');
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+    });
+
+});
+app.post('/api/create/sponsor', (req, res) => {
+
+  const {
+    username,
+    password,
+    corporationName,
+    addressLine1,
+    addressLine2,
+    region,
+    city,
+    country,
+    authorizedRepresentative,
+    contactNumber
+  } = req.body;
+
+  const newSponsor = new Sponsor({
+    loginDetails: {
+      username: username,
+      password: password
+    },
+    sponsorAbout: {
+      corporationName: corporationName,
+      addressLine1: addressLine1,
+      addressLine2: addressLine2,
+      region: region,
+      city: city,
+      country: country
+    },
+    contactDetails: {
+      authorizedRepresentative: authorizedRepresentative,
+      contactNumber: contactNumber,
+    },
+  });
+
+  newSponsor.save()
+    .then(result => {
+      console.log('Sponsor Saved to MongoDB!');
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
+    })
+    .catch(err => {
+      console.log('Error saving sponsor: ', err);
+      res.status(400).json({
+        status: "error",
+        response: err
+      });
+    });
+
+})
+// ============================END TEST ACCOUNT============================ //
 
 app.post('/api/create/program', (req, res) => {
 
@@ -108,36 +214,18 @@ app.post('/api/create/program', (req, res) => {
     sponsors: [],                // DEFAULT
   });
 
-  // Save a farmer to MongoDB
-  newProgram.save()
-    .then(result => {
-      console.log(`Program ${programName}: Saved to MongoDB!`);
-      res.json(result);
-    })
-    .catch(err => {
-      console.log('Error: ', err.errors['programAbout.ngo'].message);
-    });
+  res.redirect('http://localhost:7545/api/crowdfunding/createNewProgram/')
 
-})
+  // // Save a farmer to MongoDB
+  // newProgram.save()
+  //   .then(result => {
+  //     console.log(`Program ${programName}: Saved to MongoDB!`);
+  //     res.json(result);
+  //   })
+  //   .catch(err => {
+  //     console.log('Error: ', err.errors['programAbout.ngo'].message);
+  //   });
 
-// TEST ACCOUNT //
-app.post('/api/program/produce/add', (req, res) => {
-  // Produce Requirements
-  const testProgramRequirementProduce = new produceRequirement({
-    taken: false,
-    takenByFarmerId: '',
-    name: 'Carrots',
-    price: 20,
-    quantity: 40,
-  });
-
-  Program.updateOne({ _id: '5fcde3ec21a5b22940aebeaa' }, { $push: { produceRequirements: testProgramRequirementProduce } })
-    .then(() => {
-      console.log('Successfully Updated Program Produce Requirements List');
-    })
-    .catch(err => {
-      console.log(err);
-    });
 })
 
 // ADD a Sponsor to a Program
@@ -210,7 +298,7 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 
 })
 
-// ADD a farmer to a program - START
+// ADD a Farmer to a program
 app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, res) => {
 
   const { programId, farmerId } = req.params;
@@ -275,45 +363,6 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
     });
 
 })
-// Add a farmer to program - END
-
-// TEST ACCOUNT //
-app.post('/api/create/farmer', (req, res) => {
-
-  const testFarmer = new Farmer({
-    loginDetails: {
-      username: "mangjose",
-      password: "josemang123"
-    },
-    farmerAbout: {
-      firstName: "Juan",
-      middleName: "Sy",
-      lastName: "Jose",
-      suffix: "M",
-      addressLine1: "Cotabato City",
-      addressLine2: "Paranaque City",
-      region: "NCR",
-      city: "Manila",
-      country: "Philippines",
-    },
-    contactDetails: {
-      emailAddress: "mangjose@gmail.com",
-      contactNumber: "1234567890"
-    },
-    // producePortfolio: { type: Array, default: [] },        // DEFAULT
-    // programsParticipated: { type: Array, default: [] },    // DEFAULT
-    // walletBalance: { type: Number, default: 0 }            // DEFAULT
-  });
-
-  testFarmer.save()
-    .then(result => {
-      console.log('testFarmer Saved to MongoDB!');
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-    });
-
-});
 
 // ADD a Produce to a Farmer
 app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
@@ -336,58 +385,6 @@ app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
       console.log(err);
     })
 
-})
-
-// TEST ACCOUNT //
-app.post('/api/create/sponsor', (req, res) => {
-
-  const {
-    username,        
-    password,              
-    corporationName,          
-    addressLine1,        
-    addressLine2,                
-    region,    
-    city,      
-    country,
-    authorizedRepresentative,   
-    contactNumber      
-  } = req.body;
-
-  const newSponsor = new Sponsor({
-    loginDetails: {
-      username: username,
-      password: password
-    },
-    sponsorAbout: {
-      corporationName: corporationName,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
-      region: region,
-      city: city,
-      country: country
-    },
-    contactDetails: {
-      authorizedRepresentative: authorizedRepresentative,
-      contactNumber: contactNumber,
-    },
-  });
-
-  newSponsor.save()
-    .then(result => {
-      console.log('Sponsor Saved to MongoDB!');
-      res.status(200).json({
-        status: "success",
-        data: result
-      });
-    })
-    .catch(err => {
-      console.log('Error saving sponsor: ', err);
-      res.status(400).json({
-        status: "error",
-        response: err
-      });
-    });
 })
 
 // =================================
@@ -417,6 +414,9 @@ app.get('/api/programs', (req, res) => {
   Program.find({})
     .then(result => {
       res.status(200).json(result);
+    })
+    .then(err => {
+      console.log(err);
     });
 })
 
@@ -449,22 +449,6 @@ app.get('/api/farmers/:farmerId', (req, res) => {
     });
 })
 
-// Get Programs a Farmer is participating
-app.get('/api/farmers/:farmerId/programs', (req, res) => {
-
-  const { farmerId } = req.params;
-
-  Farmer.findById({ _id: farmerId })
-    .then((result) => {
-
-      const { programsParticipated } = result;
-
-      console.log(programsParticipated);
-
-    });
-
-})
-
 // Get all sponsors
 app.get('/api/sponsors', (req, res) => {
   // Get all farmers from MongoDB
@@ -492,18 +476,6 @@ app.get('/api/sponsors/:sponsorId', (req, res) => {
 app.patch('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
-  /*
-      req.body assumes that the information passed is the same
-      as the one with CreateProgram.js
-
-      WITHOUT THE FOLLOWING:
-      
-      1) ngo
-         - The NGO is always a default
-      
-      2) programDate
-         - Will an NGO be able to change the programDate after creation?
-  */
   const { programName, about, cityAddress, requiredAmount } = req.body;
 
   const updatedProgram = {
@@ -529,14 +501,6 @@ app.patch('/api/programs/:programId', (req, res) => {
       console.log(err);
     })
 
-  // Program.findOne({ _id: programId })
-  //   .then((programDocument) => {
-  //     programDocument.programAbout.programName = programName;
-
-  //     programDocument.save()
-  //       .then(() => { console.log('Success!') });
-  //   });
-
 })
 
 // =================================
@@ -546,16 +510,13 @@ app.patch('/api/programs/:programId', (req, res) => {
 app.delete('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
-  // Find a program with the _id of programId to delete
   Program.deleteOne({ _id: programId })
-
-    // if successful, print Program ID deleted from MongoDB
     .then(result => {
       console.log(`Program ${programId}: deleted from MongoDB`);
-      res.status(200).json({ 
+      res.status(200).json({
         status: 'success',
         data: result,
-       });
+      });
     })
     // if failed, print error message
     .catch(err => {
@@ -573,12 +534,11 @@ app.delete('/api/sponsors/:sponsorId', (req, res) => {
     // if successful, print Program ID deleted from MongoDB
     .then(result => {
       console.log(`Sponsor ${sponsorId}: deleted from MongoDB`);
-      res.status(200).json({ 
+      res.status(200).json({
         status: 'success',
         data: result,
-       });
+      });
     })
-    // if failed, print error message
     .catch(err => {
       console.log('Error: ', err);
       res.status(400).json(err);
