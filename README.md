@@ -15,6 +15,17 @@ A platform that connects farmers directly to end consumers via a blockchain-enab
 
 The challenge was to create an application (web or mobile) to help the agricultural sector have an efficient farm-to-market process by utilizing blockchain technology.
 
+Our team's solution is to connect the involved and interested parties: the Farmers, NGOs and Donors/Sponsors. We provide a way for the programs of the NGOs to be more accessible.
+
+Bayanihan will help
+* Widen the sponsor and produce supplier network of NGOs
+* Build program portfolio of NGOs
+* Establish trust to NGOs and enforce transparency of program expenditures
+* Enable farmers to sell produce directly to NGOs
+* Program participation can help farmers establish creditworthiness
+
+`In fulfillment of UBP Xcellerator's Blockchain Development Program`
+
 ## Technologies
 
 * MERN Stack (MongoDB, ExpressJS, React, NodeJS)
