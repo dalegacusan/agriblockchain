@@ -26,8 +26,8 @@ export default function ThirdStep(props) {
 
   const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
 
-  const [ loading, setLoading ] = useState(false);
-  
+  const [loading, setLoading] = useState(false);
+
   const handleChange = e => {
     setOpenRegistrationData({
       ...openRegistrationData,
@@ -44,14 +44,28 @@ export default function ThirdStep(props) {
     }
     setLoading(true);
     if (type === 'sponsor') {
-      axios.post(`/api/crowdfunding/addNewFunder/`, openRegistrationData)
+      axios.post(`http://192.168.1.2:7545/api/crowdfunding/addNewFunder/`, openRegistrationData)
         .then(res => {
-          console.log(res);
-          alert('Successful registration!')
-          setOpenRegistrationData({})
-          setLoading(false);
-          history.push('/');
-        }) 
+          const { data } = res.data;
+          const { blockchain } = data;
+          const { address } = blockchain;
+          axios.post(
+            `http://192.168.1.2:7545/api/crowdfunding/mint/`,
+            {
+              amount: 100000,
+              bodyAddress: address,
+              // Enter Address Key
+              bodyPrivateKey: '0x6c68b1bc58f1fc4fefffdfe1849e8c0c94430784ec6615616c4a22d3ceced0dd'
+            }
+          )
+            .then(result => {
+              console.log(res);
+              alert('Successful registration!')
+              setOpenRegistrationData({})
+              setLoading(false);
+              history.push('/');
+            })
+        })
         .catch(err => {
           alert('Something went wrong. Please check logs.');
           console.error(err);
@@ -71,16 +85,16 @@ export default function ThirdStep(props) {
           </Typography>
         </Box>
       </Backdrop>
-    
+
       <Box mt={3}>
         <Typography component="h6" gutterBottom>
           Login Credentials
         </Typography>
         <form autoCapitalize="off">
           <Box>
-            <TextField 
+            <TextField
               required
-              fullWidth 
+              fullWidth
               id="username"
               name="username"
               label="Username"
@@ -93,9 +107,9 @@ export default function ThirdStep(props) {
               }}
               placeholder="Username"
             />
-            <TextField 
+            <TextField
               required
-              fullWidth 
+              fullWidth
               id="password"
               name="password"
               label="Password"
@@ -126,9 +140,9 @@ export default function ThirdStep(props) {
               >
                 Back
               </Button>
-              <Button 
-                variant="contained" 
-                color="primary" 
+              <Button
+                variant="contained"
+                color="primary"
                 onClick={handleSubmit}
                 disabled={openRegistrationData.username === '' || openRegistrationData.password === '' ? true : false}
               >

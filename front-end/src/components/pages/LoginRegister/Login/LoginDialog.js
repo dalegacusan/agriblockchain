@@ -97,17 +97,17 @@ export default function LoginDialog() {
   }
 
   useEffect(() => {
-    axios.get(`/api/ngo`)
+    axios.get(`http://192.168.1.2:7545/api/ngo`)
       .then(res => {
         setAllNgos(res.data)
       })
       .catch(err => console.error(err))
-    axios.get(`/api/farmers`)
+    axios.get(`http://192.168.1.2:7545/api/farmers`)
       .then(res => {
         setAllFarmers(res.data)
       })
       .catch(err => console.error(err))
-    axios.get(`/api/sponsors`)
+    axios.get(`http://192.168.1.2:7545/api/sponsors`)
       .then(res => {
         setAllSponsors(res.data)
       })

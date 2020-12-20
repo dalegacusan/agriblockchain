@@ -41,42 +41,7 @@ app.get('/', (req, res) => {
 // =================================
 
 // ===========================START TEST ACCOUNT=========================== //
-app.post('/api/create/ngo', (req, res) => {
 
-  const testNGO = new NGO({
-    loginDetails: {
-      username: 'red@cross.com',
-      password: 'redcrosspassword'
-    },
-    ngoAbout: {
-      ngoPicture: '/assets/img',
-      ngoName: 'Red Cross',
-      addressLine1: 'Quezon City',
-      addressLine2: 'Cavite City',
-      ngoRegion: 'NCR',
-      ngoCity: 'Manila',
-      ngoCountry: 'Philippines',
-    },
-    ngoContactDetails: {
-      authorizedRepresentative: 'Dale Gacusan',
-      ngoContactNumber: '1234567890',
-      ngoEmailAddress: 'dale@gmail.com'
-    },
-    programs: {
-      activePrograms: [],
-      completedPrograms: [],
-    }
-  });
-
-  testNGO.save()
-    .then(result => {
-      console.log('testNGO Saved to MongoDB!');
-    })
-    .catch(err => {
-      console.log('Error: ', err.errors._message);
-    });
-
-})
 app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
   const testProgramRequirementProduce = new produceRequirement({
@@ -95,8 +60,15 @@ app.post('/api/program/produce/add', (req, res) => {
       console.log(err);
     });
 })
-app.post('/api/create/farmer', (req, res) => {
 
+
+// ============================END TEST ACCOUNT============================ //
+
+// ======================================================================== //
+// =============================FOR DEMO=================================== //
+// ======================================================================== //
+
+app.post('/api/create/farmer', (req, res) => {
   const testFarmer = new Farmer({
     loginDetails: {
       username: "mangjose",
@@ -124,65 +96,66 @@ app.post('/api/create/farmer', (req, res) => {
 
   testFarmer.save()
     .then(result => {
-      console.log('testFarmer Saved to MongoDB!');
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-    });
+      console.log('Farmer saved to MongoDB!');
 
-});
-app.post('/api/create/sponsor', (req, res) => {
-
-  const {
-    username,
-    password,
-    corporationName,
-    addressLine1,
-    addressLine2,
-    region,
-    city,
-    country,
-    authorizedRepresentative,
-    contactNumber
-  } = req.body;
-
-  const newSponsor = new Sponsor({
-    loginDetails: {
-      username: username,
-      password: password
-    },
-    sponsorAbout: {
-      corporationName: corporationName,
-      addressLine1: addressLine1,
-      addressLine2: addressLine2,
-      region: region,
-      city: city,
-      country: country
-    },
-    contactDetails: {
-      authorizedRepresentative: authorizedRepresentative,
-      contactNumber: contactNumber,
-    },
-  });
-
-  newSponsor.save()
-    .then(result => {
-      console.log('Sponsor Saved to MongoDB!');
       res.status(200).json({
-        status: "success",
-        data: result
+        message: "Successfully saved Farmer to the database."
       });
     })
     .catch(err => {
-      console.log('Error saving sponsor: ', err);
-      res.status(400).json({
-        status: "error",
-        response: err
+      console.log('Error: ', err);
+
+      res.status(404).json({
+        message: "Failed to save Farmer to the database."
+      });
+    });
+
+});
+
+app.post('/api/create/ngo', (req, res) => {
+
+  const testNGO = new NGO({
+    loginDetails: {
+      username: 'red@cross.com',
+      password: 'redcrosspassword'
+    },
+    ngoAbout: {
+      ngoName: 'Philippine Red Cross',
+      addressLine1: 'Mandaluyong City',
+      addressLine2: 'Manila City',
+      region: 'NCR',
+      city: 'Manila',
+      country: 'Philippines',
+    },
+    contactDetails: {
+      authorizedRepresentative: 'Michael C. Lopez',
+      contactNumber: '845-435-1111',
+      emailAddress: 'lopezmichael@gmail.com'
+    },
+    programs: {
+      activePrograms: [],
+      completedPrograms: [],
+    }
+  });
+
+  testNGO.save()
+    .then(result => {
+      console.log('NGO Saved to MongoDB!');
+
+      res.status(200).json({
+        message: "Successfully saved NGO to the database."
+      });
+
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+
+      res.status(404).json({
+        message: "Failed to save NGO to the database."
       });
     });
 
 })
-// ============================END TEST ACCOUNT============================ //
 
 app.post('/api/create/program', (req, res) => {
 
@@ -214,30 +187,118 @@ app.post('/api/create/program', (req, res) => {
     sponsors: [],                // DEFAULT
   });
 
-  res.redirect('http://localhost:7545/api/crowdfunding/createNewProgram/')
+  // Save a farmer to MongoDB
+  newProgram.save()
+    .then(result => {
+      const { id } = result;
+      console.log(`Program ${programName}: Saved to MongoDB!`);
 
-  // // Save a farmer to MongoDB
-  // newProgram.save()
-  //   .then(result => {
-  //     console.log(`Program ${programName}: Saved to MongoDB!`);
-  //     res.json(result);
-  //   })
-  //   .catch(err => {
-  //     console.log('Error: ', err.errors['programAbout.ngo'].message);
-  //   });
+      const programToPush = {
+        programId: id,
+        programName,
+      }
+
+      NGO.findOneAndUpdate(
+        { _id: ngo },
+        { $push: { "programs.activePrograms": programToPush } }
+      )
+        .then(() => {
+          console.log("Successfully added Program to NGO activePrograms array.");
+
+          res.status(200).json({
+            message: "NGO successfully created a new program"
+          });
+        })
+        .catch((err) => {
+          console.log('Error: ', err);
+
+          res.status(404).json({
+            message: "Failed to create a new program"
+          });
+        });
+
+    })
+    .catch(err => {
+      console.log('Error: ', err.errors['programAbout.ngo'].message);
+    });
+
+})
+
+app.post('/api/create/sponsor', (req, res) => {
+
+  const {
+    name,
+    contactNumber,
+    representativeName,
+    address1,
+    address2,
+    region,
+    city,
+    country,
+    username,
+    password
+  } = req.body;
+
+  const newSponsor = new Sponsor({
+    loginDetails: {
+      username,
+      password
+    },
+    sponsorAbout: {
+      corporationName: name,
+      addressLine1: address1,
+      addressLine2: address2,
+      region,
+      city,
+      country
+    },
+    contactDetails: {
+      authorizedRepresentative: representativeName,
+      contactNumber,
+    },
+    walletBalance: 100000
+  });
+
+  newSponsor.save()
+    .then(result => {
+      console.log('Sponsor Saved to MongoDB!');
+      res.status(200).json({
+        status: "success",
+        data: result
+      });
+    })
+    .catch(err => {
+      console.log('Error saving sponsor: ', err);
+      res.status(400).json({
+        status: "error",
+        response: err
+      });
+    });
 
 })
 
 // ADD a Sponsor to a Program
-app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
+app.post('/api/program/:programId/sponsor/:sponsorId/add', async (req, res) => {
 
   const { programId, sponsorId } = req.params;
   const { amountFunded } = req.body;
 
+  let sponsor = await Sponsor.findById({ _id: sponsorId });
+
+  const { sponsorAbout } = sponsor;
+  const { corporationName } = sponsorAbout;
+
   const sponsorToPush = {
     sponsorId,
+    corporationName,
     amountFunded,
     dateFunded: new Date(),
+  }
+
+  const programToPush = {
+    programId,
+    amountFunded,
+    dateFunded: new Date()
   }
 
   // Add amountFunded to currentAmount of Program
@@ -256,13 +317,15 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
     }, { new: true })
     .then((program) => {
       console.log("Successfully added sponsor to Program's Sponsors array");
-      res.status(200).json({
-        status: "success",
-        data: program
-      });
 
       // Push programId to sponsoredPrograms array of Sponsor
-      Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
+      Sponsor.findOneAndUpdate(
+        { _id: sponsorId },
+        {
+          $push: { sponsoredPrograms: programToPush },
+          $inc: { walletBalance: -amountFunded }
+        }
+      )
         .then(() => {
           console.log("Added program to sponsoredPrograms array");
 
@@ -282,6 +345,10 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
               })
           }
 
+          res.status(200).json({
+            message: "Succesfully added program to sponsoredPrograms array"
+          });
+
         })
         .catch(err => {
           console.log(err);
@@ -299,33 +366,44 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', (req, res) => {
 })
 
 // ADD a Farmer to a program
-app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, res) => {
+app.post('/api/programs/:programId/farmer/:farmerId/add', (req, res) => {
 
   const { programId, farmerId } = req.params;
   const { name, price, quantity } = req.body;
+
+  const expectedAmountToReceive = price * quantity;
 
   const producePledge = {
     farmerId,
     name,
     price,
     quantity,
+    expectedAmountToReceive,
     dateParticipated: new Date(),
   }
 
   Program.findOneAndUpdate(
     { _id: programId },
     {
-      $push: producePledge,
+      $push: { farmersParticipating: producePledge },
     }, { new: true })
     .then((program) => {
       console.log("Successfully added Farmer to the Program's Farmers Participating array");
-      res.status(200).json({
-        status: "success",
-        data: program
-      });
+
+      const programToPush = {
+        programId,
+        name,
+        price,
+        quantity,
+        expectedAmountToReceive,
+        dateParticipated: new Date(),
+      }
 
       // Push programId to programsParticipated array of Farmer
-      Farmer.updateOne({ _id: farmerId }, { $push: { programsParticipated: programId } })
+      Farmer.updateOne(
+        { _id: farmerId },
+        { $push: { programsParticipated: programToPush } }
+      )
         .then(() => {
           console.log("Added program to programsParticipated array");
 
@@ -348,6 +426,10 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
           //      })
           //  } **/
 
+          res.status(200).json({
+            status: "success",
+          });
+
         })
         .catch(err => {
           console.log(err);
@@ -363,6 +445,63 @@ app.post('/api/programs/:programId/farmersParticipating/:farmerId/add', (req, re
     });
 
 })
+
+// Put stage to execution
+app.patch('/api/program/:programId/stage/execution', (req, res) => {
+
+  /*
+    Todo:
+
+    1) add a received field to each of farmer's programsParticipated
+  */
+
+  const { programId } = req.params;
+
+  const newStage = {
+    programAbout: {
+      stage: "execution"
+    }
+  }
+
+  Program.findOneAndUpdate(
+    { _id: programId },
+    { $set: flatten(newStage) },
+    { new: true }
+  )
+    .then(result => {
+      console.log("Program is moved to Execution stage");
+
+      const { farmersParticipating } = result;
+
+      farmersParticipating.forEach(async farmer => {
+        const { farmerId, expectedAmountToReceive } = farmer;
+
+        // Add amount to farmer wallet
+        await Farmer.findOneAndUpdate(
+          { _id: farmerId },
+          { $inc: { walletBalance: expectedAmountToReceive } }
+        )
+          .then(async result => {
+
+            res.status(200).json({
+              message: "Successfully updated farmer balance"
+            })
+
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+      })
+    })
+    .catch(err => {
+      console.log(err);
+    });
+})
+
+// ======================================================================== //
+// =============================FOR DEMO=================================== //
+// ======================================================================== //
 
 // ADD a Produce to a Farmer
 app.post('/api/farmers/:farmerId/produce/add', (req, res) => {

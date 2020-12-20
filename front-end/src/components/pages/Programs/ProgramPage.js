@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
   },
-  stage:{
+  stage: {
     display: 'inline-block',
     backgroundColor: theme.palette.secondary.main,
     padding: '0.2rem 0.5rem',
@@ -52,7 +52,7 @@ export default withRouter(function ProgramPage(props) {
   const { match } = props;
 
   const { loginData } = useContext(LoginDialogContext);
-  const [ program, setProgram ] = useState({
+  const [program, setProgram] = useState({
     "programAbout": {
       "completed": false,
       "status": "",
@@ -81,9 +81,9 @@ export default withRouter(function ProgramPage(props) {
       }
     ],
     "produceRequirements": [],
-    "id": ""    
+    "id": ""
   });
-  const [ ngo, setNgo ] = useState({
+  const [ngo, setNgo] = useState({
     "loginDetails": {
       "username": "",
       "password": "",
@@ -107,13 +107,13 @@ export default withRouter(function ProgramPage(props) {
       "ngoEmailAddress": ""
     },
     "id": "",
- })
-  const [ pledgeDialog, setPledgeDialog ] = useState({
+  })
+  const [pledgeDialog, setPledgeDialog] = useState({
     loading: false,
     open: false,
     pledgeAmount: 0,
   });
-  const [ produceDialog, setProduceDialog ] = useState({
+  const [produceDialog, setProduceDialog] = useState({
     loading: false,
     open: false,
     produce: {
@@ -129,7 +129,7 @@ export default withRouter(function ProgramPage(props) {
   const handlePledgeOpen = () => {
     setPledgeDialog({ ...pledgeDialog, open: true })
   }
-  
+
   const handlePledgeClose = () => {
     setPledgeDialog({ ...pledgeDialog, open: false })
   }
@@ -147,7 +147,7 @@ export default withRouter(function ProgramPage(props) {
   const handleProduceOpen = () => {
     setProduceDialog({ ...produceDialog, open: true })
   }
-  
+
   const handleProduceClose = () => {
     setProduceDialog({ ...produceDialog, open: false })
   }
@@ -158,33 +158,34 @@ export default withRouter(function ProgramPage(props) {
         ...pledgeDialog,
         loading: true
       })
-      // /api/crowdfunding/pledge/:programId/:sponsorId
-      axios.post(`/api/crowdfunding/pledge/${match.params.programId}/${loginData.uid}`, {
-        amount: pledgeDialog.pledgeAmount
-      }, { params: {
-        programId: match.params.programId,
-        sponsorId: loginData.uid
-      }})
-      .then(res => {
-        console.log(res.data)
-        setSuccess(true)
-        setPledgeDialog({
-          loading: false,
-          open: false,
-          pledgeAmount: 0
-        })
-        getProgramDetails()
+      axios.post(`http://192.168.1.2:7545/api/crowdfunding/pledge/${match.params.programId}/${loginData.uid}`, {
+        amountFunded: pledgeDialog.pledgeAmount
+      }, {
+        params: {
+          programId: match.params.programId,
+          sponsorId: loginData.uid
+        }
       })
-      .catch(err => {
-        console.error(err)
-        setError(true)
-        setPledgeDialog({
-          loading: false,
-          open: false,
-          pledgeAmount: 0
+        .then(res => {
+          console.log(res.data)
+          setSuccess(true)
+          setPledgeDialog({
+            loading: false,
+            open: false,
+            pledgeAmount: 0
+          })
+          getProgramDetails()
         })
-        getProgramDetails()
-      })
+        .catch(err => {
+          console.error(err)
+          setError(true)
+          setPledgeDialog({
+            loading: false,
+            open: false,
+            pledgeAmount: 0
+          })
+          getProgramDetails()
+        })
     } else {
       console.error('Not logged in as a sponsor!');
       setError(true);
@@ -204,8 +205,12 @@ export default withRouter(function ProgramPage(props) {
         ...produceDialog,
         loading: true
       })
-      // /api/crowdfunding/addFarmerPartnership/:programId/:farmerId
-      axios.post(`/api/crowdfunding/addFarmerPartnership/${match.params.programId}/${loginData.uid}`, produceDialog.produce)
+      axios.post(`http://192.168.1.2:7545/api/crowdfunding/addFarmerPartnership/${match.params.programId}/${loginData.uid}`, produceDialog.produce, {
+        params: {
+          programId: match.params.programId,
+          farmerId: loginData.uid
+        }
+      })
         .then(res => {
           console.log(res.data)
           setSuccess(true)
@@ -252,7 +257,7 @@ export default withRouter(function ProgramPage(props) {
   }
 
   const moveToExecution = () => {
-    confirm({ 
+    confirm({
       title: 'Move to Execution Stage?',
       description: 'This will automatically make the pledged funds available to be disbursed to farmers according to their contributions.',
       cancellationButtonProps: {
@@ -286,17 +291,17 @@ export default withRouter(function ProgramPage(props) {
   }
 
   const getProgramDetails = () => {
-    axios.get(`/api/programs/${match.params.programId}`)
+    axios.get(`http://192.168.1.2:7545/api/programs/${match.params.programId}`)
       .then((res) => {
         setProgram(res.data);
-        // if (res.data.programAbout && res.data.programAbout.ngo !== "") {
-        //   axios.get(`/api/ngo/${res.data.programAbout.ngo}`)
-        //     .then(res => setNgo(res.data))
-        //     .catch(err => console.error(err))
-        // }
+        if (res.data.programAbout && res.data.programAbout.ngo !== "") {
+          axios.get(`http://192.168.1.2:7545/api/ngo/${res.data.programAbout.ngo}`)
+            .then(res => setNgo(res.data))
+            .catch(err => console.error(err))
+        }
         if (res.data.sponsors.length !== 0) {
           res.data.sponsors.forEach(sponsor => {
-            axios.get(`/api/sponsors/${sponsor.sponsorId}`)
+            axios.get(`http://192.168.1.2:7545/api/sponsors/${sponsor.sponsorId}`)
               .then(res => {
                 sponsor.sponsorAbout = res.data.sponsorAbout
               })
@@ -305,7 +310,7 @@ export default withRouter(function ProgramPage(props) {
         }
         if (res.data.farmersParticipating.length !== 0) {
           res.data.farmersParticipating.forEach(farmer => {
-            axios.get(`/api/farmers/${farmer.farmerId}`)
+            axios.get(`http://192.168.1.2:7545/api/farmers/${farmer.farmerId}`)
               .then(res => {
                 farmer.farmerAbout = res.data.farmerAbout
               })
@@ -331,11 +336,11 @@ export default withRouter(function ProgramPage(props) {
           </Typography>
         </Box>
       </Backdrop>
-      
+
       {/* Main content */}
       <Container maxWidth="md" component={Box} mb={5}>
-        <Button 
-          startIcon={<ArrowBackIcon/>}
+        <Button
+          startIcon={<ArrowBackIcon />}
           onClick={() => history.goBack()}
         >
           Go Back to Programs
@@ -348,16 +353,15 @@ export default withRouter(function ProgramPage(props) {
                   {program.programAbout.programName}
                 </Typography>
                 <Typography component="h5" variant="h5" color="textSecondary" gutterBottom>
-                  {/* NGO: {ngo.ngoAbout.ngoName}&nbsp; 
-                  ({ngo && ngo.loginDetails.username}) */}
-                  NGO: Juan Foundation
+                  NGO: {ngo.ngoAbout.ngoName}&nbsp;
+                  ({ngo && ngo.loginDetails.username})
                 </Typography>
                 <Box>
                   <Typography display="inline" variant="subtitle2" gutterBottom>
                     Status: &nbsp;
                   </Typography>
                   <Typography display="inline" variant="overline" color="primary" gutterBottom>
-                    Active 
+                    Active
                   </Typography>
                 </Box>
                 <Box>
@@ -381,21 +385,21 @@ export default withRouter(function ProgramPage(props) {
           </Grid>
           <Grid item sm={12} md={8} lg={7}>
             <Box pb={2} display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <CircularProgressWithLabel value={ program.programAbout.currentAmount / program.programAbout.requiredAmount * 100} />
+              <CircularProgressWithLabel value={program.programAbout.currentAmount / program.programAbout.requiredAmount * 100} />
               <Box my={2}>
                 <Typography variant="h6" component="div">
                   &#8369;{program.programAbout.currentAmount} of &#8369;{program.programAbout.requiredAmount} pledged
                 </Typography>
               </Box>
-              <Box display={ program.programAbout.stage === "crowdfunding" ? "block" : "none" }>
+              <Box display={program.programAbout.stage === "crowdfunding" ? "block" : "none"}>
                 {
-                  loginData.username !== "" && ( loginData.type === "individual" || loginData.type === "corporation" ) ?
-                    <Button 
-                      variant="contained" 
+                  loginData.username !== "" && (loginData.type === "individual" || loginData.type === "corporation") ?
+                    <Button
+                      variant="contained"
                       color="primary"
-                      disabled={ program.programAbout.stage === "procurement" ? true : false }
+                      disabled={program.programAbout.stage === "procurement" ? true : false}
                       onClick={handlePledgeOpen}
-                    > 
+                    >
                       Make a Pledge
                     </Button>
                     :
@@ -404,14 +408,14 @@ export default withRouter(function ProgramPage(props) {
                     </Typography>
                 }
               </Box>
-              <Box display={ program.programAbout.stage === "procurement" ? "block" : "none" } textAlign="center">
+              <Box display={program.programAbout.stage === "procurement" ? "block" : "none"} textAlign="center">
                 {
                   loginData.username !== "" && loginData.type === "farmer" ?
-                    <Button 
-                      variant="contained" 
+                    <Button
+                      variant="contained"
                       color="primary"
                       onClick={handleProduceOpen}
-                    > 
+                    >
                       Offer Produce
                     </Button>
                     :
@@ -421,11 +425,11 @@ export default withRouter(function ProgramPage(props) {
                 }
                 {
                   loginData.username !== "" && loginData.type === "ngo" ?
-                    <Button 
-                      variant="contained" 
+                    <Button
+                      variant="contained"
                       color="primary"
                       onClick={moveToExecution}
-                    > 
+                    >
                       Move to Execution
                     </Button>
                     :
@@ -435,7 +439,7 @@ export default withRouter(function ProgramPage(props) {
             </Box>
           </Grid>
         </Grid>
-        <Divider/>
+        <Divider />
         <Box pt={3}>
           <Box mb={2} display={error ? "block" : "none"}>
             <Alert severity="error">Something went wrong. Please check logs.</Alert>
@@ -447,24 +451,22 @@ export default withRouter(function ProgramPage(props) {
             {program.programAbout.about}
           </Typography>
           <Typography variant="subtitle2">
-            Current sponsors          
+            Current sponsors
           </Typography>
           {
-            program.sponsors.map((programSponsor, index) => {
-              // alert(JSON.stringify(programSponsor))
-              return (
-                <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
-                  <Avatar>
-                    {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName[0]}
-                  </Avatar>
-                  <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
-                    {programSponsor.sponsorAbout && programSponsor.sponsorAbout.corporationName}
-                    (&#8369;{programSponsor.amountFunded})
-                  </Typography>
-                </Box>
-            )})
+            program.sponsors.map((programSponsor, index) => (
+              <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
+                <Avatar>
+                  {programSponsor.corporationName && programSponsor.corporationName[0]}
+                </Avatar>
+                <Typography variant="subtitle1" style={{ marginLeft: 8 }}>
+                  {programSponsor.corporationName && programSponsor.corporationName}&nbsp;
+                  (&#8369;{programSponsor.amountFunded})
+                </Typography>
+              </Box>
+            ))
           }
-          <br/>
+          <br />
           <Typography variant="subtitle2">
             Farmers participating
           </Typography>
@@ -482,7 +484,7 @@ export default withRouter(function ProgramPage(props) {
                     {programFarmer.quantity} kg of {programFarmer.name}
                   </Typography>
                 </Box>
-                
+
               </Box>
             ))
           }

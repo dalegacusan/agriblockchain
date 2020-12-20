@@ -45,7 +45,7 @@ export default function Programs() {
   const [ loading, setLoading ] = useState(true)
 
   useEffect(() => {
-    axios.get('/api/programs')
+    axios.get('http://192.168.1.2:7545/api/programs')
       .then((res) => {
         console.log(res.data);
         setLoading(false);
