@@ -68,8 +68,31 @@ export default function LoginDialog() {
   }
 
   const handleSubmit = () => {
-    setLoginData(tempData)
-    localStorage.setItem('loginCreds', JSON.stringify(tempData));
+    let balance = 0;
+    if (tempData.type === 'corporation' || tempData.type === 'individual' || tempData.type === 'farmer') {
+      axios.get(`/api/crowdfunding/balance/0x2B77ad74bAA70C00eb8cA8a6384eFB5859d047B6`)
+        .then(res => {
+          balance = res.data.balance;
+          setLoginData({
+            ...tempData,
+            walletBalance: balance,
+          });
+          localStorage.setItem('loginCreds', JSON.stringify({
+            ...tempData,
+            walletBalance: res.data.balance,
+          }));
+        })
+        .catch(err => {
+          console.error(err);
+          localStorage.setItem('loginCreds', JSON.stringify({
+            ...tempData,
+            walletBalance: 0,
+          }));
+        })
+    } else {
+      setLoginData(tempData)
+      localStorage.setItem('loginCreds', JSON.stringify(tempData));
+    }
     setOpenLoginDialog(false)
   }
 

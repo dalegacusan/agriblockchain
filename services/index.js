@@ -982,6 +982,171 @@ web3.eth.net.isListening()
             }
         });
 
+        // ******* WORKING ******* //
+        // Add a Farmer to a Program
+        app.post('/api/crowdfunding/addFarmerPartnership/:programId/:farmerId', async function (req, res) {
+
+            const { programId, farmerId } = req.params;
+            const { name, price, quantity } = req.body;
+
+            try {
+                Program.findById({ _id: programId })
+                    .then(async result => {
+                        const { blockchain: programBlockchainObj } = result;
+                        // const { blockchain: farmerDBAddress } = result;
+                        const { address: programDBAddress } = programBlockchainObj;
+
+                        Farmer.findById({ _id: farmerId })
+                            .then(async result => {
+                                // const { blockchain: farmerBlockchainObj } = result;
+                                const { blockchain: farmerDBAddress } = result;
+                                // const { address: farmerDBAddress } = farmerBlockchainObj;
+
+                                const callerAddress = OWNER_ADDRESS;
+                                const callerKey = OWNER_PRIVATE_KEY;
+                                const programAddress = programDBAddress;
+                                // Get address from Ganache accounts based on current instance of index
+                                const farmerAddress = farmerDBAddress;
+                                const amount = price * quantity;
+
+                                const producePledge = {
+                                    farmerId,
+                                    name,
+                                    price,
+                                    quantity,
+                                    dateParticipated: new Date(),
+                                }
+
+                                const data = crowdfundingContract
+                                    .methods
+                                    .addFarmerPartnership(
+                                        programAddress,
+                                        farmerAddress,
+                                        parseInt(amount)
+                                    )
+                                    .encodeABI();
+                                transactionHash = await buildSendTransaction(
+                                    callerAddress,
+                                    callerKey,
+                                    data,
+                                );
+
+                                Program.findOneAndUpdate(
+                                    { _id: programId },
+                                    {
+                                        $push: { farmersParticipating: producePledge },
+                                    }, { new: true })
+                                    .then((program) => {
+                                        console.log(program);
+                                        console.log("Successfully added Farmer to the Program's Farmers Participating array");
+
+                                        // Push programId to programsParticipated array of Farmer
+                                        Farmer.updateOne(
+                                            { _id: farmerId },
+                                            {
+                                                $push:
+                                                {
+                                                    programsParticipated: {
+                                                        programId,
+                                                        name,
+                                                        price,
+                                                        quantity
+                                                    }
+                                                }
+                                            })
+                                            .then(() => {
+                                                console.log("Added program to programsParticipated array");
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
+                                            })
+
+                                        res.status(200).json({
+                                            message: 'Successfully added farmer',
+                                        });
+
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        res.status(400).json({
+                                            status: "error",
+                                            response: err
+                                        });
+                                    });
+                            })
+
+                    })
+                    .catch(err => {
+                        console.log('Error', err);
+                    })
+
+            } catch (error) {
+                console.log(error)
+
+                res.status(500).json({
+                    message: 'Failed to add farmer.'
+                });
+            }
+        });
+
+        // ************ Working BUT NEEDS VERIFICATION ============= //
+        app.post('/api/crowdfunding/transferFunds/:programId/:farmerId', async function (req, res) {
+
+            const { programId, farmerId } = req.params;
+
+            try {
+
+                Program.findById({ _id: programId })
+                    .then(async result => {
+                        const { blockchain: programBlockchainObj } = result;
+                        const { address: programDBAddress } = programBlockchainObj;
+
+                        Farmer.findById({ _id: farmerId })
+                            .then(async result => {
+                                // const { blockchain: farmerBlockchainObj } = result;
+                                console.log(result)
+                                const { blockchain: farmerDBAddress } = result;
+                                // const { address: farmerDBAddress } = farmerBlockchainObj;
+
+                                const callerAddress = OWNER_ADDRESS;
+                                const callerKey = OWNER_PRIVATE_KEY;
+                                const programAddress = programDBAddress;
+                                const farmerAddress = farmerDBAddress;
+                                const amount = req.body.amount;
+
+                                const data = crowdfundingContract
+                                    .methods
+                                    .transferFunds(
+                                        programAddress,
+                                        farmerAddress,
+                                        parseInt(amount)
+                                    )
+                                    .encodeABI();
+                                transactionHash = await buildSendTransaction(
+                                    callerAddress,
+                                    callerKey,
+                                    data,
+                                );
+
+                                const decrement = {
+                                    programAbout: {
+                                        currentAmount: -amount
+                                    }
+                                }
+
+                                Program.findOneAndUpdate(
+                                    { _id: programId },
+                                    { $inc: flatten(decrement) }
+                                )
+                                    .then(result => {
+                                        console.log("Successfully updated currentAmount of Program")
+                                    })
+
+                                res.status(200).json({
+                                    message: 'Successfully trasnferred tokens to farmer',
+                                });
+                            })
+
 
 
 
@@ -1038,6 +1203,47 @@ web3.eth.net.isListening()
         //          CREATE Data Only
         // =================================
 
+            const newNGO = new NGO({
+                blockchain: {
+                    address: OWNER_ADDRESS
+                },
+                loginDetails: {
+                    username: "zubirijuan",
+                    password: "josemang123",
+                  },
+                  ngoAbout: {
+                    ngoName: "Juan Foundation",
+                    addressLine1: "Cotabato City",
+                    addressLine2: "Paranaque City",
+                    region: "NCR",
+                    city: "Manila",
+                    country: "Philippines",
+                  },
+                  ngoContactDetails: {
+                    authorizedRepresentative: "Juan Miguel Zubiri",
+                    ngoContactNumber: 09123456789,
+                  },
+                  programs: {
+                    activePrograms: [],
+                    completedPrograms: [],
+                }
+                // ngoAbout: {
+                //     ngoName: name,
+                //     addressLine1: address1,
+                //     addressLine2: address2,
+                //     ngoRegion: region,
+                //     ngoCity: city,
+                //     ngoCountry: country,
+                // },
+                // ngoContactDetails: {
+                //     authorizedRepresentative: representativeName,
+                //     ngoContactNumber: contactNumber,
+                // },
+                // programs: {
+                //     activePrograms: [],
+                //     completedPrograms: [],
+                // }
+            });
 
 
 

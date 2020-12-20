@@ -122,8 +122,9 @@ export default withRouter(function ProgramPage(props) {
       quantity: 0,
     }
   });
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [ executionLoading, setExecutionLoading ] = useState(false);
+  const [ success, setSuccess ] = useState(false);
+  const [ error, setError ] = useState(false);
 
   const handlePledgeOpen = () => {
     setPledgeDialog({ ...pledgeDialog, open: true })
@@ -264,13 +265,29 @@ export default withRouter(function ProgramPage(props) {
       }
     })
       .then(() => {
-        axios.patch(`http://192.168.1.2:7545/api/program/${match.params.programId}/stage/execution`)
-        .then(result => {
-          setSuccess(true);
-          alert("Program has moved to execution stage");
+        setExecutionLoading(true)
+        program.farmersParticipating.forEach(farmer => {
+          axios.post(`/api/crowdfunding/transferFunds/${match.params.programId}/${farmer.farmerId}`)
+          .then((res) => {
+            setSuccess(true)
+            console.log(res.data)
+            getProgramDetails()
+            setExecutionLoading(false)
+          })
+          .catch(err => {
+            setError(true);
+            setSuccess(false);
+            console.error(err)
+            getProgramDetails()
+            setExecutionLoading(false)
+          })
         })
+        
       })
-      .catch(() => console.log("Canceled move to execution"));
+      .catch(() => {
+        console.log("Canceled move to execution")
+        setExecutionLoading(false)
+      });
   }
 
   const getProgramDetails = () => {
@@ -311,7 +328,7 @@ export default withRouter(function ProgramPage(props) {
   return (
     <>
       {/* Backdrop Status */}
-      <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading}>
+      <Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading || executionLoading}>
         <CircularProgress size={28} color="inherit" />
         <Box ml={2}>
           <Typography variant="button">
