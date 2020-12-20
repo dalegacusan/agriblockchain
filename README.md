@@ -40,6 +40,8 @@ Lorem ipsum
 
 ## Team
 
+<img src="https://imgur.com/bYSaTUY.png" width="100"/>
+
 <a href="https://github.com/swenceslao/agriblockchain/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=swenceslao/agriblockchain" />
 </a>
