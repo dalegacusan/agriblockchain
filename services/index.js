@@ -50,7 +50,6 @@ web3.eth.net.isListening()
         // For ACCOUNT GENERATION - used for generating a Program Details
         const accounts = new Web3EthAccounts(`ws://${WEB3_PROVIDER}`);
         const ganacheAddresses = await web3.eth.getAccounts();
-        let ganacheAddressIndex = 0;
 
         // CONNECTION DETAILS //
         console.log("Truffle Connected!");
@@ -84,13 +83,286 @@ web3.eth.net.isListening()
         //                       START: BLOCKCHAIN ENDPOINTS                     //
         // ===================================================================== //
 
-        // ******* WORKING ******* //
-        // Mints to address specified in .env ONLY
-        app.post('/api/crowdfunding/mint/:user/:userId', async function (req, res) {
+        // CURRENT GANACHE ADDRESS: [2]
+        // Farmer: [1]
+        // Sponsor [2]
+
+        app.post('/api/create/ngo', (req, res) => {
+
+            const {
+                name,
+                contactNumber,
+                representativeName,
+                address1,
+                address2,
+                region,
+                city,
+                country,
+                username,
+                password
+            } = req.body;
+
+            const newNGO = new NGO({
+                blockchain: {
+                    address: OWNER_ADDRESS
+                },
+                loginDetails: {
+                    username,
+                    password
+                },
+                ngoAbout: {
+                    ngoName: name,
+                    addressLine1: address1,
+                    addressLine2: address2,
+                    ngoRegion: region,
+                    ngoCity: city,
+                    ngoCountry: country,
+                },
+                ngoContactDetails: {
+                    authorizedRepresentative: representativeName,
+                    ngoContactNumber: contactNumber,
+                },
+                programs: {
+                    activePrograms: [],
+                    completedPrograms: [],
+                }
+            });
+
+            newNGO.save()
+                .then(result => {
+                    console.log('NGO Saved to Database!');
+
+                    res.status(200).json({
+                        message: "Successfully saved NGO to Database"
+                    })
+                })
+                .catch(err => {
+                    console.log('Error: ', err);
+
+                    res.status(404).json({
+                        message: "Failed to save NGO to Database"
+                    })
+                });
+
+        });
+
+        app.post('/api/create/farmer', (req, res) => {
+
+            const testFarmer = new Farmer({
+                blockchain: {
+                    address: ganacheAddresses[1]
+                },
+                loginDetails: {
+                    username: "mangjose",
+                    password: "josemang123"
+                },
+                farmerAbout: {
+                    firstName: "Juan",
+                    middleName: "Sy",
+                    lastName: "Jose",
+                    suffix: "M",
+                    addressLine1: "Cotabato City",
+                    addressLine2: "Paranaque City",
+                    region: "NCR",
+                    city: "Manila",
+                    country: "Philippines",
+                },
+                contactDetails: {
+                    emailAddress: "mangjose@gmail.com",
+                    contactNumber: "1234567890"
+                },
+                // producePortfolio: { type: Array, default: [] },        // DEFAULT
+                // programsParticipated: { type: Array, default: [] },    // DEFAULT
+                // walletBalance: { type: Number, default: 0 }            // DEFAULT
+            });
+
+            testFarmer.save()
+                .then(result => {
+                    console.log('Farmer Saved to MongoDB!');
+
+                    res.status(200).json({
+                        message: "Successfully saved Farmer to Database"
+                    })
+                })
+                .catch(err => {
+                    console.log('Error: ', err);
+
+                    res.status(404).json({
+                        message: "Failed to save Farmer to Database"
+                    })
+                });
+
+        });
+
+        app.post('/api/crowdfunding/createNewProgram/', async function (req, res) {
+            const {
+                programName,        // User
+                about,              // User
+                completed,          // DEFAULT = false
+                cityAddress,        // User
+                ngo,                // REQUIRED
+                status,             // DEFAULT = "active"
+                stage,              // DEFAULT = "crowdfunding"
+                requiredAmount,     // User 
+                programDate         // DEFAULT = new Date()
+            } = req.body;
+
             try {
+                // Generate a new account for a program
+                const newAccount = await accounts.create();
+
                 const callerAddress = OWNER_ADDRESS;
                 const callerKey = OWNER_PRIVATE_KEY;
-                const amount = req.body.amount;
+                const address = newAccount.address;
+
+                const newProgram = new Program({
+                    blockchain: newAccount,
+                    programAbout: {
+                        programName,
+                        about,
+                        cityAddress,
+                        // Assumes that the caller is an NGO
+                        ngo,
+                        requiredAmount,
+                    },
+                    timeline: {
+                        programDate: programDate,
+                    },
+                    produceRequirements: [],
+                    farmersParticipating: [],    // DEFAULT
+                    sponsors: [],                // DEFAULT
+                });
+
+                const data = crowdfundingContract
+                    .methods
+                    .createNew(
+                        address,
+                        parseInt(requiredAmount),
+                    )
+                    .encodeABI();
+                transactionHash = await buildSendTransaction(
+                    callerAddress,
+                    callerKey,
+                    data,
+                );
+
+                // Save a farmer to MongoDB
+                newProgram.save()
+                    .then(result => {
+                        console.log(`Program ${programName}: Saved to Database!`);
+
+                        res.status(200).json({
+                            message: "Successfully saved Program to Database"
+                        });
+
+                    })
+                    .catch(err => {
+                        console.log('Error: ', err.errors['programAbout.ngo'].message);
+
+                        res.status(404).json({
+                            message: 'Failed to save Program to Database'
+                        });
+                    });
+
+            } catch (error) {
+                console.error(error);
+
+                res.status(500).json({
+                    message: 'Failed to create program.'
+                });
+            }
+        });
+
+        // Create a new Sponsor
+        app.post('/api/crowdfunding/addNewFunder/', async function (req, res) {
+
+            const {
+                name,
+                contactNumber,
+                representativeName,
+                address1,
+                address2,
+                region,
+                city,
+                country,
+                username,
+                password
+            } = req.body;
+
+            try {
+                // Enter your own OWNER_ADDRESS and OWNER_PRIVATE_KEY in .env
+                const callerAddress = OWNER_ADDRESS;
+                const callerKey = OWNER_PRIVATE_KEY;
+                const funderAddress = ganacheAddresses[2];
+
+                const newSponsor = new Sponsor({
+                    blockchain: {
+                        address: funderAddress
+                    },
+                    loginDetails: {
+                        username,
+                        password
+                    },
+                    sponsorAbout: {
+                        corporationName: name,
+                        addressLine1: address1,
+                        addressLine2: address2,
+                        region,
+                        city,
+                        country
+                    },
+                    contactDetails: {
+                        authorizedRepresentative: representativeName,
+                        contactNumber,
+                    },
+                    // sponsoredPrograms: Array,      // DEFAULT = []
+                    walletBalance: 100000
+                });
+
+                const data = crowdfundingContract
+                    .methods
+                    .addNewFunder(
+                        funderAddress,
+                    )
+                    .encodeABI();
+                transactionHash = await buildSendTransaction(
+                    callerAddress,
+                    callerKey,
+                    data,
+                );
+
+                // Save a Sponsor to MongoDB
+                newSponsor.save()
+                    .then(result => {
+                        console.log('Sponsor Saved to MongoDB!');
+                        res.status(200).json({
+                            message: 'Successfully added funder.',
+                            data: result
+                        });
+                    })
+                    .catch(err => {
+                        console.log('Error: ', err);
+                    });
+
+
+            } catch (error) {
+                console.error(error);
+
+                res.status(500).json({
+                    message: 'Failed to add funder.'
+                });
+            }
+        });
+
+        // Gives money to an address
+        app.post('/api/crowdfunding/mint/', async function (req, res) {
+
+            const { bodyAddress, bodyPrivateKey, amount } = req.body;
+
+            try {
+
+                const callerAddress = bodyAddress;
+                const callerKey = bodyPrivateKey;
 
                 const data = crowdfundingContract
                     .methods
@@ -107,6 +379,7 @@ web3.eth.net.isListening()
                 res.status(200).json({
                     message: 'Successfully minted ' + amount + ' for ' + callerAddress,
                 });
+
             } catch (error) {
                 console.error(error);
 
@@ -115,6 +388,291 @@ web3.eth.net.isListening()
                 });
             }
         });
+
+        // Add a Sponsor to a Program
+        app.post('/api/crowdfunding/pledge/:programId/:sponsorId', async function (req, res) {
+
+            const { programId, sponsorId } = req.params;
+
+            try {
+
+                Program.find({ _id: programId })
+                    .then(async result => {
+
+                        const callerAddress = ganacheAddresses[2];
+                        const callerKey = "0x6c68b1bc58f1fc4fefffdfe1849e8c0c94430784ec6615616c4a22d3ceced0dd";
+                        // Get blockchain address of program
+                        const address = result[0].blockchain.address;
+                        const amountFunded = req.body.amountFunded;
+
+                        const sponsorToPush = {
+                            sponsorId,
+                            amountFunded,
+                            dateFunded: new Date(),
+                        }
+
+                        // Add amount to currentAmount of Program
+                        const newAmount = {
+                            programAbout: {
+                                currentAmount: amountFunded
+                            }
+                        }
+
+                        const data = crowdfundingContract
+                            .methods
+                            .pledge(
+                                address,
+                                parseInt(amountFunded),
+                            )
+                            .encodeABI();
+                        transactionHash = await buildSendTransaction(
+                            callerAddress,
+                            callerKey,
+                            data,
+                        );
+
+                        Program.findOneAndUpdate(
+                            { _id: programId },
+                            {
+                                $push: { sponsors: sponsorToPush },
+                                $inc: flatten(newAmount)
+                            }, { new: true })
+                            .then((program) => {
+                                console.log("Successfully added sponsor to Program's Sponsors array");
+
+                                // Push programId to sponsoredPrograms array of Sponsor
+                                Sponsor.findOneAndUpdate({ _id: sponsorId }, { $push: { sponsoredPrograms: programId }, $inc: { walletBalance: -amountFunded } })
+                                    .then(() => {
+                                        console.log("Added program to sponsoredPrograms array");
+
+                                        const { programAbout } = program;
+                                        const { currentAmount, requiredAmount } = programAbout;
+
+                                        /* 
+                                          Check if currentAmount of Program is >= required amount
+                                          IF TRUE, set Program's stage to "procurement"
+                                        */
+                                        if (currentAmount >= requiredAmount) {
+                                            program.programAbout.stage = "procurement"
+
+                                            program.save()
+                                                .then(() => {
+                                                    console.log("Program is now in Procurement Phase!");
+                                                })
+                                        }
+
+                                        res.status(200).json({
+                                            message: 'Successfully pledged ' + amountFunded + ' for ' + address,
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                    })
+
+                            })
+
+                    });
+
+            } catch (error) {
+                console.log(error);
+
+                res.status(500).json({
+                    message: 'Failed to create pledge.'
+                });
+            }
+        });
+
+        // Add a Farmer to a Program
+        app.post('/api/crowdfunding/addFarmerPartnership/:programId/:farmerId', async function (req, res) {
+
+            const { programId, farmerId } = req.params;
+            const { name, price, quantity } = req.body;
+
+            const expectedAmountToReceive = price * quantity;
+
+            try {
+                Program.findById({ _id: programId })
+                    .then(async result => {
+                        const { blockchain: programBlockchainObj } = result;
+                        const { address: programDBAddress } = programBlockchainObj;
+
+                        Farmer.findById({ _id: farmerId })
+                            .then(async result => {
+                                const { blockchain: farmerBlockchainObj } = result;
+                                const { address: farmerDBAddress } = farmerBlockchainObj;
+
+                                const callerAddress = OWNER_ADDRESS;
+                                const callerKey = OWNER_PRIVATE_KEY;
+                                const programAddress = programDBAddress;
+                                // Get address from Ganache accounts based on current instance of index
+                                const farmerAddress = farmerDBAddress;
+
+                                const producePledge = {
+                                    farmerId,
+                                    farmerAddress: farmerDBAddress,
+                                    name,
+                                    price,
+                                    quantity,
+                                    expectedAmountToReceive,
+                                    dateParticipated: new Date(),
+                                }
+
+                                const data = crowdfundingContract
+                                    .methods
+                                    .addFarmerPartnership(
+                                        programAddress,
+                                        farmerAddress,
+                                        parseInt(expectedAmountToReceive)
+                                    )
+                                    .encodeABI();
+                                transactionHash = await buildSendTransaction(
+                                    callerAddress,
+                                    callerKey,
+                                    data,
+                                );
+
+                                Program.findOneAndUpdate(
+                                    { _id: programId },
+                                    {
+                                        $push: { farmersParticipating: producePledge },
+                                    }, { new: true })
+                                    .then((program) => {
+                                        console.log("Successfully added Farmer to the Program's Farmers Participating array");
+
+                                        // Push programId to programsParticipated array of Farmer
+                                        Farmer.updateOne(
+                                            { _id: farmerId },
+                                            {
+                                                $push:
+                                                {
+                                                    programsParticipated: {
+                                                        programId,
+                                                        name,
+                                                        price,
+                                                        quantity,
+                                                        expectedAmountToReceive
+                                                    }
+                                                }
+                                            })
+                                            .then(() => {
+                                                console.log("Added program to programsParticipated array");
+
+                                                res.status(200).json({
+                                                    message: 'Successfully added Farmer to Program',
+                                                });
+                                            })
+                                            .catch(err => {
+                                                console.log(err);
+
+                                                res.status(404).json({
+                                                    message: 'Failed to add Farmer to Program',
+                                                });
+                                            })
+
+
+
+                                    })
+                                    .catch(err => {
+                                        console.error(err);
+                                        res.status(400).json({
+                                            status: "error",
+                                            response: err
+                                        });
+                                    });
+                            })
+
+                    })
+                    .catch(err => {
+                        console.log('Error', err);
+                    })
+
+            } catch (error) {
+                console.log(error)
+
+                res.status(500).json({
+                    message: 'Failed to add farmer.'
+                });
+            }
+        });
+
+        // Put stage to execution
+        app.patch('/api/program/:programId/stage/execution', (req, res) => {
+
+            /*
+              Todo:
+          
+              1) add a received field to each of farmer's programsParticipated
+            */
+
+            const { programId } = req.params;
+
+            const newStage = {
+                programAbout: {
+                    stage: "execution"
+                }
+            }
+
+            Program.findOneAndUpdate(
+                { _id: programId },
+                { $set: flatten(newStage) },
+                { new: true }
+            )
+                .then(result => {
+                    console.log("Program is moved to Execution stage");
+
+                    const { farmersParticipating, blockchain } = result;
+                    const { address: programDBAddress } = blockchain;
+
+                    farmersParticipating.forEach(async farmer => {
+                        const { farmerId, expectedAmountToReceive, farmerAddress: farmerDBAddress } = farmer;
+                        const callerAddress = OWNER_ADDRESS;
+                        const callerKey = OWNER_PRIVATE_KEY;
+
+                        const data = await crowdfundingContract
+                            .methods
+                            .transferFunds(
+                                programDBAddress,
+                                farmerDBAddress,
+                                parseInt(expectedAmountToReceive)
+                            )
+                            .encodeABI();
+                        transactionHash = await buildSendTransaction(
+                            callerAddress,
+                            callerKey,
+                            data,
+                        );
+
+                        // Add amount to farmer wallet
+                        await Farmer.findOneAndUpdate(
+                            { _id: farmerId },
+                            { $inc: { walletBalance: expectedAmountToReceive } }
+                        )
+                            .then(async result => {
+
+                                res.status(200).json({
+                                    message: "Successfully updated farmer balance"
+                                })
+
+                            })
+                            .catch(err => {
+                                console.log(err);
+                            });
+
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        })
+
+
+
+
+
+
+
+
+
 
         // ************ Working BUT NEEDS VERIFICATION ============= //
         app.post('/api/crowdfunding/burn/', async function (req, res) {
@@ -148,89 +706,6 @@ web3.eth.net.isListening()
         });
 
         // ******* WORKING ******* //
-        // Manually set OWNER_ADDRESS and OWNER_PRIVATE_KEY from Ganache Accounts
-        // Create a new Sponsor
-        app.post('/api/crowdfunding/addNewFunder/', async function (req, res) {
-
-            const {
-                name,
-                contactNumber,
-                representativeName,
-                address1,
-                address2,
-                region,
-                city,
-                country,
-                username,
-                password
-            } = req.body;
-
-            try {
-                ganacheAddressIndex += 1;
-                // Enter your own OWNER_ADDRESS and OWNER_PRIVATE_KEY in .env
-                const callerAddress = OWNER_ADDRESS;
-                const callerKey = OWNER_PRIVATE_KEY;
-                const funderAddress = ganacheAddresses[ganacheAddressIndex];
-
-                const newSponsor = new Sponsor({
-                    blockchain: {
-                        address: funderAddress
-                    },
-                    loginDetails: {
-                        username,
-                        password
-                    },
-                    sponsorAbout: {
-                        corporationName: name,
-                        addressLine1: address1,
-                        addressLine2: address2,
-                        region,
-                        city,
-                        country
-                    },
-                    contactDetails: {
-                        authorizedRepresentative: representativeName,
-                        contactNumber,
-                    },
-                    // sponsoredPrograms: Array,      // DEFAULT = []
-                    // walletBalance: Number          // DEFAULT = 0
-                });
-
-                const data = crowdfundingContract
-                    .methods
-                    .addNewFunder(
-                        funderAddress,
-                    )
-                    .encodeABI();
-                transactionHash = await buildSendTransaction(
-                    callerAddress,
-                    callerKey,
-                    data,
-                );
-
-                // Save a Sponsor to MongoDB
-                newSponsor.save()
-                    .then(result => {
-                        console.log('Sponsor Saved to MongoDB!');
-                    })
-                    .catch(err => {
-                        console.log('Error: ', err);
-                    });
-
-                res.status(200).json({
-                    message: 'Successfully added funder.',
-                });
-            } catch (error) {
-                console.error(error);
-
-                res.status(500).json({
-                    message: 'Failed to add funder.'
-                });
-            }
-        });
-
-        // ******* WORKING ******* //
-        // app.get('/api/crowdfunding/balance/:address', async function (req, res) {
         app.get('/api/crowdfunding/balance/:userType/:userId', async function (req, res) {
 
             const { userType, userId } = req.params;
@@ -264,7 +739,6 @@ web3.eth.net.isListening()
         });
 
         // ******* WORKING ******* //
-        // app.get('/api/crowdfunding/program/:address', async function (req, res) {
         app.get('/api/crowdfunding/program/:programId', async function (req, res) {
 
             const { programId } = req.params;
@@ -340,181 +814,9 @@ web3.eth.net.isListening()
             }
         });
 
-        // ******* WORKING ******* //
-        app.post('/api/crowdfunding/createNewProgram/', async function (req, res) {
-            const {
-                programName,        // User
-                about,              // User
-                completed,          // DEFAULT = false
-                cityAddress,        // User
-                ngo,                // REQUIRED
-                status,             // DEFAULT = "active"
-                stage,              // DEFAULT = "crowdfunding"
-                requiredAmount,     // User 
-                programDate         // DEFAULT = new Date()
-            } = req.body;
-
-            try {
-                // Generate a new account for a program
-                const newAccount = await accounts.create();
-
-                const callerAddress = OWNER_ADDRESS;
-                const callerKey = OWNER_PRIVATE_KEY;
-                const address = newAccount.address;
-
-                const newProgram = new Program({
-                    blockchain: newAccount,
-                    programAbout: {
-                        programName,
-                        about,
-                        cityAddress,
-                        // Assumes that the caller is an NGO
-                        ngo: callerAddress,
-                        requiredAmount,
-                    },
-                    timeline: {
-                        programDate: programDate,
-                    },
-                    produceRequirements: [],
-                    farmersParticipating: [],    // DEFAULT
-                    sponsors: [],                // DEFAULT
-                });
-
-                const data = crowdfundingContract
-                    .methods
-                    .createNew(
-                        address,
-                        parseInt(requiredAmount),
-                    )
-                    .encodeABI();
-                transactionHash = await buildSendTransaction(
-                    callerAddress,
-                    callerKey,
-                    data,
-                );
-
-                // Save a farmer to MongoDB
-                newProgram.save()
-                    .then(result => {
-                        console.log(`Program ${programName}: Saved to MongoDB!`);
-                    })
-                    .catch(err => {
-                        console.log('Error: ', err.errors['programAbout.ngo'].message);
-                    });
-
-                res.status(200).json({
-                    message: 'Successfully created program at' + address,
-                });
 
 
-            } catch (error) {
-                console.error(error);
 
-                res.status(500).json({
-                    message: 'Failed to create new program.'
-                });
-            }
-        });
-
-        // ADD TRANSFERFUNDS FUNCTION
-        // ******* WORKING ******* //
-        // Add a Sponsor to a Program
-        app.post('/api/crowdfunding/pledge/:programId/:sponsorId', async function (req, res) {
-
-            const { programId, sponsorId } = req.params;
-
-            // callerAddress and callerKey is SPONSOR
-
-            try {
-
-                Program.find({ _id: programId })
-                    .then(async result => {
-
-                        const callerAddress = OWNER_ADDRESS;
-                        const callerKey = OWNER_PRIVATE_KEY;
-                        // Get blockchain address of program
-                        console.log(result);
-                        const address = result[0].blockchain.address;
-                        const amountFunded = req.body.amount;
-
-                        const sponsorToPush = {
-                            sponsorId,
-                            amountFunded,
-                            dateFunded: new Date(),
-                        }
-
-                        // Add amount to currentAmount of Program
-                        const newAmount = {
-                            programAbout: {
-                                currentAmount: amountFunded
-                            }
-                        }
-
-                        const data = crowdfundingContract
-                            .methods
-                            .pledge(
-                                address,
-                                parseInt(amountFunded),
-                            )
-                            .encodeABI();
-                        transactionHash = await buildSendTransaction(
-                            callerAddress,
-                            callerKey,
-                            data,
-                        );
-
-                        Program.findOneAndUpdate(
-                            { _id: programId },
-                            {
-                                $push: { sponsors: sponsorToPush },
-                                $inc: flatten(newAmount)
-                            }, { new: true })
-                            .then((program) => {
-                                console.log("Successfully added sponsor to Program's Sponsors array");
-
-                                // Push programId to sponsoredPrograms array of Sponsor
-                                Sponsor.updateOne({ _id: sponsorId }, { $push: { sponsoredPrograms: programId } })
-                                    .then(() => {
-                                        console.log("Added program to sponsoredPrograms array");
-
-                                        const { programAbout } = program;
-                                        const { currentAmount, requiredAmount } = programAbout;
-
-                                        /* 
-                                          Check if currentAmount of Program is >= required amount
-                                          IF TRUE, set Program's stage to "procurement"
-                                        */
-                                        if (currentAmount >= requiredAmount) {
-                                            program.programAbout.stage = "procurement"
-
-                                            program.save()
-                                                .then(() => {
-                                                    console.log("Program is now in Procurement Phase!");
-                                                })
-                                        }
-
-                                    })
-                                    .catch(err => {
-                                        console.log(err);
-                                    })
-
-                            })
-
-                        res.status(200).json({
-                            message: 'Successfully pledged ' + amountFunded + ' for ' + address,
-                        });
-
-                    });
-
-
-            } catch (error) {
-                console.log(error);
-
-                res.status(500).json({
-                    message: 'Failed to create pledge.'
-                });
-            }
-        });
 
         // ADD TRANSFERFUNDS FUNCTION
         // ******* WORKING ******* //
@@ -680,178 +982,8 @@ web3.eth.net.isListening()
             }
         });
 
-        // ******* WORKING ******* //
-        // Add a Farmer to a Program
-        app.post('/api/crowdfunding/addFarmerPartnership/:programId/:farmerId', async function (req, res) {
-
-            const { programId, farmerId } = req.params;
-            const { name, price, quantity } = req.body;
-
-            try {
-                Program.findById({ _id: programId })
-                    .then(async result => {
-                        const { blockchain: programBlockchainObj } = result;
-                        const { address: programDBAddress } = programBlockchainObj;
-
-                        Farmer.findById({ _id: farmerId })
-                            .then(async result => {
-                                const { blockchain: farmerBlockchainObj } = result;
-                                const { address: farmerDBAddress } = farmerBlockchainObj;
-
-                                const callerAddress = OWNER_ADDRESS;
-                                const callerKey = OWNER_PRIVATE_KEY;
-                                const programAddress = programDBAddress;
-                                // Get address from Ganache accounts based on current instance of index
-                                const farmerAddress = farmerDBAddress;
-                                const amount = price * quantity;
-
-                                const producePledge = {
-                                    farmerId,
-                                    name,
-                                    price,
-                                    quantity,
-                                    dateParticipated: new Date(),
-                                }
-
-                                const data = crowdfundingContract
-                                    .methods
-                                    .addFarmerPartnership(
-                                        programAddress,
-                                        farmerAddress,
-                                        parseInt(amount)
-                                    )
-                                    .encodeABI();
-                                transactionHash = await buildSendTransaction(
-                                    callerAddress,
-                                    callerKey,
-                                    data,
-                                );
-
-                                Program.findOneAndUpdate(
-                                    { _id: programId },
-                                    {
-                                        $push: { farmersParticipating: producePledge },
-                                    }, { new: true })
-                                    .then((program) => {
-                                        console.log(program);
-                                        console.log("Successfully added Farmer to the Program's Farmers Participating array");
-
-                                        // Push programId to programsParticipated array of Farmer
-                                        Farmer.updateOne(
-                                            { _id: farmerId },
-                                            {
-                                                $push:
-                                                {
-                                                    programsParticipated: {
-                                                        programId,
-                                                        name,
-                                                        price,
-                                                        quantity
-                                                    }
-                                                }
-                                            })
-                                            .then(() => {
-                                                console.log("Added program to programsParticipated array");
-                                            })
-                                            .catch(err => {
-                                                console.log(err);
-                                            })
-
-                                        res.status(200).json({
-                                            message: 'Successfully added farmer',
-                                        });
-
-                                    })
-                                    .catch(err => {
-                                        console.error(err);
-                                        res.status(400).json({
-                                            status: "error",
-                                            response: err
-                                        });
-                                    });
-                            })
-
-                    })
-                    .catch(err => {
-                        console.log('Error', err);
-                    })
-
-            } catch (error) {
-                console.log(error)
-
-                res.status(500).json({
-                    message: 'Failed to add farmer.'
-                });
-            }
-        });
-
-        // ************ Working BUT NEEDS VERIFICATION ============= //
-        app.post('/api/crowdfunding/transferFunds/:programId/:farmerId', async function (req, res) {
-
-            const { programId } = req.params;
-
-            try {
-
-                Program.findById({ _id: programId })
-                    .then(async result => {
-                        const { blockchain: programBlockchainObj } = result;
-                        const { address: programDBAddress } = programBlockchainObj;
-
-                        Farmer.findById({ _id: farmerId })
-                            .then(async result => {
-                                const { blockchain: farmerBlockchainObj } = result;
-                                const { address: farmerDBAddress } = farmerBlockchainObj;
-
-                                const callerAddress = OWNER_ADDRESS;
-                                const callerKey = OWNER_PRIVATE_KEY;
-                                const programAddress = programDBAddress;
-                                const farmerAddress = farmerDBAddress;
-                                const amount = req.body.amount;
-
-                                const data = crowdfundingContract
-                                    .methods
-                                    .transferFunds(
-                                        programAddress,
-                                        farmerAddress,
-                                        parseInt(amount)
-                                    )
-                                    .encodeABI();
-                                transactionHash = await buildSendTransaction(
-                                    callerAddress,
-                                    callerKey,
-                                    data,
-                                );
-
-                                const decrement = {
-                                    programAbout: {
-                                        currentAmount: -amount
-                                    }
-                                }
-
-                                Program.findOneAndUpdate(
-                                    { _id: programId },
-                                    { $inc: flatten(decrement) }
-                                )
-                                    .then(result => {
-                                        console.log("Successfully updated currentAmount of Program")
-                                    })
-
-                                res.status(200).json({
-                                    message: 'Successfully trasnferred tokens to farmer',
-                                });
-                            })
 
 
-                    });
-
-            } catch (error) {
-                console.log(error)
-
-                res.status(500).json({
-                    message: 'Failed to transfer.'
-                });
-            }
-        });
 
         // ************ Verify ************ //
         app.post('/api/crowdfunding/returnLeftover/:programId', async function (req, res) {
@@ -905,90 +1037,9 @@ web3.eth.net.isListening()
         // =================================
         //          CREATE Data Only
         // =================================
-        app.post('/api/create/farmer', (req, res) => {
 
-            ganacheAddressIndex += 1;
 
-            const testFarmer = new Farmer({
-                blockchain: ganacheAddresses[ganacheAddressIndex],
-                loginDetails: {
-                    username: "mangjose",
-                    password: "josemang123"
-                },
-                farmerAbout: {
-                    firstName: "Juan",
-                    middleName: "Sy",
-                    lastName: "Jose",
-                    suffix: "M",
-                    addressLine1: "Cotabato City",
-                    addressLine2: "Paranaque City",
-                    region: "NCR",
-                    city: "Manila",
-                    country: "Philippines",
-                },
-                contactDetails: {
-                    emailAddress: "mangjose@gmail.com",
-                    contactNumber: "1234567890"
-                },
-                // producePortfolio: { type: Array, default: [] },        // DEFAULT
-                // programsParticipated: { type: Array, default: [] },    // DEFAULT
-                // walletBalance: { type: Number, default: 0 }            // DEFAULT
-            });
 
-            testFarmer.save()
-                .then(result => {
-                    console.log('testFarmer Saved to MongoDB!');
-                })
-                .catch(err => {
-                    console.log('Error: ', err);
-                });
-
-        });
-
-        app.post('/api/create/ngo', (req, res) => {
-
-            const {
-                name,
-                contactNumber,
-                representativeName,
-                address1,
-                address2,
-                region,
-                city,
-                country
-            } = req.body;
-
-            const newNGO = new NGO({
-                blockchain: {
-                    address: OWNER_ADDRESS
-                },
-                ngoAbout: {
-                    ngoName: name,
-                    addressLine1: address1,
-                    addressLine2: address2,
-                    ngoRegion: region,
-                    ngoCity: city,
-                    ngoCountry: country,
-                },
-                ngoContactDetails: {
-                    authorizedRepresentative: representativeName,
-                    ngoContactNumber: contactNumber,
-                },
-                programs: {
-                    activePrograms: [],
-                    completedPrograms: [],
-                }
-            });
-
-            newNGO.save()
-                .then(result => {
-                    console.log('newNGO Saved to MongoDB!');
-                })
-                .catch(err => {
-                    console.log('Error: ', err);
-                });
-
-        })
 
         // =================================
         //          READ Data Only

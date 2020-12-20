@@ -7,7 +7,7 @@ const ngoSchema = new mongoose.Schema({
     password: String
   },
   ngoAbout: {
-    ngoPicture: String,
+    // ngoPicture: String,
     ngoName: String,
     addressLine1: String,
     addressLine2: String,
@@ -22,8 +22,8 @@ const ngoSchema = new mongoose.Schema({
   },
   programs: {
     // For active program, just get the latest item on activePrograms array
-    activePrograms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Program'}],
-    completedPrograms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Program'}]
+    activePrograms: { type: Array, default: [] },
+    completedPrograms: { type: Array, default: [] }
   }
 });
 

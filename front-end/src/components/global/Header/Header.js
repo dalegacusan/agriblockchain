@@ -59,11 +59,11 @@ export default function ButtonAppBar() {
   const history = useHistory();
   const confirm = useConfirm();
 
-  const [ open, setOpen ] = useState(false);
-  const [ loggedIn, setLogginIn ] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [loggedIn, setLogginIn] = useState(false);
   const { setOpenRegisterDialog } = useContext(RegisterDialogContext);
   const { setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext);
-  
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -82,7 +82,7 @@ export default function ButtonAppBar() {
   };
 
   const handleLogout = () => {
-    confirm({ 
+    confirm({
       description: 'This will log you out of the system.',
       title: 'Log out of Bayanihan?',
       cancellationButtonProps: {
@@ -113,7 +113,7 @@ export default function ButtonAppBar() {
 
   return (
     <div className={classes.root}>
-      <AppBar 
+      <AppBar
         position="static"
         color="default"
         style={{ color: "#0B5169" }}
@@ -123,31 +123,37 @@ export default function ButtonAppBar() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            <Link component={RouterLink} to="/"> 
-              <img src={logo} alt="Logo"  className={classes.logo} />
+            <Link component={RouterLink} to="/">
+              <img src={logo} alt="Logo" className={classes.logo} />
             </Link>
           </Typography>
           <Box
-            display={ loggedIn ? "none" : "block"}  
+            display={loggedIn ? "none" : "block"}
           >
             <Button color="inherit" onClick={handleLoginDialog}>
               Log In
             </Button>
           </Box>
           <Box
-            display={ loggedIn ? "block" : "none"}
+            display={loggedIn ? "block" : "none"}
           >
             <Box display="flex" flexDirection="row" alignItems="center">
               <Avatar className={classes.avatar}>
-                { loginData.username && loginData.username !== '' ? loginData.username.substring(0, 2) : '' }
+                {loginData.username && loginData.username !== '' ? loginData.username.substring(0, 2) : ''}
               </Avatar>
               <Box mx={1} pr={1} borderRight="1px solid #efefef">
                 <Typography >
-                  { loginData.username && loginData.username !== '' ? loginData.username : '' }
+                  {loginData.username && loginData.username !== '' ? loginData.username : ''}
                 </Typography>
-                <Typography variant="caption">
-                  Wallet: { loginData.walletBalance }
-                </Typography>
+                {
+                  !(loginData.type === 'ngo')
+                    ?
+                    <Typography variant="caption">
+                      Wallet: {loginData.walletBalance}
+                    </Typography>
+                    : null
+                }
+
               </Box>
               <Button color="inherit" onClick={handleLogout} size="small">
                 Log Out

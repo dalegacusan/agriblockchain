@@ -12,7 +12,7 @@ export default function Programs() {
   const [ programs, setPrograms ] = useState([])
 
   useEffect(() => {
-    axios.get('/api/programs')
+    axios.get('http://192.168.1.2:7545/api/programs')
       .then((res) => {
         console.log(res.data);
         setPrograms(res.data);

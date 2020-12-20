@@ -8,7 +8,7 @@ const programSchema = new mongoose.Schema({
     about: String,
     completed: { type: Boolean, default: false },
     cityAddress: String,
-    ngo: { type: mongoose.Schema.Types.ObjectId, ref: 'NGO', required: [true, 'A program must have an NGO'] },
+    ngo: String,
     status: { type: String, default: "active" },
     stage: { type: String, default: "crowdfunding" },
     // FundingMeter and FundingStatus will be based off of these two properties
@@ -21,9 +21,9 @@ const programSchema = new mongoose.Schema({
     // fundingEndDate: Date,
     // procurementStartDate: Date,
     // procurementEndDate: Date,
-    programDate: Date
+    programDate: { type: Date, default: new Date() }
   },
-  produceRequirements: [produceRequirement.schema],
+  produceRequirements: { type: Array, default: [] },
   farmersParticipating: { type: Array, default: [] },
   sponsors: { type: Array, default: [] },
   // sponsorshipOptions: {

@@ -28,13 +28,13 @@ export const LoginDialogProvider = props => {
     useEffect(() => {
         if (loginData.uid !== '' ) {
             if (loginData.type === 'corporation' || loginData.type === 'individual') {
-                console.log('sponsor')
-                axios.get(`/api/sponsors/${loginData.uid}`)
+                console.log('sponsor');
+                axios.get(`http://192.168.1.2:7545/api/sponsors/${loginData.uid}`)
                     .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
                     .catch(err => console.error(err))
             } else if (loginData.type === 'farmer') {
                 console.log('farmer')
-                axios.get(`/api/farmers/${loginData.uid}`)
+                axios.get(`http://192.168.1.2:7545/api/farmers/${loginData.uid}`)
                     .then(res => setLoginData({ ...loginData, walletBalance: res.data.walletBalance }))
                     .catch(err => console.error(err))
             } 
