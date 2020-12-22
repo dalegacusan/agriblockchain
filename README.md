@@ -1,8 +1,7 @@
-# Bayanihan
-
-A platform that connects farmers directly to end consumers via a blockchain-enabled crowdfunding platform.
-
 <img src="https://imgur.com/y2Lmecv.png" width="500"/>
+
+> <p>A platform that connects farmers directly to end consumers via a blockchain-enabled crowdfunding platform.</p>
+<img src="https://img.shields.io/badge/Status-Refactoring-%23F7A000"/>
 
 ## Table of Contents
 
