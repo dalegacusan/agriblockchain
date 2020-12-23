@@ -7,6 +7,7 @@
 
 * [General Information](#general-information)
 * [Technologies](#technologies)
+* [Live Demo](#live-demo)
 * [Installation](#installation)
 * [Screenshots](#screenshots)
 
@@ -30,6 +31,10 @@ Bayanihan will help
 * MERN Stack (MongoDB, ExpressJS, React, NodeJS)
 * Solidity
 * Ganache
+
+## Live Demo
+
+The live demo will *only* showcase the MERN Stack in action without any of the blockchain-related technologies that were used.
 
 ## Installation
 
