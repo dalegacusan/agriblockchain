@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { produceRequirement } = require('./Produce');
 
 const programSchema = new mongoose.Schema({
   programAbout: {
@@ -11,7 +10,6 @@ const programSchema = new mongoose.Schema({
     ngo: String,
     status: { type: String, default: "active" },
     stage: { type: String, default: "crowdfunding" },
-    // FundingMeter and FundingStatus will be based off of these two properties
     requiredAmount: Number,
     currentAmount: { type: Number, default: 0 },
   },

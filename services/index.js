@@ -37,43 +37,38 @@ const web3 = new Web3(`ws://${WEB3_PROVIDER}`);
 
 web3.eth.net.isListening()
     .then(async function () {
+        console.log("Successfully connected to Truffle!");
 
-        /*
-            NOTE:
-            (For Demo Purposes)
-
-            One ganache account is used for all transactions.
-            Please use the first account in the ganache accounts list.
-            Manually input the OWNER_ADDRESS and OWNER_PRIVATE_KEY in your .env file
-        */
-
-        // For ACCOUNT GENERATION - used for generating a Program Details
+        // To generate an account with address and private key
         const accounts = new Web3EthAccounts(`ws://${WEB3_PROVIDER}`);
+        // Retrieve all accounts from Ganache
         const ganacheAddresses = await web3.eth.getAccounts();
-
-        // CONNECTION DETAILS //
-        console.log("Truffle Connected!");
-        const URL = process.env.MONGODB_URL;
-        mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
-            .then(result => {
-                console.log('Successfully connected to MongoDB!');
-            })
-            .catch(error => {
-                console.log(`Error connecting to MongoDB:`, error.message)
-            });
-
         const crowdfundingContract = new web3.eth.Contract(
             crowdfunding.abi,
             CONTRACT_ADDRESS
         );
 
         const app = express();
+        const PORT = process.env.PORT || 7545;
+
+        // Setting up basic middleware for all Express requests
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use(cors());
         app.use(bodyParser.json());
 
+        const URL = process.env.MONGODB_URL;
+        mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+            .then(result => {
+                console.log('Successfully connected to MongoDB!');
+            })
+            .catch(error => {
+                console.log(`Error connecting to MongoDB:`, error.message);
+
+                process.exit(1);
+            });
+
         const userModel = {
-            program: Program, // assign po natin sa corresponding path parameter na user
+            program: Program,
             ngo: NGO,
             farmer: Farmer,
             sponsor: Sponsor,
@@ -83,7 +78,10 @@ web3.eth.net.isListening()
         //                       START: BLOCKCHAIN ENDPOINTS                     //
         // ===================================================================== //
 
-        // CURRENT GANACHE ADDRESS: [2]
+        // Set up routes
+        require('./routes')(app);
+
+        // NGO: [0]
         // Farmer: [1]
         // Sponsor [2]
 
@@ -1150,235 +1148,246 @@ web3.eth.net.isListening()
 
 
 
-        // ************ Verify ************ //
-        app.post('/api/crowdfunding/returnLeftover/:programId', async function (req, res) {
+                        // ************ Verify ************ //
+                        app.post('/api/crowdfunding/returnLeftover/:programId', async function (req, res) {
 
-            const { programId } = req.params;
+                            const { programId } = req.params;
 
-            try {
+                            try {
 
-                Program.findById({ _id: programId })
-                    .then(async result => {
-                        const { blockchain } = result;
+                                Program.findById({ _id: programId })
+                                    .then(async result => {
+                                        const { blockchain } = result;
 
-                        const callerAddress = OWNER_ADDRESS;
-                        const callerKey = OWNER_PRIVATE_KEY;
-                        const address = blockchain.address;
+                                        const callerAddress = OWNER_ADDRESS;
+                                        const callerKey = OWNER_PRIVATE_KEY;
+                                        const address = blockchain.address;
 
-                        const data = crowdfundingContract
-                            .methods
-                            .returnLeftoverToFunders(
-                                address,
-                            )
-                            .encodeABI();
-                        transactionHash = await buildSendTransaction(
-                            callerAddress,
-                            callerKey,
-                            data,
-                        );
+                                        const data = crowdfundingContract
+                                            .methods
+                                            .returnLeftoverToFunders(
+                                                address,
+                                            )
+                                            .encodeABI();
+                                        transactionHash = await buildSendTransaction(
+                                            callerAddress,
+                                            callerKey,
+                                            data,
+                                        );
 
-                        res.status(200).json({
-                            message: 'Successfully returned funds.',
+                                        res.status(200).json({
+                                            message: 'Successfully returned funds.',
+                                        });
+
+                                    })
+
+                            } catch (error) {
+                                console.log(error);
+
+                                res.status(500).json({
+                                    message: 'Failed to return funds.'
+                                });
+                            }
+                        });
+                        // ===================================================================== //
+                        //                        END: BLOCKCHAIN ENDPOINTS                      //
+                        // ===================================================================== //
+
+                        // ===================================================================== //
+                        //                        START: MongoDB ENDPOINTS                       //
+                        // ===================================================================== //
+
+                        // =================================
+                        //          CREATE Data Only
+                        // =================================
+
+                        const newNGO = new NGO({
+                            blockchain: {
+                                address: OWNER_ADDRESS
+                            },
+                            loginDetails: {
+                                username: "zubirijuan",
+                                password: "josemang123",
+                            },
+                            ngoAbout: {
+                                ngoName: "Juan Foundation",
+                                addressLine1: "Cotabato City",
+                                addressLine2: "Paranaque City",
+                                region: "NCR",
+                                city: "Manila",
+                                country: "Philippines",
+                            },
+                            ngoContactDetails: {
+                                authorizedRepresentative: "Juan Miguel Zubiri",
+                                ngoContactNumber: 09123456789,
+                            },
+                            programs: {
+                                activePrograms: [],
+                                completedPrograms: [],
+                            }
+                            // ngoAbout: {
+                            //     ngoName: name,
+                            //     addressLine1: address1,
+                            //     addressLine2: address2,
+                            //     ngoRegion: region,
+                            //     ngoCity: city,
+                            //     ngoCountry: country,
+                            // },
+                            // ngoContactDetails: {
+                            //     authorizedRepresentative: representativeName,
+                            //     ngoContactNumber: contactNumber,
+                            // },
+                            // programs: {
+                            //     activePrograms: [],
+                            //     completedPrograms: [],
+                            // }
                         });
 
-                    })
 
+
+                        // =================================
+                        //          READ Data Only
+                        // =================================
+                        app.get('/api/ngo', (req, res) => {
+                            NGO.find({})
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+
+                        // Get one NGO
+                        app.get('/api/ngo/:ngoId', (req, res) => {
+                            const { ngoId } = req.params;
+
+                            NGO.findById({ _id: ngoId })
+                                .then(result => {
+                                    res.status(200).json(result);
+                                })
+                                .catch(err => {
+                                    console.log(err);
+                                    res.status(404).json(err);
+                                });
+                        })
+
+                        // Get all programs
+                        app.get('/api/programs', (req, res) => {
+                            Program.find({})
+                                .then(result => {
+                                    res.status(200).json(result);
+                                })
+                                .then(err => {
+                                    console.log(err);
+                                });
+                        })
+
+                        // Get one program
+                        app.get('/api/programs/:programId', (req, res) => {
+                            const { programId } = req.params;
+
+                            Program.findOne({ _id: programId })
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+
+                        // Get all farmers
+                        app.get('/api/farmers', (req, res) => {
+                            // Get all farmers from MongoDB
+                            Farmer.find({})
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+
+                        // Get one farmer
+                        app.get('/api/farmers/:farmerId', (req, res) => {
+                            const { farmerId } = req.params;
+
+                            Farmer.findById({ _id: farmerId })
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+
+                        // Get all sponsors
+                        app.get('/api/sponsors', (req, res) => {
+                            // Get all farmers from MongoDB
+                            Sponsor.find({})
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+
+                        // Get one sponsor
+                        app.get('/api/sponsors/:sponsorId', (req, res) => {
+                            const { sponsorId } = req.params;
+
+                            Sponsor.findById({ _id: sponsorId })
+                                .then(result => {
+                                    res.status(200).json(result);
+                                });
+                        })
+                        // ===================================================================== //
+                        //                        END: MongoDB ENDPOINTS                         //
+                        // ===================================================================== //
+
+
+                        app.listen(PORT, () => {
+                            console.log('Example app listening at http://localhost:' + PORT);
+                        });
+                    })
+                    .catch(function (error) {
+                        console.log('Connection to chain not established!');
+
+                        console.error(error);
+
+                        process.exit(1);
+                    });
+
+                /**
+                 * @param {String} address - sender of the transaction
+                 * @param {String} privateKey - sender's private key
+                 * @param {String} encodedABI - myContract.methods.myMethod().encodeABI()
+                 */
+                async function buildSendTransaction(
+                    address,
+                    privateKey,
+                    encodedABI,
+                ) {
+
+                    const txParams = {
+                        from: address,
+                        nonce: await web3.eth.getTransactionCount(address),// incremental value
+                        to: CONTRACT_ADDRESS, // crowdfunding address - CONTRACT_ADDRESS
+                        value: 0,// if you're sending ether
+                        gasLimit: web3.utils.toHex(6721975),// limit of gas willing to spend
+                        gasPrice: web3.utils.toHex(web3.utils.toWei('6', 'gwei')),// transaction fee
+                        data: encodedABI, // instructions
+                    };
+
+                    const tx = new Tx(txParams);
+
+                    // Sign the Transaction with sender's private key
+                    tx.sign(Buffer.from( // convert string to Buffer
+                        privateKey.substring(2), // remove 0x
+                        'hex',
+                    ));
+
+                    const serializedTx = tx.serialize();
+                    const rawTx = '0x' + serializedTx.toString('hex');
+                    const transaction = await web3.eth.sendSignedTransaction(rawTx);
+
+                    return transaction.transactionHash;
+                }
             } catch (error) {
                 console.log(error);
 
                 res.status(500).json({
-                    message: 'Failed to return funds.'
+                    message: 'Failed to transfer'
                 });
             }
+
+
         });
-        // ===================================================================== //
-        //                        END: BLOCKCHAIN ENDPOINTS                      //
-        // ===================================================================== //
 
-        // ===================================================================== //
-        //                        START: MongoDB ENDPOINTS                       //
-        // ===================================================================== //
-
-        // =================================
-        //          CREATE Data Only
-        // =================================
-
-            const newNGO = new NGO({
-                blockchain: {
-                    address: OWNER_ADDRESS
-                },
-                loginDetails: {
-                    username: "zubirijuan",
-                    password: "josemang123",
-                  },
-                  ngoAbout: {
-                    ngoName: "Juan Foundation",
-                    addressLine1: "Cotabato City",
-                    addressLine2: "Paranaque City",
-                    region: "NCR",
-                    city: "Manila",
-                    country: "Philippines",
-                  },
-                  ngoContactDetails: {
-                    authorizedRepresentative: "Juan Miguel Zubiri",
-                    ngoContactNumber: 09123456789,
-                  },
-                  programs: {
-                    activePrograms: [],
-                    completedPrograms: [],
-                }
-                // ngoAbout: {
-                //     ngoName: name,
-                //     addressLine1: address1,
-                //     addressLine2: address2,
-                //     ngoRegion: region,
-                //     ngoCity: city,
-                //     ngoCountry: country,
-                // },
-                // ngoContactDetails: {
-                //     authorizedRepresentative: representativeName,
-                //     ngoContactNumber: contactNumber,
-                // },
-                // programs: {
-                //     activePrograms: [],
-                //     completedPrograms: [],
-                // }
-            });
-
-
-
-        // =================================
-        //          READ Data Only
-        // =================================
-        app.get('/api/ngo', (req, res) => {
-            NGO.find({})
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-
-        // Get one NGO
-        app.get('/api/ngo/:ngoId', (req, res) => {
-            const { ngoId } = req.params;
-
-            NGO.findById({ _id: ngoId })
-                .then(result => {
-                    res.status(200).json(result);
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.status(404).json(err);
-                });
-        })
-
-        // Get all programs
-        app.get('/api/programs', (req, res) => {
-            Program.find({})
-                .then(result => {
-                    res.status(200).json(result);
-                })
-                .then(err => {
-                    console.log(err);
-                });
-        })
-
-        // Get one program
-        app.get('/api/programs/:programId', (req, res) => {
-            const { programId } = req.params;
-
-            Program.findOne({ _id: programId })
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-
-        // Get all farmers
-        app.get('/api/farmers', (req, res) => {
-            // Get all farmers from MongoDB
-            Farmer.find({})
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-
-        // Get one farmer
-        app.get('/api/farmers/:farmerId', (req, res) => {
-            const { farmerId } = req.params;
-
-            Farmer.findById({ _id: farmerId })
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-
-        // Get all sponsors
-        app.get('/api/sponsors', (req, res) => {
-            // Get all farmers from MongoDB
-            Sponsor.find({})
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-
-        // Get one sponsor
-        app.get('/api/sponsors/:sponsorId', (req, res) => {
-            const { sponsorId } = req.params;
-
-            Sponsor.findById({ _id: sponsorId })
-                .then(result => {
-                    res.status(200).json(result);
-                });
-        })
-        // ===================================================================== //
-        //                        END: MongoDB ENDPOINTS                         //
-        // ===================================================================== //
-
-        const PORT = 7545;
-
-        app.listen(PORT, () => {
-            console.log('Example app listening at http://localhost:' + PORT);
-        });
     })
-    .catch(function (error) {
-        console.log('Connection to chain not established!');
-
-        console.error(error);
-
-        process.exit(1);
-    });
-
-/**
- * @param {String} address - sender of the transaction
- * @param {String} privateKey - sender's private key
- * @param {String} encodedABI - myContract.methods.myMethod().encodeABI()
- */
-async function buildSendTransaction(
-    address,
-    privateKey,
-    encodedABI,
-) {
-
-    const txParams = {
-        from: address,
-        nonce: await web3.eth.getTransactionCount(address),// incremental value
-        to: CONTRACT_ADDRESS, // crowdfunding address - CONTRACT_ADDRESS
-        value: 0,// if you're sending ether
-        gasLimit: web3.utils.toHex(6721975),// limit of gas willing to spend
-        gasPrice: web3.utils.toHex(web3.utils.toWei('6', 'gwei')),// transaction fee
-        data: encodedABI, // instructions
-    };
-
-    const tx = new Tx(txParams);
-
-    // Sign the Transaction with sender's private key
-    tx.sign(Buffer.from( // convert string to Buffer
-        privateKey.substring(2), // remove 0x
-        'hex',
-    ));
-
-    const serializedTx = tx.serialize();
-    const rawTx = '0x' + serializedTx.toString('hex');
-    const transaction = await web3.eth.sendSignedTransaction(rawTx);
-
-    return transaction.transactionHash;
-}

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { produce } = require('./Produce');
 
 const farmerSchema = new mongoose.Schema({
   loginDetails: {

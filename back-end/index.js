@@ -1,22 +1,27 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const flatten = require('flat');
+const config = require('./utils/config');
+
+const app = express();
+
+// Setting up basic middleware for all Express requests
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+app.use(bodyParser.json());
 
 // =================================
 //              Models
 // =================================
+const NGO = require('./models/NGO');
+const Sponsor = require('./models/Sponsor');
 const Farmer = require('./models/Farmer');
 const Program = require('./models/Program');
-const NGO = require('./models/NGO');
-const { produce, produceRequirement } = require('./models/Produce');
-const Sponsor = require('./models/Sponsor');
 
-const URL = process.env.MONGODB_URL;
-
-mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+// Database Setup
+mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(result => {
     console.log('Successfully connected to MongoDB!');
   })
@@ -24,13 +29,8 @@ mongoose.connect(URL, { useNewUrlParser: true, useUnifiedTopology: true, useFind
     console.log(`Error connecting to MongoDB:`, error.message)
   });
 
-// Create an express app
-const app = express();
-const PORT = process.env.PORT || 8080;
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors());
-app.use(bodyParser.json());
+// Set up routes
+require('./routes')(app);
 
 app.get('/', (req, res) => {
   res.send('Hello World');
@@ -39,8 +39,6 @@ app.get('/', (req, res) => {
 // =================================
 //          CREATE Data Only
 // =================================
-
-// ===========================START TEST ACCOUNT=========================== //
 
 app.post('/api/program/produce/add', (req, res) => {
   // Produce Requirements
@@ -62,167 +60,10 @@ app.post('/api/program/produce/add', (req, res) => {
 })
 
 
-// ============================END TEST ACCOUNT============================ //
 
 // ======================================================================== //
 // =============================FOR DEMO=================================== //
 // ======================================================================== //
-
-app.post('/api/create/farmer', (req, res) => {
-  const testFarmer = new Farmer({
-    loginDetails: {
-      username: "mangjose",
-      password: "josemang123"
-    },
-    farmerAbout: {
-      firstName: "Juan",
-      middleName: "Sy",
-      lastName: "Jose",
-      suffix: "M",
-      addressLine1: "Cotabato City",
-      addressLine2: "Paranaque City",
-      region: "NCR",
-      city: "Manila",
-      country: "Philippines",
-    },
-    contactDetails: {
-      emailAddress: "mangjose@gmail.com",
-      contactNumber: "1234567890"
-    },
-    // producePortfolio: { type: Array, default: [] },        // DEFAULT
-    // programsParticipated: { type: Array, default: [] },    // DEFAULT
-    // walletBalance: { type: Number, default: 0 }            // DEFAULT
-  });
-
-  testFarmer.save()
-    .then(result => {
-      console.log('Farmer saved to MongoDB!');
-
-      res.status(200).json({
-        message: "Successfully saved Farmer to the database."
-      });
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-
-      res.status(404).json({
-        message: "Failed to save Farmer to the database."
-      });
-    });
-
-});
-
-app.post('/api/create/ngo', (req, res) => {
-
-  const testNGO = new NGO({
-    loginDetails: {
-      username: 'red@cross.com',
-      password: 'redcrosspassword'
-    },
-    ngoAbout: {
-      ngoName: 'Philippine Red Cross',
-      addressLine1: 'Mandaluyong City',
-      addressLine2: 'Manila City',
-      region: 'NCR',
-      city: 'Manila',
-      country: 'Philippines',
-    },
-    contactDetails: {
-      authorizedRepresentative: 'Michael C. Lopez',
-      contactNumber: '845-435-1111',
-      emailAddress: 'lopezmichael@gmail.com'
-    },
-    programs: {
-      activePrograms: [],
-      completedPrograms: [],
-    }
-  });
-
-  testNGO.save()
-    .then(result => {
-      console.log('NGO Saved to MongoDB!');
-
-      res.status(200).json({
-        message: "Successfully saved NGO to the database."
-      });
-
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-
-      res.status(404).json({
-        message: "Failed to save NGO to the database."
-      });
-    });
-
-})
-
-app.post('/api/create/program', (req, res) => {
-
-  const {
-    programName,        // User
-    about,              // User
-    completed,          // DEFAULT = false
-    cityAddress,        // User
-    ngo,                // REQUIRED
-    status,             // DEFAULT = "active"
-    stage,              // DEFAULT = "crowdfunding"
-    requiredAmount,     // User 
-    programDate         // DEFAULT = new Date()
-  } = req.body;
-
-  const newProgram = new Program({
-    programAbout: {
-      programName,
-      about,
-      cityAddress,
-      ngo,
-      requiredAmount,
-    },
-    timeline: {
-      programDate: programDate,
-    },
-    produceRequirements: [],
-    farmersParticipating: [],    // DEFAULT
-    sponsors: [],                // DEFAULT
-  });
-
-  // Save a farmer to MongoDB
-  newProgram.save()
-    .then(result => {
-      const { id } = result;
-      console.log(`Program ${programName}: Saved to MongoDB!`);
-
-      const programToPush = {
-        programId: id,
-        programName,
-      }
-
-      NGO.findOneAndUpdate(
-        { _id: ngo },
-        { $push: { "programs.activePrograms": programToPush } }
-      )
-        .then(() => {
-          console.log("Successfully added Program to NGO activePrograms array.");
-
-          res.status(200).json({
-            message: "NGO successfully created a new program"
-          });
-        })
-        .catch((err) => {
-          console.log('Error: ', err);
-
-          res.status(404).json({
-            message: "Failed to create a new program"
-          });
-        });
-
-    })
-    .catch(err => {
-      console.log('Error: ', err.errors['programAbout.ngo'].message);
-    });
-
-})
 
 app.post('/api/create/sponsor', (req, res) => {
 
@@ -277,7 +118,6 @@ app.post('/api/create/sponsor', (req, res) => {
 
 })
 
-// ADD a Sponsor to a Program
 app.post('/api/program/:programId/sponsor/:sponsorId/add', async (req, res) => {
 
   const { programId, sponsorId } = req.params;
@@ -365,7 +205,6 @@ app.post('/api/program/:programId/sponsor/:sponsorId/add', async (req, res) => {
 
 })
 
-// ADD a Farmer to a program
 app.post('/api/programs/:programId/farmer/:farmerId/add', (req, res) => {
 
   const { programId, farmerId } = req.params;
@@ -446,7 +285,6 @@ app.post('/api/programs/:programId/farmer/:farmerId/add', (req, res) => {
 
 })
 
-// Put stage to execution
 app.patch('/api/program/:programId/stage/execution', (req, res) => {
 
   /*
@@ -503,7 +341,7 @@ app.patch('/api/program/:programId/stage/execution', (req, res) => {
 // =============================FOR DEMO=================================== //
 // ======================================================================== //
 
-// ADD a Produce to a Farmer
+// ****************************************************************************************
 app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
 
   const { farmerId } = req.params;
@@ -564,25 +402,6 @@ app.get('/api/programs/:programId', (req, res) => {
   const { programId } = req.params;
 
   Program.findOne({ _id: programId })
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get all farmers
-app.get('/api/farmers', (req, res) => {
-  // Get all farmers from MongoDB
-  Farmer.find({})
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get one farmer
-app.get('/api/farmers/:farmerId', (req, res) => {
-  const { farmerId } = req.params;
-
-  Farmer.findById({ _id: farmerId })
     .then(result => {
       res.status(200).json(result);
     });
@@ -684,6 +503,6 @@ app.delete('/api/sponsors/:sponsorId', (req, res) => {
     })
 })
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  console.log(`Server running on port ${config.PORT}`);
 })
