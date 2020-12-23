@@ -1,7 +1,6 @@
 const Farmer = require('../models/Farmer');
 
 const viewAllFarmers = (req, res, next) => {
-
   Farmer.find({})
     .then(data => {
       res.status(200).json({
@@ -16,7 +15,6 @@ const viewAllFarmers = (req, res, next) => {
 
       next(err);
     })
-
 }
 
 const viewFarmer = (req, res, next) => {
@@ -38,6 +36,7 @@ const viewFarmer = (req, res, next) => {
     })
 }
 
+// @dev: Farmer Details are still hard-coded
 const createFarmer = (req, res, next) => {
   const newFarmerAccount = new Farmer({
     loginDetails: {

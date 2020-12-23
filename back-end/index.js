@@ -65,59 +65,6 @@ app.post('/api/program/produce/add', (req, res) => {
 // =============================FOR DEMO=================================== //
 // ======================================================================== //
 
-app.post('/api/create/sponsor', (req, res) => {
-
-  const {
-    name,
-    contactNumber,
-    representativeName,
-    address1,
-    address2,
-    region,
-    city,
-    country,
-    username,
-    password
-  } = req.body;
-
-  const newSponsor = new Sponsor({
-    loginDetails: {
-      username,
-      password
-    },
-    sponsorAbout: {
-      corporationName: name,
-      addressLine1: address1,
-      addressLine2: address2,
-      region,
-      city,
-      country
-    },
-    contactDetails: {
-      authorizedRepresentative: representativeName,
-      contactNumber,
-    },
-    walletBalance: 100000
-  });
-
-  newSponsor.save()
-    .then(result => {
-      console.log('Sponsor Saved to MongoDB!');
-      res.status(200).json({
-        status: "success",
-        data: result
-      });
-    })
-    .catch(err => {
-      console.log('Error saving sponsor: ', err);
-      res.status(400).json({
-        status: "error",
-        response: err
-      });
-    });
-
-})
-
 app.post('/api/program/:programId/sponsor/:sponsorId/add', async (req, res) => {
 
   const { programId, sponsorId } = req.params;
@@ -367,64 +314,6 @@ app.post('/api/farmers/:farmerId/produce/add', (req, res) => {
 // =================================
 //          READ Data Only
 // =================================
-
-// Get all NGOs
-app.get('/api/ngo', (req, res) => {
-  NGO.find({})
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get one NGO
-app.get('/api/ngo/:ngoId', (req, res) => {
-  const { ngoId } = req.params;
-
-  NGO.findById({ _id: ngoId })
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get all programs
-app.get('/api/programs', (req, res) => {
-  Program.find({})
-    .then(result => {
-      res.status(200).json(result);
-    })
-    .then(err => {
-      console.log(err);
-    });
-})
-
-// Get one program
-app.get('/api/programs/:programId', (req, res) => {
-  const { programId } = req.params;
-
-  Program.findOne({ _id: programId })
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get all sponsors
-app.get('/api/sponsors', (req, res) => {
-  // Get all farmers from MongoDB
-  Sponsor.find({})
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
-
-// Get one sponsor
-app.get('/api/sponsors/:sponsorId', (req, res) => {
-  const { sponsorId } = req.params;
-
-  Sponsor.findById({ _id: sponsorId })
-    .then(result => {
-      res.status(200).json(result);
-    });
-})
 
 // =================================
 //          UPDATE Data Only

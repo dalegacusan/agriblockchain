@@ -1,16 +1,44 @@
 const NGO = require('../models/NGO');
 
 const viewAllNGO = (req, res, next) => {
+  NGO.find({})
+    .then(data => {
+      res.status(200).json({
+        message: 'Successfully retrieved all NGOs.',
+        data
+      })
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: 'Failed to retrieve all NGOs.'
+      });
 
+      next(err);
+    });
 }
 
 const viewNGO = (req, res, next) => {
+  const { ngoId } = req.params;
 
+  NGO.findById(ngoId)
+    .then(data => {
+      res.status(200).json({
+        message: `Successfully retrieved NGO ${ngoId}.`,
+        data
+      })
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: `Failed to retrieve NGO ${ngoId}.`
+      });
+
+      next(err);
+    })
 }
 
 // @dev: NGO Details are still hard-coded
 const createNGO = (req, res, next) => {
-  const testNGO = new NGO({
+  const newNGOAccount = new NGO({
     loginDetails: {
       username: 'red@cross.com',
       password: 'redcrosspassword'
@@ -30,7 +58,7 @@ const createNGO = (req, res, next) => {
     }
   });
 
-  testNGO.save()
+  newNGOAccount.save()
     .then(result => {
       console.log('Successfully saved NGO to the database.');
 

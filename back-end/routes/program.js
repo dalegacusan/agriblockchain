@@ -15,6 +15,9 @@ router.get('/', (req, res) => {
 router.post('/create', ProgramController.createProgram)
 
 // ======= READ ======= //
+router.get('/all', ProgramController.viewAllPrograms)
+
+router.get('/:programId', ProgramController.viewProgram)
 
 // ====== UPDATE ====== //
 

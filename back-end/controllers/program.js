@@ -2,11 +2,39 @@ const Program = require('../models/Program');
 const NGO = require('../models/NGO');
 
 const viewAllPrograms = (req, res, next) => {
+  Program.find({})
+    .then(data => {
+      res.status(200).json({
+        message: 'Successfully retrieved all programs.',
+        data
+      })
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: 'Failed to retrieve all programs.'
+      });
 
+      next(err);
+    });
 }
 
 const viewProgram = (req, res, next) => {
+  const { programId } = req.params;
 
+  Program.findById(programId)
+    .then(data => {
+      res.status(200).json({
+        message: `Successfully retrieved program ${programId}.`,
+        data
+      })
+    })
+    .catch(err => {
+      res.status(400).json({
+        message: `Failed to retrieve program ${programId}.`
+      });
+
+      next(err);
+    })
 }
 
 const createProgram = (req, res, next) => {
