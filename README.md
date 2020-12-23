@@ -44,7 +44,7 @@ Lorem ipsum
 
 ## Team
 
-<b>Achievements</b>
+<b>🏆 Achievements</b>
 * Top 3 Projects *( Score: 85% / 100% )*
 * Certified Blockchain Developer 
 
