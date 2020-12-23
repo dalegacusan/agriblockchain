@@ -671,7 +671,7 @@ web3.eth.net.isListening()
 
 
 
-
+        // What's the difference between revert and burn?
         // ************ Working BUT NEEDS VERIFICATION ============= //
         app.post('/api/crowdfunding/burn/', async function (req, res) {
             try {

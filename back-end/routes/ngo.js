@@ -23,6 +23,6 @@ router.get('/:ngoId', NGOController.viewNGO)
 
 
 // ====== DELETE ====== //
-
+router.delete('/:ngoId/delete')
 
 module.exports = router;

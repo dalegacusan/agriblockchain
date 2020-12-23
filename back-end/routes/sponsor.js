@@ -15,12 +15,36 @@ router.get('/', (req, res) => {
 router.post('/create', SponsorController.createSponsor)
 
 // ======= READ ======= //
+router.get('/:sponsorId/balance')
+
 router.get('/all', SponsorController.viewAllSponsors)
 
 router.get('/:sponsorId', SponsorController.createSponsor)
 
+router.get('/getPledge/:programId')
+
 // ====== UPDATE ====== //
+router.patch('/revertPledge/:programId')
 
 // ====== DELETE ====== //
+router.delete('/:sponsorId/delete', (req, res) => {
+  const { sponsorId } = req.params;
+
+  // Find a program with the _id of programId to delete
+  Sponsor.deleteOne({ _id: sponsorId })
+
+    // if successful, print Program ID deleted from MongoDB
+    .then(result => {
+      console.log(`Sponsor ${sponsorId}: deleted from MongoDB`);
+      res.status(200).json({
+        status: 'success',
+        data: result,
+      });
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+      res.status(400).json(err);
+    })
+})
 
 module.exports = router;
