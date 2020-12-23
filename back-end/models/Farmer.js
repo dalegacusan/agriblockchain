@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const farmerSchema = new mongoose.Schema({
   loginDetails: {
+    emailAddress: String,
     username: String,
     password: String
   },

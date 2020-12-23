@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const sponsorSchema = new mongoose.Schema({
   loginDetails: {
+    emailAddress: String,
     username: String,
     password: String
   },

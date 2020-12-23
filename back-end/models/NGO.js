@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Program = require('./Program').schema;
 
 const ngoSchema = new mongoose.Schema({
   loginDetails: {
+    emailAddress: String,
     username: String,
     password: String
   },
@@ -21,13 +21,11 @@ const ngoSchema = new mongoose.Schema({
     emailAddress: String
   },
   programs: {
-    // For active program, just get the latest item on activePrograms array
+    // Get the latest program from activePrograms to retrieve the active program
     activePrograms: { type: Array, default: [] },
     completedPrograms: { type: Array, default: [] }
   }
 });
-
-// const NGO = mongoose.model('NGO', ngoSchema);
 
 ngoSchema.set('toJSON', {
   transform: (document, returnedObject) => {
