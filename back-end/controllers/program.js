@@ -1,5 +1,6 @@
 const Program = require('../models/Program');
 const NGO = require('../models/NGO');
+const flatten = require('flat');
 
 const viewAllPrograms = async (req, res, next) => {
 
@@ -121,9 +122,49 @@ const getBalance = async (req, res, next) => {
   }
 }
 
+const deleteProgram = async (req, res, next) => {
+  const { programId } = req.params;
+
+  // Delete document from the database
+  Program.findByIdAndDelete(programId)
+    .then(result => {
+      const { about } = result;
+      const { ngo } = about;
+
+      // Remove from ngo's programs array
+      NGO.findByIdAndUpdate(
+        ngo,
+        { $pull: { 'programs.activePrograms': { programId } } }
+      ).then(result => {
+        res.status(200).json({
+          status: 'Successfully deleted program from the database.',
+        });
+      }).catch(err => {
+        console.log('Error: ', err);
+
+        res.status(400).json({
+          message: 'Failed to remove program from NGO\'s active programs.'
+        });
+
+        next(err);
+      })
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+
+      res.status(400).json({
+        message: 'Failed to delete program.'
+      });
+
+      next(err);
+    })
+
+}
+
 module.exports = {
   viewAllPrograms,
   viewProgram,
   createProgram,
-  getBalance
+  getBalance,
+  deleteProgram
 }

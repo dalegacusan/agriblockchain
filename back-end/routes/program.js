@@ -109,27 +109,6 @@ router.patch('/:programId/stage/execution')
 router.post('/transferFunds')
 
 // ====== DELETE ====== //
-router.delete('/:programId/delete', (req, res) => {
-  const { programId } = req.params;
-
-  Program.deleteOne({ _id: programId })
-    .then(result => {
-      console.log(`Program ${programId}: deleted from MongoDB`);
-
-      res.status(200).json({
-        status: 'success',
-        data: result,
-      });
-    })
-    .catch(err => {
-      console.log('Error: ', err);
-
-      res.status(400).json({
-        message: 'Failed to delete program.'
-      });
-
-      next(err);
-    })
-})
+router.delete('/:programId/delete', ProgramController.deleteProgram)
 
 module.exports = router;

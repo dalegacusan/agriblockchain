@@ -6,6 +6,16 @@ const config = require('./utils/config');
 
 const app = express();
 
+// **************************************************** //
+/*
+    NOTES
+
+    - Have a restriction before a program gets deleted 
+    (maybe if there's at least one sponsor, a program
+    cannot be deleted?)
+*/
+// **************************************************** //
+
 // Setting up basic middleware for all Express requests
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
