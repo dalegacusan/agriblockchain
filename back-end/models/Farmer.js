@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
 
 const farmerSchema = new mongoose.Schema({
-  loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
-  },
-  farmerAbout: {
+  balance: { type: Number, default: 0 },
+  about: {
     // profilePicture: String,
     firstName: String,
     middleName: String,
@@ -22,9 +18,13 @@ const farmerSchema = new mongoose.Schema({
     emailAddress: String,
     contactNumber: String
   },
+  loginDetails: {
+    emailAddress: String,
+    username: String,
+    password: String
+  },
   producePortfolio: { type: Array, default: [] },
   programsParticipated: { type: Array, default: [] },
-  walletBalance: { type: Number, default: 0 }
 });
 
 farmerSchema.set('toJSON', {

@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 router.post('/create', FarmerController.createFarmer)
 
 // ======= READ ======= //
-router.get('/:farmerId/balance')
+router.get('/:farmerId/balance', FarmerController.getBalance)
 
 router.get('/all', FarmerController.viewAllFarmers)
 

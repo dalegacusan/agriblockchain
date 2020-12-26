@@ -1,49 +1,47 @@
 const NGO = require('../models/NGO');
 
-const viewAllNGO = (req, res, next) => {
-  NGO.find({})
-    .then(data => {
-      res.status(200).json({
-        message: 'Successfully retrieved all NGOs.',
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: 'Failed to retrieve all NGOs.'
-      });
+const viewAllNGO = async (req, res, next) => {
 
-      next(err);
+  try {
+    const allNGO = await NGO.find({});
+
+    res.status(200).json({
+      message: 'Successfully retrieved all NGOs.',
+      data: allNGO
+    })
+  } catch (err) {
+    res.status(400).json({
+      message: 'Failed to retrieve all NGOs.'
     });
+
+    next(err);
+  }
+
 }
 
-const viewNGO = (req, res, next) => {
+const viewNGO = async (req, res, next) => {
   const { ngoId } = req.params;
 
-  NGO.findById(ngoId)
-    .then(data => {
-      res.status(200).json({
-        message: `Successfully retrieved NGO ${ngoId}.`,
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: `Failed to retrieve NGO ${ngoId}.`
-      });
+  try {
+    const oneNGO = await NGO.findById(ngoId);
 
-      next(err);
+    res.status(200).json({
+      message: `Successfully retrieved NGO.`,
+      data: oneNGO
     })
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve NGO.`
+    });
+
+    next(err);
+  }
 }
 
 // @dev: NGO Details are still hard-coded
 const createNGO = (req, res, next) => {
   const newNGOAccount = new NGO({
-    loginDetails: {
-      username: 'red@cross.com',
-      password: 'redcrosspassword'
-    },
-    ngoAbout: {
+    about: {
       ngoName: 'Philippine Red Cross',
       addressLine1: 'Mandaluyong City',
       addressLine2: 'Manila City',
@@ -55,6 +53,10 @@ const createNGO = (req, res, next) => {
       authorizedRepresentative: 'Michael C. Lopez',
       contactNumber: '845-435-1111',
       emailAddress: 'lopezmichael@gmail.com'
+    },
+    loginDetails: {
+      username: 'red@cross.com',
+      password: 'redcrosspassword'
     }
   });
 

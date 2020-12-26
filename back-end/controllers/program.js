@@ -1,40 +1,42 @@
 const Program = require('../models/Program');
 const NGO = require('../models/NGO');
 
-const viewAllPrograms = (req, res, next) => {
-  Program.find({})
-    .then(data => {
-      res.status(200).json({
-        message: 'Successfully retrieved all programs.',
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: 'Failed to retrieve all programs.'
-      });
+const viewAllPrograms = async (req, res, next) => {
 
-      next(err);
+  try {
+    const allPrograms = await Program.find({});
+
+    res.status(200).json({
+      message: 'Successfully retrieved all programs.',
+      data: allPrograms
+    })
+  } catch (err) {
+    res.status(400).json({
+      message: 'Failed to retrieve all programs.'
     });
+
+    next(err);
+  };
+
 }
 
-const viewProgram = (req, res, next) => {
+const viewProgram = async (req, res, next) => {
   const { programId } = req.params;
 
-  Program.findById(programId)
-    .then(data => {
-      res.status(200).json({
-        message: `Successfully retrieved program ${programId}.`,
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: `Failed to retrieve program ${programId}.`
-      });
+  try {
+    const oneProgram = await Program.findById(programId);
 
-      next(err);
+    res.status(200).json({
+      message: `Successfully retrieved program ${programId}.`,
+      data: oneProgram
     })
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve program ${programId}.`
+    });
+
+    next(err);
+  }
 }
 
 const createProgram = (req, res, next) => {
@@ -42,21 +44,17 @@ const createProgram = (req, res, next) => {
     programName,        // from User
     about,              // from User
     cityAddress,        // from User
-    ngo,                // REQUIRED
+    ngo,                // AUTOFILL
     requiredAmount,     // from User 
-    programDate         // DEFAULT = new Date()
   } = req.body;
 
   const newProgram = new Program({
-    programAbout: {
+    about: {
       programName,
       about,
       cityAddress,
       ngo,
       requiredAmount,
-    },
-    timeline: {
-      programDate,
     }
   });
 
@@ -72,9 +70,9 @@ const createProgram = (req, res, next) => {
         programName,
       }
 
-      // Add programToPush object to NGO's active programs array
-      NGO.findOneAndUpdate(
-        { _id: ngo },
+      // Add programToPush object to NGO's activePrograms array
+      NGO.findByIdAndUpdate(
+        ngo,
         { $push: { 'programs.activePrograms': programToPush } }
       )
         .then(() => {
@@ -106,8 +104,26 @@ const createProgram = (req, res, next) => {
     });
 }
 
+const getBalance = async (req, res, next) => {
+  const { programId } = req.params;
+
+  try {
+    const program = await Program.findById(programId);
+    const { balance } = program;
+
+    res.status(200).json({ balance });
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve balance.`
+    });
+
+    next(err);
+  }
+}
+
 module.exports = {
   viewAllPrograms,
   viewProgram,
-  createProgram
+  createProgram,
+  getBalance
 }

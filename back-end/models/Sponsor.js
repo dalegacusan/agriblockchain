@@ -1,12 +1,8 @@
 const mongoose = require('mongoose');
 
 const sponsorSchema = new mongoose.Schema({
-  loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
-  },
-  sponsorAbout: {
+  balance: { type: Number, default: 0 },
+  about: {
     // profilePicture: String,
     corporationName: String,
     addressLine1: String,
@@ -19,8 +15,12 @@ const sponsorSchema = new mongoose.Schema({
     authorizedRepresentative: String,
     contactNumber: String,
   },
-  sponsoredPrograms: {type: Array, default: []},
-  walletBalance: { type: Number, default: 0 }
+  loginDetails: {
+    emailAddress: String,
+    username: String,
+    password: String
+  },
+  sponsoredPrograms: { type: Array, default: [] }
 });
 
 sponsorSchema.set('toJSON', {

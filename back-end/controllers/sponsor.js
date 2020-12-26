@@ -1,39 +1,41 @@
 const Sponsor = require('../models/Sponsor');
 
-const viewAllSponsors = (req, res, next) => {
-  Sponsor.find({})
-    .then(data => {
-      res.status(200).json({
-        message: 'Successfully retrieved all sponsors.',
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: 'Failed to retrieve all sponsors.'
-      });
+const viewAllSponsors = async (req, res, next) => {
 
-      next(err);
+  try {
+    const allSponsors = await Sponsor.find({});
+
+    res.status(200).json({
+      message: 'Successfully retrieved all sponsors.',
+      data: allSponsors
     })
+  } catch (err) {
+    res.status(400).json({
+      message: 'Failed to retrieve all sponsors.'
+    });
+
+    next(err);
+  }
+
 }
 
-const viewSponsor = (req, res, next) => {
+const viewSponsor = async (req, res, next) => {
   const { sponsorId } = req.params;
 
-  Sponsor.findById({ _id: sponsorId })
-    .then(data => {
-      res.status(200).json({
-        message: `Successfully retrieved sponsor ${sponsorId}.`,
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: `Failed to retrieve sponsor ${sponsorId}.`
-      });
+  try {
+    const oneSponsor = await Sponsor.findById(sponsorId);
 
-      next(err);
+    res.status(200).json({
+      message: `Successfully retrieved sponsor.`,
+      data: oneSponsor
     })
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve sponsor.`
+    });
+
+    next(err);
+  }
 }
 
 const createSponsor = (req, res, next) => {
@@ -41,21 +43,17 @@ const createSponsor = (req, res, next) => {
     username,
     password,
     name,
-    contactNumber,
-    representativeName,
     address1,
     address2,
+    representativeName,
+    contactNumber,
     region,
     city,
     country,
   } = req.body;
 
   const newSponsorAccount = new Sponsor({
-    loginDetails: {
-      username,
-      password
-    },
-    sponsorAbout: {
+    about: {
       corporationName: name,
       addressLine1: address1,
       addressLine2: address2,
@@ -66,13 +64,17 @@ const createSponsor = (req, res, next) => {
     contactDetails: {
       authorizedRepresentative: representativeName,
       contactNumber,
+    },
+    loginDetails: {
+      username,
+      password
     }
   });
 
   newSponsorAccount.save()
     .then(result => {
-      const { sponsorAbout } = result;
-      const { corporationName } = sponsorAbout;
+      const { about } = result;
+      const { corporationName } = about;
       console.log(`Successfully saved Sponsor ${corporationName} to the database.`);
 
       res.status(200).json({
@@ -90,8 +92,26 @@ const createSponsor = (req, res, next) => {
     });
 }
 
+const getBalance = async (req, res, next) => {
+  const { sponsorId } = req.params;
+
+  try {
+    const sponsor = await Sponsor.findById(sponsorId);
+    const { balance } = sponsor;
+
+    res.status(200).json({ balance });
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve balance.`
+    });
+
+    next(err);
+  }
+}
+
 module.exports = {
   viewSponsor,
   viewAllSponsors,
-  createSponsor
+  createSponsor,
+  getBalance
 }

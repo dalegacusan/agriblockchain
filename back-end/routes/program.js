@@ -20,7 +20,7 @@ router.post('/:programId/add/sponsor')
 router.post('/:programId/add/farmer')
 
 // ======= READ ======= //
-router.get('/:programId/balance')
+router.get('/:programId/balance', ProgramController.getBalance)
 
 router.get('/all', ProgramController.viewAllPrograms)
 

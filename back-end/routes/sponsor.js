@@ -15,11 +15,11 @@ router.get('/', (req, res) => {
 router.post('/create', SponsorController.createSponsor)
 
 // ======= READ ======= //
-router.get('/:sponsorId/balance')
+router.get('/:sponsorId/balance', SponsorController.getBalance)
 
 router.get('/all', SponsorController.viewAllSponsors)
 
-router.get('/:sponsorId', SponsorController.createSponsor)
+router.get('/:sponsorId', SponsorController.viewSponsor)
 
 router.get('/getPledge/:programId')
 

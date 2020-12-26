@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const programSchema = new mongoose.Schema({
-  programAbout: {
+  balance: { type: Number, default: 0 },
+  about: {
     // programPicture: String,
     programName: String,
     about: String,
@@ -11,7 +12,6 @@ const programSchema = new mongoose.Schema({
     status: { type: String, default: "active" },
     stage: { type: String, default: "crowdfunding" },
     requiredAmount: Number,
-    currentAmount: { type: Number, default: 0 },
   },
   timeline: {
     // submissionDate: Date,
@@ -29,8 +29,6 @@ const programSchema = new mongoose.Schema({
   //   major: {type: Number, default: 0}
   // },
 });
-
-// const Program = mongoose.model('Program', programSchema);
 
 programSchema.set('toJSON', {
   transform: (document, returnedObject) => {

@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 
 const ngoSchema = new mongoose.Schema({
-  loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
-  },
-  ngoAbout: {
+  about: {
     // ngoPicture: String,
     ngoName: String,
     addressLine1: String,
@@ -24,6 +19,11 @@ const ngoSchema = new mongoose.Schema({
     // Get the latest program from activePrograms to retrieve the active program
     activePrograms: { type: Array, default: [] },
     completedPrograms: { type: Array, default: [] }
+  },
+  loginDetails: {
+    emailAddress: String,
+    username: String,
+    password: String
   }
 });
 

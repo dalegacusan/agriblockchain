@@ -1,49 +1,47 @@
 const Farmer = require('../models/Farmer');
 
-const viewAllFarmers = (req, res, next) => {
-  Farmer.find({})
-    .then(data => {
-      res.status(200).json({
-        message: 'Successfully retrieved all farmers.',
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: 'Failed to retrieve all farmers.'
-      });
+const viewAllFarmers = async (req, res, next) => {
 
-      next(err);
+  try {
+    const allFarmers = await Farmer.find({});
+
+    res.status(200).json({
+      message: 'Successfully retrieved all farmers.',
+      data: allFarmers
     })
+  } catch (err) {
+    res.status(400).json({
+      message: 'Failed to retrieve all farmers.'
+    });
+
+    next(err);
+  }
+
 }
 
-const viewFarmer = (req, res, next) => {
+const viewFarmer = async (req, res, next) => {
   const { farmerId } = req.params;
 
-  Farmer.findById(farmerId)
-    .then(data => {
-      res.status(200).json({
-        message: `Successfully retrieved farmer ${farmerId}.`,
-        data
-      })
-    })
-    .catch(err => {
-      res.status(400).json({
-        message: `Failed to retrieve farmer ${farmerId}.`
-      });
+  try {
+    const oneFarmer = await Farmer.findById(farmerId);
 
-      next(err);
+    res.status(200).json({
+      message: `Successfully retrieved farmer.`,
+      data: oneFarmer
     })
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve farmer.`
+    });
+
+    next(err);
+  }
 }
 
 // @dev: Farmer Details are still hard-coded
 const createFarmer = (req, res, next) => {
   const newFarmerAccount = new Farmer({
-    loginDetails: {
-      username: "josephhermano",
-      password: "hermanojoseph123"
-    },
-    farmerAbout: {
+    about: {
       firstName: "Joseph",
       middleName: "Sultan",
       lastName: "Hermano",
@@ -58,12 +56,16 @@ const createFarmer = (req, res, next) => {
       emailAddress: "josephhermano@gmail.com",
       contactNumber: "937-538-5148"
     },
+    loginDetails: {
+      username: "josephhermano",
+      password: "hermanojoseph123"
+    }
   });
 
   newFarmerAccount.save()
     .then(result => {
-      const { farmerAbout } = result;
-      const { firstName, lastName } = farmerAbout;
+      const { about } = result;
+      const { firstName, lastName } = about;
       console.log(`Successfully saved ${firstName} ${lastName} to the database.`);
 
       res.status(200).json({
@@ -81,8 +83,26 @@ const createFarmer = (req, res, next) => {
     });
 }
 
+const getBalance = async (req, res, next) => {
+  const { farmerId } = req.params;
+
+  try {
+    const farmer = await Farmer.findById(farmerId);
+    const { balance } = farmer;
+
+    res.status(200).json({ balance });
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve balance.`
+    });
+
+    next(err);
+  }
+}
+
 module.exports = {
   viewFarmer,
   viewAllFarmers,
-  createFarmer
+  createFarmer,
+  getBalance
 }
