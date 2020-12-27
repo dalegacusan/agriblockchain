@@ -115,6 +115,7 @@ const getBalance = async (req, res, next) => {
 const getPledge = async (req, res, next) => {
   const { sponsorId, programId } = req.params;
 
+  // ***** RETRIEVES PLEDGE FROM SPONSOR DOCUMENT ***** //
   try {
     const sponsor = await Sponsor.findById(sponsorId);
     const { sponsoredPrograms } = sponsor;
@@ -133,6 +134,7 @@ const getPledge = async (req, res, next) => {
     next(err);
   }
 
+  // ***** RETRIEVES PLEDGE FROM PROGRAM DOCUMENT ***** //
   // try {
   //   const program = await Program.findById(programId);
   //   const { sponsors } = program;
@@ -152,10 +154,54 @@ const getPledge = async (req, res, next) => {
   // }
 }
 
+const revertPledge = async (req, res, next) => {
+  const { sponsorId, programId } = req.params;
+
+  try {
+    const program = await Program.findById(programId);
+    const { sponsors } = program;
+
+    const pledges = sponsors.filter(sponsor => sponsor.sponsorId === sponsorId);
+    const amountFundedPerPledge = pledges.map(sponsor => sponsor.amountFunded);
+    const totalPledgedAmount = amountFundedPerPledge.reduce((total, currentValue) => total += currentValue);
+
+    /// Promises to be passed to Promise.all()
+    const addAmountToSponsor = Sponsor.findByIdAndUpdate(
+      sponsorId,
+      {
+        $inc: { balance: totalPledgedAmount },
+        $pull: { sponsoredPrograms: { programId } }
+      }
+    )
+    const reduceProgramBalance = Program.findByIdAndUpdate(
+      programId,
+      {
+        $inc: { balance: -totalPledgedAmount },
+        $pull: { sponsors: { sponsorId } }
+      }
+    )
+
+    Promise.all([addAmountToSponsor, reduceProgramBalance])
+      .then(() => {
+        res.status(200).json({
+          message: 'Successfully reverted pledge/s.'
+        });
+      });
+
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to revert pledge/s.`
+    });
+
+    next(err);
+  }
+}
+
 module.exports = {
   viewSponsor,
   viewAllSponsors,
   createSponsor,
   getBalance,
-  getPledge
+  getPledge,
+  revertPledge
 }
