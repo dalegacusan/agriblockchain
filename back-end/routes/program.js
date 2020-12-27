@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
 // ====== CREATE ====== //
 router.post('/create', ProgramController.createProgram)
 
-router.post('/:programId/add/sponsor')
+router.patch('/:programId/add/sponsor/:sponsorId', ProgramController.addSponsor)
 
 router.post('/:programId/add/farmer')
 

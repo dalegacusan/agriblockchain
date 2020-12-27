@@ -1,6 +1,6 @@
 const Program = require('../models/Program');
 const NGO = require('../models/NGO');
-const flatten = require('flat');
+const Sponsor = require('../models/Sponsor');
 
 const viewAllPrograms = async (req, res, next) => {
 
@@ -61,11 +61,11 @@ const createProgram = (req, res, next) => {
 
   // Save new program to the database
   newProgram.save()
-    .then(result => {
-      const { id } = result;
+    .then(data => {
+      const { id } = data;
       console.log(`Successfully saved Program ${programName} to the database.`);
 
-      // Object that gets pushed to NGO's active programs array
+      // Pushed to NGO's [activePrograms] array
       const programToPush = {
         programId: id,
         programName,
@@ -127,15 +127,15 @@ const deleteProgram = async (req, res, next) => {
 
   // Delete document from the database
   Program.findByIdAndDelete(programId)
-    .then(result => {
-      const { about } = result;
+    .then(data => {
+      const { about } = data;
       const { ngo } = about;
 
       // Remove from ngo's programs array
       NGO.findByIdAndUpdate(
         ngo,
         { $pull: { 'programs.activePrograms': { programId } } }
-      ).then(result => {
+      ).then(data => {
         res.status(200).json({
           status: 'Successfully deleted program from the database.',
         });
@@ -161,10 +161,91 @@ const deleteProgram = async (req, res, next) => {
 
 }
 
+// @dev: Add restrictions 
+// - A sponsor must have sufficient balance
+// - A program can't have any more sponsor if NOT crowdfunding phase anymore
+const addSponsor = async (req, res, next) => {
+  const { programId, sponsorId } = req.params;
+  let { amountFunded } = req.body;
+  amountFunded = parseInt(amountFunded);
+
+  // Pushed to Sponsor's [sponsoredPrograms] array
+  const programToPush = {
+    programId,
+    amountFunded,
+    dateFunded: new Date(),
+  }
+  // Pushed to Program's [sponsors] array
+  const sponsorToPush = {
+    sponsorId,
+    amountFunded,
+    dateFunded: new Date(),
+  }
+
+  // Promises to be passed to Promise.all()
+  const addProgramToSponsor = Sponsor.findByIdAndUpdate(
+    sponsorId,
+    {
+      $push: { sponsoredPrograms: programToPush },
+      $inc: { balance: -amountFunded } // Decrease sponsor balance
+    }
+  )
+  const addSponsorToProgram = Program.findByIdAndUpdate(
+    programId,
+    {
+      $push: { sponsors: sponsorToPush },
+      $inc: { balance: amountFunded } // Increase program balance
+    },
+    { new: true }
+  )
+
+  Promise.all([addProgramToSponsor, addSponsorToProgram])
+    .then(values => {
+      const sponsor = values[0];
+      const program = values[1];
+
+      const { balance } = program;
+      const { about } = program;
+      const { requiredAmount } = about;
+
+      /* 
+        Check if current balance of Program is >= required amount
+        IF TRUE, set Program's stage to "procurement"
+      */
+      if (balance >= requiredAmount) {
+        program.about.stage = "procurement";
+
+        program.save()
+          .then(() => {
+            console.log("Program is now in Procurement Phase!");
+
+            res.status(200).json({
+              message: 'Program is now in Procurement Phase.'
+            });
+          })
+      } else {
+        res.status(200).json({
+          message: 'Successfully added sponsor to program.'
+        });
+      }
+    })
+    .catch(err => {
+      console.log('Error: ', err);
+
+      res.status(400).json({
+        message: 'Something went wrong.'
+      });
+
+      next(err);
+    });
+
+}
+
 module.exports = {
   viewAllPrograms,
   viewProgram,
   createProgram,
   getBalance,
-  deleteProgram
+  deleteProgram,
+  addSponsor
 }

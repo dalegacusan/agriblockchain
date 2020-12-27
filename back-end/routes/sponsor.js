@@ -21,10 +21,10 @@ router.get('/all', SponsorController.viewAllSponsors)
 
 router.get('/:sponsorId', SponsorController.viewSponsor)
 
-router.get('/getPledge/:programId')
+router.get('/:sponsorId/getPledge/:programId', SponsorController.getPledge)
 
 // ====== UPDATE ====== //
-router.patch('/revertPledge/:programId')
+router.patch('/:sponsorId/revertPledge/:programId')
 
 // ====== DELETE ====== //
 router.delete('/:sponsorId/delete', (req, res) => {

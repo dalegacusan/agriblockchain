@@ -61,7 +61,7 @@ const createNGO = (req, res, next) => {
   });
 
   newNGOAccount.save()
-    .then(result => {
+    .then(() => {
       console.log('Successfully saved NGO to the database.');
 
       res.status(200).json({

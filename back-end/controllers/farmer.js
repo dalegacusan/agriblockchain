@@ -63,8 +63,8 @@ const createFarmer = (req, res, next) => {
   });
 
   newFarmerAccount.save()
-    .then(result => {
-      const { about } = result;
+    .then(data => {
+      const { about } = data;
       const { firstName, lastName } = about;
       console.log(`Successfully saved ${firstName} ${lastName} to the database.`);
 
@@ -100,9 +100,42 @@ const getBalance = async (req, res, next) => {
   }
 }
 
+// @status: in-progress
+const addProduce = (req, res, next) => {
+  const { farmerId } = req.params;
+  const { name, price, quantity } = req.body;
+
+  // Object that gets pushed to Farmer's produce portfolio array
+  const produceToPush = {
+    farmerId,
+    name,
+    price,
+    quantity,
+  }
+
+  Farmer.updateOne({ _id: farmerId }, { $push: { producePortfolio: produceToPush } })
+    .then(() => {
+      console.log('Successfully added produce to farmer\'s produce portfolio.');
+
+      res.status(200).json({
+        message: 'Successfully added produce to farmer\'s produce portfolio.',
+      })
+    })
+    .catch(err => {
+      console.log("Error: ", err);
+
+      res.status(400).json({
+        message: 'Failed to add produce to farmer\'s produce portfolio.'
+      });
+
+      next(err);
+    })
+}
+
 module.exports = {
   viewFarmer,
   viewAllFarmers,
   createFarmer,
-  getBalance
+  getBalance,
+  addProduce
 }

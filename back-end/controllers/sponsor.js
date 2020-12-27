@@ -1,4 +1,5 @@
 const Sponsor = require('../models/Sponsor');
+const Program = require('../models/Program');
 
 const viewAllSponsors = async (req, res, next) => {
 
@@ -72,8 +73,8 @@ const createSponsor = (req, res, next) => {
   });
 
   newSponsorAccount.save()
-    .then(result => {
-      const { about } = result;
+    .then(data => {
+      const { about } = data;
       const { corporationName } = about;
       console.log(`Successfully saved Sponsor ${corporationName} to the database.`);
 
@@ -109,9 +110,33 @@ const getBalance = async (req, res, next) => {
   }
 }
 
+// @dev: assumes that a sponsor can pledge multiple times
+const getPledge = async (req, res, next) => {
+  const { sponsorId, programId } = req.params;
+
+  try {
+    const program = await Program.findById(programId);
+    const { sponsors } = program;
+    // Switch to .filter() if a sponsor can pledge only ONCE
+    const pledges = sponsors.filter(sponsor => sponsor.sponsorId === sponsorId);
+
+    res.status(200).json({
+      message: `Successfully retrieved pledge/s.`,
+      data: pledges
+    })
+  } catch (err) {
+    res.status(400).json({
+      message: `Failed to retrieve pledge/s.`
+    });
+
+    next(err);
+  }
+}
+
 module.exports = {
   viewSponsor,
   viewAllSponsors,
   createSponsor,
-  getBalance
+  getBalance,
+  getPledge
 }
