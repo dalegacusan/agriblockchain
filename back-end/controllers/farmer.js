@@ -7,7 +7,7 @@ const viewAllFarmers = async (req, res, next) => {
 
     res.status(200).json({
       message: 'Successfully retrieved all farmers.',
-      data: allFarmers
+      dataRetrieved: allFarmers
     })
   } catch (err) {
     res.status(400).json({
@@ -27,7 +27,7 @@ const viewFarmer = async (req, res, next) => {
 
     res.status(200).json({
       message: `Successfully retrieved farmer.`,
-      data: oneFarmer
+      dataRetrieved: oneFarmer
     })
   } catch (err) {
     res.status(400).json({

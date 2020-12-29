@@ -7,7 +7,7 @@ const viewAllNGO = async (req, res, next) => {
 
     res.status(200).json({
       message: 'Successfully retrieved all NGOs.',
-      data: allNGO
+      dataRetrieved: allNGO
     })
   } catch (err) {
     res.status(400).json({
@@ -27,7 +27,7 @@ const viewNGO = async (req, res, next) => {
 
     res.status(200).json({
       message: `Successfully retrieved NGO.`,
-      data: oneNGO
+      dataRetrieved: oneNGO
     })
   } catch (err) {
     res.status(400).json({

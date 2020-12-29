@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
-import Farmer from './components/Farmer';
 import axios from 'axios';
+
+// Components
+import Farmer from './components/Farmer';
+
+// MaterialUI
 import Grid from '@material-ui/core/Grid';
+
+// Contexts
+
+// Pages
 import LoadingScreen from '../LoadingScreen/LoadingScreen';
 
+// CSS
 
 function FarmersList() {
-
   const [farmers, setFarmers] = useState([]);
 
   useEffect(() => {

@@ -10,7 +10,7 @@ const viewAllSponsors = async (req, res, next) => {
 
     res.status(200).json({
       message: 'Successfully retrieved all sponsors.',
-      data: allSponsors
+      dataRetrieved: allSponsors
     })
   } catch (err) {
     res.status(400).json({
@@ -30,7 +30,7 @@ const viewSponsor = async (req, res, next) => {
 
     res.status(200).json({
       message: `Successfully retrieved sponsor.`,
-      data: oneSponsor
+      dataRetrieved: oneSponsor
     })
   } catch (err) {
     res.status(400).json({
@@ -126,7 +126,7 @@ const getPledge = async (req, res, next) => {
 
     res.status(200).json({
       message: `Successfully retrieved pledge/s.`,
-      data: pledges
+      dataRetrieved: pledges
     })
   } catch (err) {
     res.status(400).json({

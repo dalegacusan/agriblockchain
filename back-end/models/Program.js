@@ -9,7 +9,7 @@ const programSchema = new mongoose.Schema({
     stage: { type: String, default: "crowdfunding" },
     completed: { type: Boolean, default: false },
     programName: String,
-    about: String,
+    programDescription: String,
     cityAddress: String,
     ngo: String,
     requiredAmount: Number,

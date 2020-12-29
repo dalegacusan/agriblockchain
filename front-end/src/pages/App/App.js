@@ -3,17 +3,13 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Components
 import Header from '../../components/Header/Header';
-
 // CSS
 import './App.css';
-
 // MaterialUI
 import CssBaseline from '@material-ui/core/CssBaseline';
-
 // Contexts
 import { RegisterDialogProvider } from '../../contexts/RegisterDialogContext';
 import { LoginDialogProvider } from '../../contexts/LoginDialogContext';
-
 // Pages
 import LandingPage from '../Landing/Landing';
 import AboutPage from '../About/AboutPage';

@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
+
+// Components
+// MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-
+// Contexts
+// Pages
+// CSS
 const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
@@ -20,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginBottom: 12,
   },
-  stage:{
+  stage: {
     display: 'inline-block',
     backgroundColor: theme.palette.secondary.main,
     padding: '0.2rem 0.5rem',
@@ -30,38 +35,52 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProgramCard(props) {
+  const {
+    programName,
+    programDate,
+    programDescription,
+    programStatus,
+    programStage
+  } = props;
   const classes = useStyles();
-  const { programName, programDate, programDescription, programStatus, programStage } = props;
 
-  const [ stage, setStage ] = useState('');
-  const [ status, setStatus ] = useState('');
-  
+  const [stage, setStage] = useState('');
+  const [status, setStatus] = useState('');
+
   useEffect(() => {
-    if (programStage === 'crowdfunding') {
-      setStage('Looking for sponsors');
-    } else if (programStage === 'procurement') {
-      setStage('Coordinating with farmers');
-    } else if (programStage === 'execution') {
-      setStage('Delivering to beneficiaries');
-    } else if (programStage === 'leftover') {
-      setStage('Cleaning up');
-    } else {
-      setStage('Stage unavailable');
+    switch (programStage) {
+      case 'crowdfunding':
+        setStage('Looking for sponsors');
+        break;
+      case 'procurement':
+        setStage('Coordinating with farmers');
+        break;
+      case 'execution':
+        setStage('Delivering to beneficiaries');
+        break;
+      case 'leftover':
+        setStage('Cleaning up');
+        break;
+      default:
+        setStatus('Stage unavailable');
     }
   }, [programStage])
 
   useEffect(() => {
-    if (programStatus === 'active') {
-      setStatus('Active');
-    } else if (programStatus === 'completed') {
-      setStatus('Completed');
-    } else if (programStatus === 'cancelled') {
-      setStatus('Cancelled');
-    } else {
-      setStatus('Status unavailable');
+    switch (programStatus) {
+      case 'active':
+        setStatus('Active');
+        break;
+      case 'completed':
+        setStatus('Completed');
+        break;
+      case 'cancelled':
+        setStatus('Cancelled');
+        break;
+      default:
+        setStatus('Status unavailable');
     }
   }, [programStatus])
-  
 
   return (
     <Card className={classes.root}>

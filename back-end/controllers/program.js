@@ -9,7 +9,7 @@ const viewAllPrograms = async (req, res, next) => {
 
     res.status(200).json({
       message: 'Successfully retrieved all programs.',
-      data: allPrograms
+      dataRetrieved: allPrograms
     })
   } catch (err) {
     res.status(400).json({
@@ -29,7 +29,7 @@ const viewProgram = async (req, res, next) => {
 
     res.status(200).json({
       message: `Successfully retrieved program ${programId}.`,
-      data: oneProgram
+      dataRetrieved: oneProgram
     })
   } catch (err) {
     res.status(400).json({
@@ -43,7 +43,7 @@ const viewProgram = async (req, res, next) => {
 const createProgram = (req, res, next) => {
   const {
     programName,        // from User
-    about,              // from User
+    programDescription,              // from User
     cityAddress,        // from User
     ngo,                // AUTOFILL
     requiredAmount,     // from User 
@@ -52,7 +52,7 @@ const createProgram = (req, res, next) => {
   const newProgram = new Program({
     about: {
       programName,
-      about,
+      programDescription,
       cityAddress,
       ngo,
       requiredAmount,
