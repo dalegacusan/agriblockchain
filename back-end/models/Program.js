@@ -5,13 +5,13 @@ const programSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
   about: {
     // programPicture: String,
-    programName: String,
-    about: String,
-    completed: { type: Boolean, default: false },
-    cityAddress: String,
-    ngo: String,
     status: { type: String, default: "active" },
     stage: { type: String, default: "crowdfunding" },
+    completed: { type: Boolean, default: false },
+    programName: String,
+    about: String,
+    cityAddress: String,
+    ngo: String,
     requiredAmount: Number,
   },
   timeline: {

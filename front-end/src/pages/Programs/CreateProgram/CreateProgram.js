@@ -72,7 +72,7 @@ export default function CreateProgram() {
   const handleSubmit = () => {
     setSubmitLoading(true)
     if (loginData.uid) {
-      axios.post('http://192.168.1.2:7545/api/crowdfunding/createNewProgram/', newProgram)
+      axios.post('/api/program/create', newProgram)
         .then(res => {
           console.log(res);
           setSubmitLoading(false);

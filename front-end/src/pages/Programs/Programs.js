@@ -1,7 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { makeStyles } from '@material-ui/core/styles';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+import moment from 'moment';
+
+// Components
+import ProgramCard from './ProgramCard';
+
+// CSS
+
+// MaterialUI
+import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -9,12 +17,13 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
-import moment from 'moment';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
-import ProgramCard from './ProgramCard';
+// Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
+
+// Pages
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +54,7 @@ export default function Programs() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    axios.get('http://192.168.1.2:7545/api/programs')
+    axios.get('/api/program/all')
       .then((res) => {
         console.log(res.data);
         setLoading(false);

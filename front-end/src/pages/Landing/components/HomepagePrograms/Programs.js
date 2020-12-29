@@ -9,10 +9,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ProgramCard from './ProgramCard';
 
 export default function Programs() {
-  const [ programs, setPrograms ] = useState([])
+  const [programs, setPrograms] = useState([])
 
   useEffect(() => {
-    axios.get('http://192.168.1.2:7545/api/programs')
+    axios.get('/api/program/all')
       .then((res) => {
         console.log(res.data);
         setPrograms(res.data);
@@ -42,10 +42,10 @@ export default function Programs() {
                   />
                 </Grid>
               )
-            }) 
+            })
             :
             <Box width="100%" textAlign="center">
-              <CircularProgress/>
+              <CircularProgress />
             </Box>
         }
       </Grid>

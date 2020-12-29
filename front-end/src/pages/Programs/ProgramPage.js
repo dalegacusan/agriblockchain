@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
-import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios';
+import moment from 'moment';
+
+// Components
+
+// MaterialUI
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
@@ -23,8 +27,12 @@ import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
 import { useConfirm } from "material-ui-confirm";
 
+// Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 
+// Pages
+
+// CSS
 const useStyles = makeStyles((theme) => ({
   root: {
     minWidth: 275,
@@ -43,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export default withRouter(function ProgramPage(props) {
   const classes = useStyles();
   const history = useHistory();
@@ -52,11 +59,12 @@ export default withRouter(function ProgramPage(props) {
 
   const { loginData } = useContext(LoginDialogContext);
   const [program, setProgram] = useState({
-    "programAbout": {
-      "completed": false,
+    "id": "",
+    "balance": 0,
+    "about": {
       "status": "",
       "stage": "",
-      "currentAmount": 0,
+      "completed": false,
       "programName": "",
       "about": "",
       "cityAddress": "",
@@ -66,7 +74,9 @@ export default withRouter(function ProgramPage(props) {
     "timeline": {
       "programDate": ""
     },
+    "produceRequirements": [],
     "farmersParticipating": [],
+    // Why does this have objects inside?
     "sponsors": [
       {
         "sponsorId": "",
@@ -78,34 +88,31 @@ export default withRouter(function ProgramPage(props) {
         "amountFunded": 0,
         "dateFunded": ""
       }
-    ],
-    "produceRequirements": [],
-    "id": ""
+    ]
   });
   const [ngo, setNgo] = useState({
-    "loginDetails": {
-      "username": "",
-      "password": "",
-    },
-    "ngoAbout": {
-      "ngoPicture": "",
+    "id": "",
+    "about": {
       "ngoName": "",
       "addressLine1": "",
       "addressLine2": "",
-      "ngoRegion": "",
-      "ngoCity": "",
-      "ngoCountry": "",
+      "region": "",
+      "city": "",
+      "country": "",
     },
     "programs": {
       "activePrograms": [],
       "completedPrograms": [],
     },
-    "ngoContactDetails": {
+    "contactDetails": {
       "authorizedRepresentative": "",
-      "ngoContactNumber": "",
-      "ngoEmailAddress": ""
+      "contactNumber": "",
+      "emailAddress": ""
     },
-    "id": "",
+    "loginDetails": {
+      "username": "",
+      "password": "",
+    }
   })
   const [pledgeDialog, setPledgeDialog] = useState({
     loading: false,
@@ -157,7 +164,7 @@ export default withRouter(function ProgramPage(props) {
         ...pledgeDialog,
         loading: true
       })
-      axios.post(`http://192.168.1.2:7545/api/crowdfunding/pledge/${match.params.programId}/${loginData.uid}`, {
+      axios.patch(`/api/program/${match.params.programId}/add/sponsor/${loginData.uid}`, {
         amountFunded: pledgeDialog.pledgeAmount
       }, {
         params: {
@@ -204,7 +211,7 @@ export default withRouter(function ProgramPage(props) {
         ...produceDialog,
         loading: true
       })
-      axios.post(`http://192.168.1.2:7545/api/crowdfunding/addFarmerPartnership/${match.params.programId}/${loginData.uid}`, produceDialog.produce, {
+      axios.patch(`/api/program/${match.params.programId}/add/farmer/${loginData.uid}/`, produceDialog.produce, {
         params: {
           programId: match.params.programId,
           farmerId: loginData.uid
@@ -266,7 +273,8 @@ export default withRouter(function ProgramPage(props) {
       .then(() => {
         setExecutionLoading(true)
         program.farmersParticipating.forEach(farmer => {
-          axios.post(`/api/crowdfunding/transferFunds/${match.params.programId}/${farmer.farmerId}`)
+          // axios.post(`/api/program/${match.params.programId}/transferFunds/${farmer.farmerId}`)
+          axios.post(`/api/program/${match.params.programId}/transferFunds`)
             .then((res) => {
               setSuccess(true)
               console.log(res.data)
@@ -290,28 +298,28 @@ export default withRouter(function ProgramPage(props) {
   }
 
   const getProgramDetails = () => {
-    axios.get(`http://192.168.1.2:7545/api/programs/${match.params.programId}`)
+    axios.get(`/api/program/${match.params.programId}`)
       .then((res) => {
         setProgram(res.data);
-        if (res.data.programAbout && res.data.programAbout.ngo !== "") {
-          axios.get(`http://192.168.1.2:7545/api/ngo/${res.data.programAbout.ngo}`)
+        if (res.data.about && res.data.about.ngo !== "") {
+          axios.get(`/api/ngo/${res.data.about.ngo}`)
             .then(res => setNgo(res.data))
             .catch(err => console.error(err))
         }
         if (res.data.sponsors.length !== 0) {
           res.data.sponsors.forEach(sponsor => {
-            axios.get(`http://192.168.1.2:7545/api/sponsors/${sponsor.sponsorId}`)
+            axios.get(`/api/sponsor/${sponsor.sponsorId}`)
               .then(res => {
-                sponsor.sponsorAbout = res.data.sponsorAbout
+                sponsor.about = res.data.about
               })
               .catch(err => console.error(err));
           });
         }
         if (res.data.farmersParticipating.length !== 0) {
           res.data.farmersParticipating.forEach(farmer => {
-            axios.get(`http://192.168.1.2:7545/api/farmers/${farmer.farmerId}`)
+            axios.get(`/api/farmers/${farmer.farmerId}`)
               .then(res => {
-                farmer.farmerAbout = res.data.farmerAbout
+                farmer.about = res.data.about
               })
               .catch(err => console.error(err));
           });

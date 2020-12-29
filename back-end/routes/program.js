@@ -17,7 +17,7 @@ router.post('/create', ProgramController.createProgram)
 
 router.patch('/:programId/add/sponsor/:sponsorId', ProgramController.addSponsor)
 
-router.post('/:programId/add/farmer')
+router.patch('/:programId/add/farmer/:farmerId')
 
 // ======= READ ======= //
 router.get('/:programId/balance', ProgramController.getBalance)
@@ -106,7 +106,7 @@ router.patch('/:programId/update', (req, res, next) => {
 
 router.patch('/:programId/stage/execution')
 
-router.post('/transferFunds')
+router.post('/:programId/transferFunds')
 
 // ====== DELETE ====== //
 router.delete('/:programId/delete', ProgramController.deleteProgram)
