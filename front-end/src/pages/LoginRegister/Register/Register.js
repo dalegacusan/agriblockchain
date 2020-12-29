@@ -4,7 +4,8 @@ import Agreement from './FirstStep/Agreement';
 import RegisterStepper from './components/RegisterStepper';
 import SecondStep from './SecondStep/SecondStep';
 import ThirdStep from './ThirdStep/ThirdStep';
-import { RegistrationDataProvider } from '../../../global/Contexts/RegistrationDataContext';
+
+import { RegistrationDataProvider } from '../../../contexts/RegistrationDataContext';
 
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
@@ -76,7 +77,7 @@ export default withRouter(function Register(props) {
                   handleBack={handleBack}
                 />
                 :
-                <ThirdStep 
+                <ThirdStep
                   currentUser={match.params.userType}
                   classes={classes}
                   activeStep={activeStep}
@@ -84,8 +85,8 @@ export default withRouter(function Register(props) {
                   handleNext={handleNext}
                   handleBack={handleBack}
                 />
-            }
-          </RegistrationDataProvider>
+          }
+        </RegistrationDataProvider>
       </Box>
     </Box>
   );

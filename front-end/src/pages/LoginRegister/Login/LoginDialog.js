@@ -16,8 +16,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 
-import { LoginDialogContext } from '../../../global/Contexts/LoginDialogContext';
-
+import { LoginDialogContext } from '../../../contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   avatar: {
@@ -34,15 +33,15 @@ export default function LoginDialog() {
   const classes = useStyles()
 
   const { openLoginDialog, setOpenLoginDialog, setLoginData } = useContext(LoginDialogContext)
-  const [ tempData, setTempData ] = useState({
+  const [tempData, setTempData] = useState({
     type: '',
     uid: '',
     walletBalance: 0,
   })
-  const [ allNgos, setAllNgos ] = useState([]);
-  const [ allFarmers, setAllFarmers ] = useState([]);
-  const [ allSponsors, setAllSponsors ] = useState([]);
-  const [ selectedIndex, setSelectedIndex ] = useState('');
+  const [allNgos, setAllNgos] = useState([]);
+  const [allFarmers, setAllFarmers] = useState([]);
+  const [allSponsors, setAllSponsors] = useState([]);
+  const [selectedIndex, setSelectedIndex] = useState('');
 
   const handleListItemClick = (event, index, data) => {
     setSelectedIndex(index);
@@ -129,23 +128,23 @@ export default function LoginDialog() {
           </Typography>
           {allNgos.length > 0 && allNgos.map((ngo, index) => (
             <List component="div" key={index}>
-              <ListItem button 
-                        selected={selectedIndex === ngo.id} 
-                        onClick={(e) => { 
-                                  handleListItemClick(e, ngo.id, { 
-                                    type: "ngo",
-                                    username: ngo.ngoAbout.ngoName,
-                                    uid: ngo.id,
-                                   }) 
-                                }}
-                        style={{ borderRadius: 8 }}
+              <ListItem button
+                selected={selectedIndex === ngo.id}
+                onClick={(e) => {
+                  handleListItemClick(e, ngo.id, {
+                    type: "ngo",
+                    username: ngo.ngoAbout.ngoName,
+                    uid: ngo.id,
+                  })
+                }}
+                style={{ borderRadius: 8 }}
               >
                 <ListItemIcon>
                   <Avatar className={classes.avatar}>
-                    {ngo.ngoAbout.ngoName !== undefined && ngo.ngoAbout.ngoName[0]}  
-                  </Avatar>    
+                    {ngo.ngoAbout.ngoName !== undefined && ngo.ngoAbout.ngoName[0]}
+                  </Avatar>
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary={ngo.ngoAbout.ngoName}
                   secondary={
                     <Fragment>
@@ -166,23 +165,23 @@ export default function LoginDialog() {
           </Typography>
           {allFarmers.length > 0 && allFarmers.map((farmer, index) => (
             <List component="div" key={index}>
-              <ListItem button 
-                        selected={selectedIndex === farmer.id} 
-                        onClick={(e) => { 
-                                  handleListItemClick(e, farmer.id, { 
-                                    type: "farmer",
-                                    username: farmer.farmerAbout.firstName,
-                                    uid: farmer.id,
-                                  }) 
-                                }}
-                        style={{ borderRadius: 8 }}
+              <ListItem button
+                selected={selectedIndex === farmer.id}
+                onClick={(e) => {
+                  handleListItemClick(e, farmer.id, {
+                    type: "farmer",
+                    username: farmer.farmerAbout.firstName,
+                    uid: farmer.id,
+                  })
+                }}
+                style={{ borderRadius: 8 }}
               >
                 <ListItemIcon>
                   <Avatar className={classes.avatar}>
                     {farmer.farmerAbout.firstName !== undefined && farmer.farmerAbout.firstName[0]}
-                  </Avatar>    
+                  </Avatar>
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary={`${farmer.farmerAbout.firstName} ${farmer.farmerAbout.middleName} ${farmer.farmerAbout.lastName}`}
                   secondary={
                     <Fragment>
@@ -203,23 +202,23 @@ export default function LoginDialog() {
           </Typography>
           {allSponsors.length > 0 && allSponsors.map((sponsor, index) => (
             <List component="div" key={index}>
-              <ListItem button 
-                        selected={selectedIndex === sponsor.id} 
-                        onClick={(e) => { 
-                                  handleListItemClick(e, sponsor.id, { 
-                                    type: "corporation",
-                                    username: sponsor.sponsorAbout.corporationName,
-                                    uid: sponsor.id,
-                                  }) 
-                                }}
-                        style={{ borderRadius: 8 }}
+              <ListItem button
+                selected={selectedIndex === sponsor.id}
+                onClick={(e) => {
+                  handleListItemClick(e, sponsor.id, {
+                    type: "corporation",
+                    username: sponsor.sponsorAbout.corporationName,
+                    uid: sponsor.id,
+                  })
+                }}
+                style={{ borderRadius: 8 }}
               >
                 <ListItemIcon>
                   <Avatar className={classes.avatar}>
-                    {sponsor.sponsorAbout.corporationName !== undefined && sponsor.sponsorAbout.corporationName[0]}  
-                  </Avatar>    
+                    {sponsor.sponsorAbout.corporationName !== undefined && sponsor.sponsorAbout.corporationName[0]}
+                  </Avatar>
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary={sponsor.sponsorAbout.corporationName}
                   secondary={
                     <Fragment>
@@ -239,10 +238,10 @@ export default function LoginDialog() {
         <Button onClick={handleClose} color="primary">
           Cancel
         </Button>
-        <Button 
-          onClick={handleSubmit} 
+        <Button
+          onClick={handleSubmit}
           color="primary"
-          disabled={ selectedIndex === "" ? true : false }
+          disabled={selectedIndex === "" ? true : false}
         >
           Log In
         </Button>

@@ -7,8 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
-import { RegistrationDataContext } from '../../../../../global/Contexts/RegistrationDataContext';
-
+import { RegistrationDataContext } from '../../../../../contexts/RegistrationDataContext';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NGOForm() {
+export default function SponsorCorporationForm() {
   const classes = useStyles();
 
   const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
@@ -25,17 +24,17 @@ export default function NGOForm() {
   const handleChange = (e) => {
     setOpenRegistrationData({
       ...openRegistrationData,
-      type: 'ngo',
+      type: 'corporation',
       [e.target.name]: e.target.value,
     });
   }
 
   return (
     <form noValidate autoComplete="off">
-      {/* NGO Name */}
+      {/* Corporation Name */}
       <TextField
-        label="NGO Name"
-        placeholder="NGO Name"
+        label="Corporation Name"
+        placeholder="Corporation Name"
         fullWidth
         margin="normal"
         InputLabelProps={{
@@ -81,9 +80,9 @@ export default function NGOForm() {
         value={openRegistrationData.representativeName}
       />
 
-      <br/><br/>
+      <br /><br />
       <Divider variant="middle" />
-      <br/>
+      <br />
 
       {/* Address Line 1 */}
       <TextField
@@ -118,7 +117,7 @@ export default function NGOForm() {
       />
 
       {/* Region */}
-      <br/><br/>
+      <br /><br />
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
         <Select
@@ -161,7 +160,7 @@ export default function NGOForm() {
       </FormControl>
 
       {/* Country */}
-      <br/><br/>
+      <br /><br />
       <FormControl variant="outlined" style={{ width: "100%" }}>
         <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
         <Select

@@ -14,7 +14,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Alert from '@material-ui/lab/Alert';
 
 import ProgramCard from './ProgramCard';
-import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
+import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,8 +41,8 @@ export default function Programs() {
   const classes = useStyles();
 
   const { loginData } = useContext(LoginDialogContext);
-  const [ programs, setPrograms ] = useState([]);
-  const [ loading, setLoading ] = useState(true)
+  const [programs, setPrograms] = useState([]);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     axios.get('http://192.168.1.2:7545/api/programs')
@@ -62,47 +62,47 @@ export default function Programs() {
       <Typography variant="h2" component="h1" gutterBottom>
         All Programs
       </Typography>
-      <Box display={ loginData.username === '' && loginData.type === '' ? "block" : "none" }>
+      <Box display={loginData.username === '' && loginData.type === '' ? "block" : "none"}>
         <Alert severity="info">Log in to Bayanihan to get more details about the programs</Alert>
       </Box>
       <Box my={3}>
         {
-          loading ? 
-          <Box width="100%" textAlign="center">
-            <CircularProgress/>
-          </Box>
-          :
-          <Grid container spacing={2}>
-            {
-              programs.length !== 0 ?
-                programs.map((program, index) => {
-                  const { programAbout, timeline, _id } = program;
-                  const { programName, about, stage, status } = programAbout;
-                  const { programDate } = timeline;
+          loading ?
+            <Box width="100%" textAlign="center">
+              <CircularProgress />
+            </Box>
+            :
+            <Grid container spacing={2}>
+              {
+                programs.length !== 0 ?
+                  programs.map((program, index) => {
+                    const { programAbout, timeline, _id } = program;
+                    const { programName, about, stage, status } = programAbout;
+                    const { programDate } = timeline;
 
-                  return (
-                    <Grid item xs={12} md={6} lg={4}>
-                      <ProgramCard
-                        key={index}
-                        programName={programName}
-                        programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
-                        programDescription={about}
-                        programStage={stage}
-                        programStatus={status}
-                        programId={_id}
-                      />
-                    </Grid>
-                  )
-                }) 
-                :
-                <Alert severity="info">
-                  No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
+                    return (
+                      <Grid item xs={12} md={6} lg={4}>
+                        <ProgramCard
+                          key={index}
+                          programName={programName}
+                          programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
+                          programDescription={about}
+                          programStage={stage}
+                          programStatus={status}
+                          programId={_id}
+                        />
+                      </Grid>
+                    )
+                  })
+                  :
+                  <Alert severity="info">
+                    No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
                 </Alert>
-            }
-           </Grid> 
-          }
+              }
+            </Grid>
+        }
       </Box>
-      <Box display={ loginData.type === 'ngo' ? 'block' : 'none' }>
+      <Box display={loginData.type === 'ngo' ? 'block' : 'none'}>
         <Link component={RouterLink} to="/program/create">
           <Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended">
             <AddIcon />

@@ -23,8 +23,7 @@ import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
 import { useConfirm } from "material-ui-confirm";
 
-import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
-
+import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,9 +121,9 @@ export default withRouter(function ProgramPage(props) {
       quantity: 0,
     }
   });
-  const [ executionLoading, setExecutionLoading ] = useState(false);
-  const [ success, setSuccess ] = useState(false);
-  const [ error, setError ] = useState(false);
+  const [executionLoading, setExecutionLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handlePledgeOpen = () => {
     setPledgeDialog({ ...pledgeDialog, open: true })
@@ -268,21 +267,21 @@ export default withRouter(function ProgramPage(props) {
         setExecutionLoading(true)
         program.farmersParticipating.forEach(farmer => {
           axios.post(`/api/crowdfunding/transferFunds/${match.params.programId}/${farmer.farmerId}`)
-          .then((res) => {
-            setSuccess(true)
-            console.log(res.data)
-            getProgramDetails()
-            setExecutionLoading(false)
-          })
-          .catch(err => {
-            setError(true);
-            setSuccess(false);
-            console.error(err)
-            getProgramDetails()
-            setExecutionLoading(false)
-          })
+            .then((res) => {
+              setSuccess(true)
+              console.log(res.data)
+              getProgramDetails()
+              setExecutionLoading(false)
+            })
+            .catch(err => {
+              setError(true);
+              setSuccess(false);
+              console.error(err)
+              getProgramDetails()
+              setExecutionLoading(false)
+            })
         })
-        
+
       })
       .catch(() => {
         console.log("Canceled move to execution")

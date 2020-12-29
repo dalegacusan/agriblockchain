@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { ConfirmProvider } from 'material-ui-confirm';
 import './index.css';
-import App from './components/App/App';
+import App from './pages/App/App';
 
 const theme = createMuiTheme({
   palette: {

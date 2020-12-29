@@ -20,8 +20,8 @@ import Link from '@material-ui/core/Link';
 import { useConfirm } from 'material-ui-confirm';
 
 import logo from './logo_01.svg';
-import { RegisterDialogContext } from '../Contexts/RegisterDialogContext';
-import { LoginDialogContext } from '../Contexts/LoginDialogContext';
+import { RegisterDialogContext } from '../../contexts/RegisterDialogContext';
+import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 
 const drawerWidth = 320;
 

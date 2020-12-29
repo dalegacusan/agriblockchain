@@ -16,7 +16,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
-import { LoginDialogContext } from '../../../global/Contexts/LoginDialogContext';
+import { LoginDialogContext } from '../../../contexts/LoginDialogContext';
 
 // import ProgramTimelineForm from './components/ProgramTimelineForm';
 // import GeneralProgramInfoForm from './components/GeneralProgramInfoForm';
@@ -43,7 +43,7 @@ export default function CreateProgram() {
   // ====================================================================== //
   //  "ngo" field assumes that the ID of the current NGO is being tracked   //
   // ====================================================================== //
-  const [ newProgram, setNewProgram ] = useState({
+  const [newProgram, setNewProgram] = useState({
     programName: '',
     about: '',
     cityAddress: '',
@@ -51,9 +51,9 @@ export default function CreateProgram() {
     requiredAmount: 0,
     programDate: new Date().toLocaleDateString(),
   });
-  const [ submitLoading, setSubmitLoading ] = useState(false);
-  const [ success, setSuccess ] = useState(false);
-  const [ error, setError ] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChange = e => {
     setNewProgram({
@@ -73,26 +73,26 @@ export default function CreateProgram() {
     setSubmitLoading(true)
     if (loginData.uid) {
       axios.post('http://192.168.1.2:7545/api/crowdfunding/createNewProgram/', newProgram)
-      .then(res => {
-        console.log(res);
-        setSubmitLoading(false);
-        setError(false);
-        setSuccess(true);
-        setNewProgram({
-          programName: '',
-          about: '',
-          cityAddress: '',
-          ngo: loginData.uid,         // must be ngo: '5fcdafdafcda8f250439db05'
-          requiredAmount: 0,
-          programDate: new Date().toLocaleDateString(),
+        .then(res => {
+          console.log(res);
+          setSubmitLoading(false);
+          setError(false);
+          setSuccess(true);
+          setNewProgram({
+            programName: '',
+            about: '',
+            cityAddress: '',
+            ngo: loginData.uid,         // must be ngo: '5fcdafdafcda8f250439db05'
+            requiredAmount: 0,
+            programDate: new Date().toLocaleDateString(),
+          })
         })
-      })
-      .catch(err => {
-        console.error(err);
-        setSubmitLoading(false);
-        setError(true);
-        setSuccess(false);
-      })
+        .catch(err => {
+          console.error(err);
+          setSubmitLoading(false);
+          setError(true);
+          setSuccess(false);
+        })
     } else {
       console.error('Not logged in as an NGO!');
       setSubmitLoading(false);
@@ -111,11 +111,11 @@ export default function CreateProgram() {
           </Typography>
         </Box>
       </Backdrop>
-      <Button 
-        startIcon={<ArrowBackIcon/>}
+      <Button
+        startIcon={<ArrowBackIcon />}
         onClick={() => history.goBack()}
       >
-          Go Back to Programs
+        Go Back to Programs
       </Button>
       <Typography component="h1" variant="h2" gutterBottom>
         Create Program

@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
-import { RegistrationDataContext } from '../../../../../global/Contexts/RegistrationDataContext';
+import { RegistrationDataContext } from '../../../../../contexts/RegistrationDataContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SponsorIndividualForm() {
+export default function PartnerFarmerForm() {
   const classes = useStyles();
 
   const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
@@ -25,7 +25,7 @@ export default function SponsorIndividualForm() {
   const handleChange = (e) => {
     setOpenRegistrationData({
       ...openRegistrationData,
-      type: 'individual',
+      type: 'farmer',
       [e.target.name]: e.target.value,
     });
   }
@@ -115,7 +115,7 @@ export default function SponsorIndividualForm() {
 
       {/* Email Address */}
       <TextField
-        label="Email address"
+        label="Email Address (optional)"
         placeholder="Email Address"
         fullWidth
         margin="normal"
@@ -130,7 +130,7 @@ export default function SponsorIndividualForm() {
       />
 
       {/* Civil Status */}
-      <br/><br/>
+      <br /><br />
       <FormControl variant="outlined" style={{ width: "100%" }}>
         <InputLabel id="demo-simple-select-outlined-label">Civil Status</InputLabel>
         <Select
@@ -153,7 +153,7 @@ export default function SponsorIndividualForm() {
       </FormControl>
 
       {/* Gender */}
-      <br/><br/>
+      <br /><br />
       <FormControl variant="outlined" style={{ width: "100%" }}>
         <InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
         <Select
@@ -174,9 +174,9 @@ export default function SponsorIndividualForm() {
         </Select>
       </FormControl>
 
-      <br/><br/>
+      <br /><br />
       <Divider variant="middle" />
-      <br/>
+      <br />
 
       {/* Address Line 1 */}
       <TextField
@@ -210,8 +210,31 @@ export default function SponsorIndividualForm() {
         onChange={handleChange}
       />
 
+      {/* Barangay */}
+      <br /> <br />
+      <FormControl variant="outlined" style={{ width: "100%" }}>
+        <InputLabel id="demo-simple-select-outlined-label">Barangay</InputLabel>
+        <Select
+          labelId="demo-simple-select-outlined-label"
+          label="Barangay"
+          id="baranggay"
+          name="baranggay"
+          value={openRegistrationData.baranggay}
+          label="baranggay"
+          onChange={handleChange}
+          defaultValue=""
+        >
+          <MenuItem value="">
+            <em>None</em>
+          </MenuItem>
+          <MenuItem value="san-juan">San Juan</MenuItem>
+          <MenuItem value="san-jose">San Jose</MenuItem>
+          <MenuItem value="san-roque">San Roque</MenuItem>
+        </Select>
+      </FormControl>
+
       {/* Region */}
-      <br/><br/>
+      <br /> <br />
       <FormControl variant="outlined" className={classes.formControl}>
         <InputLabel id="demo-simple-select-outlined-label">Region</InputLabel>
         <Select
@@ -250,28 +273,6 @@ export default function SponsorIndividualForm() {
           <MenuItem value="makati">Makati</MenuItem>
           <MenuItem value="poblacion">Poblacion</MenuItem>
           <MenuItem value="davao">Davao</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Country */}
-      <br/><br/>
-      <FormControl variant="outlined" style={{ width: "100%" }}>
-        <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
-        <Select
-          labelId="demo-simple-select-outlined-label"
-          id="country"
-          name="country"
-          value={openRegistrationData.country}
-          label="Country"
-          onChange={handleChange}
-          defaultValue=""
-        >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value="Philippines">Philippines</MenuItem>
-          <MenuItem value="Australia">Australia</MenuItem>
-          <MenuItem value="Nicaragua">Nicaragua</MenuItem>
         </Select>
       </FormControl>
     </form>

@@ -9,7 +9,7 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
-import { LoginDialogContext } from '../../global/Contexts/LoginDialogContext';
+import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   pos: {
     marginBottom: 12,
   },
-  stage:{
+  stage: {
     display: 'inline-block',
     backgroundColor: theme.palette.secondary.main,
     padding: '0.2rem 0.5rem',
@@ -40,9 +40,9 @@ export default function ProgramCard(props) {
   const { programName, programDate, programDescription, programStatus, programStage, programId } = props;
 
   const { loginData } = useContext(LoginDialogContext);
-  const [ stage, setStage ] = useState('');
-  const [ status, setStatus ] = useState('');
-  
+  const [stage, setStage] = useState('');
+  const [status, setStatus] = useState('');
+
   useEffect(() => {
     if (programStage === 'crowdfunding') {
       setStage('Looking for sponsors');
@@ -68,7 +68,7 @@ export default function ProgramCard(props) {
       setStatus('Status unavailable');
     }
   }, [programStatus])
-  
+
 
   return (
     <Card className={classes.root}>
@@ -93,8 +93,8 @@ export default function ProgramCard(props) {
       </CardContent>
       <CardActions>
         {
-          loginData.username === '' && loginData.type === '' ? 
-            <Button 
+          loginData.username === '' && loginData.type === '' ?
+            <Button
               disabled
               size="small"
             >
@@ -102,7 +102,7 @@ export default function ProgramCard(props) {
             </Button>
             :
             <Link component={RouterLink} to={`/program/${programId}`} underline='none'>
-              <Button 
+              <Button
                 size="small"
               >
                 Learn More

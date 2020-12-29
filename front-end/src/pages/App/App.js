@@ -1,39 +1,29 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+import Header from '../../components/Header/Header';
 import './App.css';
+
+// MaterialUI
 import CssBaseline from '@material-ui/core/CssBaseline';
-import LandingPage from '../pages/LandingPage/LandingPage';
-import FarmersList from '../pages/FarmersList/FarmersList';
-import Register from '../pages/LoginRegister/Register/Register';
-import Profile from '../pages/Profile/Profile';
-import Programs from '../pages/Programs/Programs';
-import CreateProgram from '../pages/Programs/CreateProgram/CreateProgram';
-import Header from '../global/Header/Header';
-import { RegisterDialogProvider } from '../global/Contexts/RegisterDialogContext';
-import { LoginDialogProvider } from '../global/Contexts/LoginDialogContext';
-import RegisterDialog from '../pages/LoginRegister/Register/RegisterDialog';
-import LoginDialog from '../pages/LoginRegister/Login/LoginDialog';
-import ProgramPage from '../pages/Programs/ProgramPage';
-import AboutPage from '../pages/AboutPage/AboutPage';
+
+// Contexts
+import { RegisterDialogProvider } from '../../contexts/RegisterDialogContext';
+import { LoginDialogProvider } from '../../contexts/LoginDialogContext';
+
+// Pages
+import LandingPage from '../Landing/Landing';
+import AboutPage from '../About/AboutPage';
+import ProgramPage from '../Programs/ProgramPage';
+import FarmersList from '../FarmersList/FarmersList';
+import Register from '../LoginRegister/Register/Register';
+import Profile from '../Profile/Profile';
+import Programs from '../Programs/Programs';
+import CreateProgram from '../Programs/CreateProgram/CreateProgram';
+import RegisterDialog from '../LoginRegister/Register/RegisterDialog';
+import LoginDialog from '../LoginRegister/Login/LoginDialog';
 
 function App() {
-
-
-  /*
-
-    // =============================
-    //            USERS
-    // 
-    //      a) ngo
-    //      b) corporation
-    //      c) individual
-    //      d) farmer
-    //
-    // =============================
-
-  */
-
-  
 
   return (
     <div className="App">
