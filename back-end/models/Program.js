@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const programSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
@@ -29,6 +30,8 @@ const programSchema = new mongoose.Schema({
   //   major: {type: Number, default: 0}
   // },
 });
+
+programSchema.plugin(uniqueValidator);
 
 programSchema.set('toJSON', {
   transform: (document, returnedObject) => {

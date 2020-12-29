@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const farmerSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
@@ -19,13 +20,15 @@ const farmerSchema = new mongoose.Schema({
     contactNumber: String
   },
   loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
+    emailAddress: { type: String, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
   },
   producePortfolio: { type: Array, default: [] },
   programsParticipated: { type: Array, default: [] },
 });
+
+farmerSchema.plugin(uniqueValidator);
 
 farmerSchema.set('toJSON', {
   transform: (document, returnedObject) => {

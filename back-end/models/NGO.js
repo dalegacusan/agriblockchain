@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const ngoSchema = new mongoose.Schema({
   about: {
@@ -21,11 +22,13 @@ const ngoSchema = new mongoose.Schema({
     completedPrograms: { type: Array, default: [] }
   },
   loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
+    emailAddress: { type: String, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
   }
 });
+
+ngoSchema.plugin(uniqueValidator);
 
 ngoSchema.set('toJSON', {
   transform: (document, returnedObject) => {

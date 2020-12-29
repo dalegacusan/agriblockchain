@@ -1,6 +1,8 @@
 const Sponsor = require('../models/Sponsor');
 const Program = require('../models/Program');
 
+// @dev - For updater functions, use https://www.npmjs.com/package/mongoose-unique-validator#find--updates
+
 const viewAllSponsors = async (req, res, next) => {
 
   try {

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const sponsorSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
@@ -16,12 +17,14 @@ const sponsorSchema = new mongoose.Schema({
     contactNumber: String,
   },
   loginDetails: {
-    emailAddress: String,
-    username: String,
-    password: String
+    emailAddress: { type: String, unique: true },
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true }
   },
   sponsoredPrograms: { type: Array, default: [] }
 });
+
+sponsorSchema.plugin(uniqueValidator);
 
 sponsorSchema.set('toJSON', {
   transform: (document, returnedObject) => {
