@@ -13,9 +13,9 @@
 
 ## General Information
 
-The challenge was to create an application (web or mobile) to help the agricultural sector have an efficient farm-to-market process by utilizing blockchain technology.
+The challenge was *to create an application (web or mobile) to help the agricultural sector have an efficient farm-to-market process by utilizing blockchain technology*.
 
-Our team's solution is to connect the involved and interested parties: the Farmers, NGOs and Donors/Sponsors. We provide a way for the programs of the NGOs to be more accessible.
+Our team's solution is **to connect the involved and interested parties: the Farmers, NGOs and Donors/Sponsors. We provide a way for the programs of the NGOs to be more accessible**.
 
 Bayanihan will help
 * Widen the sponsor and produce supplier network of NGOs
