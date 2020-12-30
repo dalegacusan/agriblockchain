@@ -35,6 +35,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProgramCard(props) {
+  console.log(props.match.params);
+
   const {
     programName,
     programDate,

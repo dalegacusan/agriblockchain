@@ -7,10 +7,7 @@ const viewAllPrograms = async (req, res, next) => {
   try {
     const allPrograms = await Program.find({});
 
-    res.status(200).json({
-      message: 'Successfully retrieved all programs.',
-      dataRetrieved: allPrograms
-    })
+    res.status(200).json(allPrograms);
   } catch (err) {
     res.status(400).json({
       message: 'Failed to retrieve all programs.'
@@ -27,10 +24,7 @@ const viewProgram = async (req, res, next) => {
   try {
     const oneProgram = await Program.findById(programId);
 
-    res.status(200).json({
-      message: `Successfully retrieved program ${programId}.`,
-      dataRetrieved: oneProgram
-    })
+    res.status(200).json(oneProgram);
   } catch (err) {
     res.status(400).json({
       message: `Failed to retrieve program ${programId}.`
@@ -169,76 +163,88 @@ const addSponsor = async (req, res, next) => {
   let { amountFunded } = req.body;
   amountFunded = parseInt(amountFunded);
 
-  // Pushed to Sponsor's [sponsoredPrograms] array
-  const programToPush = {
-    programId,
-    amountFunded,
-    dateFunded: new Date(),
-  }
-  // Pushed to Program's [sponsors] array
-  const sponsorToPush = {
-    sponsorId,
-    amountFunded,
-    dateFunded: new Date(),
-  }
+  try {
+    // Get Sponsor and Program Name
+    const getSponsor = await Sponsor.findById(sponsorId);
+    const { about: sponsorAbout } = getSponsor;
+    const { corporationName } = sponsorAbout;
 
-  // Promises to be passed to Promise.all()
-  const addProgramToSponsor = Sponsor.findByIdAndUpdate(
-    sponsorId,
-    {
-      $push: { sponsoredPrograms: programToPush },
-      $inc: { balance: -amountFunded } // Decrease sponsor balance
+    const getProgram = await Program.findById(programId);
+    const { about: programAbout } = getProgram;
+    const { programName } = programAbout;
+
+    // Pushed to Sponsor's [sponsoredPrograms] array
+    const programToPush = {
+      programId,
+      programName,
+      amountFunded,
+      dateFunded: new Date(),
     }
-  )
-  const addSponsorToProgram = Program.findByIdAndUpdate(
-    programId,
-    {
-      $push: { sponsors: sponsorToPush },
-      $inc: { balance: amountFunded } // Increase program balance
-    },
-    { new: true }
-  )
+    // Pushed to Program's [sponsors] array
+    const sponsorToPush = {
+      sponsorId,
+      corporationName,
+      amountFunded,
+      dateFunded: new Date(),
+    }
 
-  Promise.all([addProgramToSponsor, addSponsorToProgram])
-    .then(values => {
-      const sponsor = values[0];
-      const program = values[1];
-
-      const { balance } = program;
-      const { about } = program;
-      const { requiredAmount } = about;
-
-      /* 
-        Check if current balance of Program is >= required amount
-        IF TRUE, set Program's stage to "procurement"
-      */
-      if (balance >= requiredAmount) {
-        program.about.stage = "procurement";
-
-        program.save()
-          .then(() => {
-            console.log("Program is now in Procurement Phase!");
-
-            res.status(200).json({
-              message: 'Program is now in Procurement Phase.'
-            });
-          })
-      } else {
-        res.status(200).json({
-          message: 'Successfully added sponsor to program.'
-        });
+    // Promises to be passed to Promise.all()
+    const addProgramToSponsor = Sponsor.findByIdAndUpdate(
+      sponsorId,
+      {
+        $push: { sponsoredPrograms: programToPush },
+        $inc: { balance: -amountFunded } // Decrease sponsor balance
       }
-    })
-    .catch(err => {
-      console.log('Error: ', err);
+    )
+    const addSponsorToProgram = Program.findByIdAndUpdate(
+      programId,
+      {
+        $push: { sponsors: sponsorToPush },
+        $inc: { balance: amountFunded } // Increase program balance
+      },
+      { new: true }
+    )
 
-      res.status(400).json({
-        message: 'Something went wrong.'
-      });
+    Promise.all([addProgramToSponsor, addSponsorToProgram])
+      .then(values => {
+        const sponsor = values[0];
+        const program = values[1];
 
-      next(err);
+        const { balance } = program;
+        const { about } = program;
+        const { requiredAmount } = about;
+
+        /* 
+          Check if current balance of Program is >= required amount
+          IF TRUE, set Program's stage to "procurement"
+        */
+        if (balance >= requiredAmount) {
+          program.about.stage = "procurement";
+
+          program.save()
+            .then(() => {
+              console.log("Program is now in Procurement Phase!");
+
+              res.status(200).json({
+                message: 'Program is now in Procurement Phase.'
+              });
+            })
+        } else {
+          res.status(200).json({
+            message: 'Successfully added sponsor to program.'
+          });
+        }
+      })
+
+  } catch (err) {
+    console.log('Error: ', err);
+
+    res.status(400).json({
+      message: 'Something went wrong.'
     });
 
+    next(err);
+  }
 }
 
 module.exports = {

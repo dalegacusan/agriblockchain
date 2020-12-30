@@ -207,7 +207,7 @@ export default function LoginDialog() {
                 onClick={(e) => {
                   handleListItemClick(e, sponsor.id, {
                     type: "corporation",
-                    username: sponsor.sponsorAbout.corporationName,
+                    username: sponsor.about.corporationName,
                     uid: sponsor.id,
                   })
                 }}
@@ -215,11 +215,11 @@ export default function LoginDialog() {
               >
                 <ListItemIcon>
                   <Avatar className={classes.avatar}>
-                    {sponsor.sponsorAbout.corporationName !== undefined && sponsor.sponsorAbout.corporationName[0]}
+                    {sponsor.about.corporationName !== undefined && sponsor.about.corporationName[0]}
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText
-                  primary={sponsor.sponsorAbout.corporationName}
+                  primary={sponsor.about.corporationName}
                   secondary={
                     <Fragment>
                       <Typography variant="caption">

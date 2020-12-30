@@ -300,23 +300,35 @@ export default withRouter(function ProgramPage(props) {
   const getProgramDetails = () => {
     axios.get(`/api/program/${match.params.programId}`)
       .then((res) => {
-        setProgram(res.data);
-        if (res.data.about && res.data.about.ngo !== "") {
-          axios.get(`/api/ngo/${res.data.about.ngo}`)
-            .then(res => setNgo(res.data))
+        const { data } = res;
+        const { about, farmersParticipating, sponsors } = data;
+        const { ngo, programDescription, requiredAmount } = about;
+
+        console.log(data);
+        setProgram(data);
+
+        if (about && ngo !== "") {
+          axios.get(`/api/ngo/${ngo}`)
+            .then(res => {
+              const { data } = res;
+              setNgo(data);
+            })
             .catch(err => console.error(err))
         }
-        if (res.data.sponsors.length !== 0) {
-          res.data.sponsors.forEach(sponsor => {
+
+        if (sponsors.length !== 0) {
+          sponsors.forEach(sponsor => {
             axios.get(`/api/sponsor/${sponsor.sponsorId}`)
               .then(res => {
-                sponsor.about = res.data.about
+                const { data } = res;
+                const { about } = data;
+                sponsor.about = about;
               })
               .catch(err => console.error(err));
           });
         }
-        if (res.data.farmersParticipating.length !== 0) {
-          res.data.farmersParticipating.forEach(farmer => {
+        if (farmersParticipating.length !== 0) {
+          farmersParticipating.forEach(farmer => {
             axios.get(`/api/farmers/${farmer.farmerId}`)
               .then(res => {
                 farmer.about = res.data.about
@@ -357,10 +369,10 @@ export default withRouter(function ProgramPage(props) {
             <Box pb={2}>
               <Box>
                 <Typography component="h1" variant="h2" gutterBottom>
-                  {program.programAbout.programName}
+                  {program.about.programName}
                 </Typography>
                 <Typography component="h5" variant="h5" color="textSecondary" gutterBottom>
-                  NGO: {ngo.ngoAbout.ngoName}&nbsp;
+                  NGO: {ngo.about.ngoName}&nbsp;
                   ({ngo && ngo.loginDetails.username})
                 </Typography>
                 <Box>
@@ -376,7 +388,7 @@ export default withRouter(function ProgramPage(props) {
                     Stage: &nbsp;&nbsp;
                   </Typography>
                   <Typography display="inline" variant="subtitle2" className={classes.stage}>
-                    {program.programAbout.stage}
+                    {program.about.stage}
                   </Typography>
                 </Box>
                 <Box>
@@ -392,19 +404,19 @@ export default withRouter(function ProgramPage(props) {
           </Grid>
           <Grid item sm={12} md={8} lg={7}>
             <Box pb={2} display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <CircularProgressWithLabel value={program.programAbout.currentAmount / program.programAbout.requiredAmount * 100} />
+              <CircularProgressWithLabel value={program.balance / program.about.requiredAmount * 100} />
               <Box my={2}>
                 <Typography variant="h6" component="div">
-                  &#8369;{program.programAbout.currentAmount} of &#8369;{program.programAbout.requiredAmount} pledged
+                  &#8369;{program.balance} of &#8369;{program.about.requiredAmount} pledged
                 </Typography>
               </Box>
-              <Box display={program.programAbout.stage === "crowdfunding" ? "block" : "none"}>
+              <Box display={program.about.stage === "crowdfunding" ? "block" : "none"}>
                 {
                   loginData.username !== "" && (loginData.type === "individual" || loginData.type === "corporation") ?
                     <Button
                       variant="contained"
                       color="primary"
-                      disabled={program.programAbout.stage === "procurement" ? true : false}
+                      disabled={program.about.stage === "procurement" ? true : false}
                       onClick={handlePledgeOpen}
                     >
                       Make a Pledge
@@ -415,7 +427,7 @@ export default withRouter(function ProgramPage(props) {
                     </Typography>
                 }
               </Box>
-              <Box display={program.programAbout.stage === "procurement" ? "block" : "none"} textAlign="center">
+              <Box display={program.about.stage === "procurement" ? "block" : "none"} textAlign="center">
                 {
                   loginData.username !== "" && loginData.type === "farmer" ?
                     <Button
@@ -455,14 +467,14 @@ export default withRouter(function ProgramPage(props) {
             <Alert severity="success">Action successful!</Alert>
           </Box>
           <Typography component="p" variant="body1" paragraph>
-            {program.programAbout.about}
+            {program.about.about}
           </Typography>
           <Typography variant="subtitle2">
             Current sponsors
           </Typography>
           {
             program.sponsors.map((programSponsor, index) => (
-              <Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
+              <Box Box display="flex" key={index} flexDirection="row" alignItems="center" my={1} >
                 <Avatar>
                   {programSponsor.corporationName && programSponsor.corporationName[0]}
                 </Avatar>

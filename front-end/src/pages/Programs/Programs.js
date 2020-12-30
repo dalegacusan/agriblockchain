@@ -5,9 +5,6 @@ import moment from 'moment';
 
 // Components
 import ProgramCard from './ProgramCard';
-
-// CSS
-
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '@material-ui/core/Link';
@@ -19,12 +16,10 @@ import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
 // Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
-
 // Pages
-
+// CSS
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -46,22 +41,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Programs() {
+export default function Programs(props) {
   const classes = useStyles();
 
   const { loginData } = useContext(LoginDialogContext);
   const [programs, setPrograms] = useState([]);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios.get('/api/program/all')
       .then((res) => {
-        console.log(res.data);
+        const { data } = res;
+        const { dataRetrieved } = data;
+
         setLoading(false);
-        setPrograms(res.data);
+        setPrograms(dataRetrieved);
       })
       .catch(err => {
-        console.log(err)
+        console.log(err);
+
         setLoading(false);
       });
   }, []);
@@ -72,7 +70,7 @@ export default function Programs() {
         All Programs
       </Typography>
       <Box display={loginData.username === '' && loginData.type === '' ? "block" : "none"}>
-        <Alert severity="info">Log in to Bayanihan to get more details about the programs</Alert>
+        <Alert severity="info">Log in to Bayanihan to get more details about the programs.</Alert>
       </Box>
       <Box my={3}>
         {
@@ -85,8 +83,8 @@ export default function Programs() {
               {
                 programs.length !== 0 ?
                   programs.map((program, index) => {
-                    const { programAbout, timeline, _id } = program;
-                    const { programName, about, stage, status } = programAbout;
+                    const { about, timeline, _id } = program;
+                    const { programName, programDescription, stage, status } = about;
                     const { programDate } = timeline;
 
                     return (
@@ -95,7 +93,7 @@ export default function Programs() {
                           key={index}
                           programName={programName}
                           programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
-                          programDescription={about}
+                          programDescription={programDescription}
                           programStage={stage}
                           programStatus={status}
                           programId={_id}

@@ -5,10 +5,7 @@ const viewAllNGO = async (req, res, next) => {
   try {
     const allNGO = await NGO.find({});
 
-    res.status(200).json({
-      message: 'Successfully retrieved all NGOs.',
-      dataRetrieved: allNGO
-    })
+    res.status(200).json(allNGO);
   } catch (err) {
     res.status(400).json({
       message: 'Failed to retrieve all NGOs.'
@@ -25,10 +22,7 @@ const viewNGO = async (req, res, next) => {
   try {
     const oneNGO = await NGO.findById(ngoId);
 
-    res.status(200).json({
-      message: `Successfully retrieved NGO.`,
-      dataRetrieved: oneNGO
-    })
+    res.status(200).json(oneNGO);
   } catch (err) {
     res.status(400).json({
       message: `Failed to retrieve NGO.`

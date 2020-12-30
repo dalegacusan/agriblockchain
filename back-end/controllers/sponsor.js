@@ -8,10 +8,7 @@ const viewAllSponsors = async (req, res, next) => {
   try {
     const allSponsors = await Sponsor.find({});
 
-    res.status(200).json({
-      message: 'Successfully retrieved all sponsors.',
-      dataRetrieved: allSponsors
-    })
+    res.status(200).json(allSponsors);
   } catch (err) {
     res.status(400).json({
       message: 'Failed to retrieve all sponsors.'
@@ -28,10 +25,7 @@ const viewSponsor = async (req, res, next) => {
   try {
     const oneSponsor = await Sponsor.findById(sponsorId);
 
-    res.status(200).json({
-      message: `Successfully retrieved sponsor.`,
-      dataRetrieved: oneSponsor
-    })
+    res.status(200).json(oneSponsor);
   } catch (err) {
     res.status(400).json({
       message: `Failed to retrieve sponsor.`
@@ -124,10 +118,7 @@ const getPledge = async (req, res, next) => {
     // Switch to .filter() if a sponsor can pledge only ONCE
     const pledges = sponsoredPrograms.filter(program => program.programId === programId);
 
-    res.status(200).json({
-      message: `Successfully retrieved pledge/s.`,
-      dataRetrieved: pledges
-    })
+    res.status(200).json(pledges)
   } catch (err) {
     res.status(400).json({
       message: `Failed to retrieve pledge/s.`

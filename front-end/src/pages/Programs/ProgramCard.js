@@ -36,8 +36,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProgramCard(props) {
-  const classes = useStyles();
   const { programName, programDate, programDescription, programStatus, programStage, programId } = props;
+  const classes = useStyles();
 
   const { loginData } = useContext(LoginDialogContext);
   const [stage, setStage] = useState('');
