@@ -52,10 +52,9 @@ export default function Programs(props) {
     axios.get('/api/program/all')
       .then((res) => {
         const { data } = res;
-        const { dataRetrieved } = data;
 
         setLoading(false);
-        setPrograms(dataRetrieved);
+        setPrograms(data);
       })
       .catch(err => {
         console.log(err);
@@ -88,9 +87,8 @@ export default function Programs(props) {
                     const { programDate } = timeline;
 
                     return (
-                      <Grid item xs={12} md={6} lg={4}>
+                      <Grid key={index} item xs={12} md={6} lg={4}>
                         <ProgramCard
-                          key={index}
                           programName={programName}
                           programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
                           programDescription={programDescription}

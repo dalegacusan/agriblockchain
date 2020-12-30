@@ -158,7 +158,7 @@ export default function ButtonAppBar() {
                   !(loginData.type === 'ngo')
                     ?
                     <Typography variant="caption">
-                      Wallet: {loginData.walletBalance}
+                      Wallet: {loginData.balance}
                     </Typography>
                     : null
                 }

@@ -20,9 +20,8 @@ export default function Programs() {
     axios.get('/api/program/all')
       .then((res) => {
         const { data } = res;
-        const { dataRetrieved } = data;
 
-        setPrograms(dataRetrieved);
+        setPrograms(data);
       })
       .catch(err => console.log(err))
   }, []);

@@ -62,30 +62,30 @@ export default function LoginDialog() {
       username: '',
       type: '',
       uid: '',
-      walletBalance: 0,
+      balance: 0,
     })
   }
 
   const handleSubmit = () => {
     let balance = 0;
-    if (tempData.type === 'corporation' || tempData.type === 'individual' || tempData.type === 'farmer') {
-      axios.get(`/api/crowdfunding/balance/0x2B77ad74bAA70C00eb8cA8a6384eFB5859d047B6`)
+    if (tempData.type === 'sponsor' || tempData.type === 'farmer') {
+      axios.get(`/api/${tempData.type}/${tempData.uid}/balance`)
         .then(res => {
           balance = res.data.balance;
           setLoginData({
             ...tempData,
-            walletBalance: balance,
+            balance: balance,
           });
           localStorage.setItem('loginCreds', JSON.stringify({
             ...tempData,
-            walletBalance: res.data.balance,
+            balance: res.data.balance,
           }));
         })
         .catch(err => {
           console.error(err);
           localStorage.setItem('loginCreds', JSON.stringify({
             ...tempData,
-            walletBalance: 0,
+            balance: 0,
           }));
         })
     } else {
@@ -96,7 +96,7 @@ export default function LoginDialog() {
   }
 
   useEffect(() => {
-    axios.get(`api/ngo/all`)
+    axios.get(`/api/ngo/all`)
       .then(res => {
         setAllNgos(res.data)
       })
@@ -133,7 +133,7 @@ export default function LoginDialog() {
                 onClick={(e) => {
                   handleListItemClick(e, ngo.id, {
                     type: "ngo",
-                    username: ngo.ngoAbout.ngoName,
+                    username: ngo.about.ngoName,
                     uid: ngo.id,
                   })
                 }}
@@ -141,11 +141,11 @@ export default function LoginDialog() {
               >
                 <ListItemIcon>
                   <Avatar className={classes.avatar}>
-                    {ngo.ngoAbout.ngoName !== undefined && ngo.ngoAbout.ngoName[0]}
+                    {ngo.about.ngoName !== undefined && ngo.about.ngoName[0]}
                   </Avatar>
                 </ListItemIcon>
                 <ListItemText
-                  primary={ngo.ngoAbout.ngoName}
+                  primary={ngo.about.ngoName}
                   secondary={
                     <Fragment>
                       <Typography variant="caption">
@@ -206,7 +206,7 @@ export default function LoginDialog() {
                 selected={selectedIndex === sponsor.id}
                 onClick={(e) => {
                   handleListItemClick(e, sponsor.id, {
-                    type: "corporation",
+                    type: "sponsor",
                     username: sponsor.about.corporationName,
                     uid: sponsor.id,
                   })
