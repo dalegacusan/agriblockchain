@@ -36,13 +36,14 @@ const viewSponsor = async (req, res, next) => {
 }
 
 const createSponsor = (req, res, next) => {
+  console.log(req.body);
   const {
     username,
     password,
     name,
-    address1,
-    address2,
-    representativeName,
+    addressLine1,
+    addressLine2,
+    authorizedRepresentative,
     contactNumber,
     region,
     city,
@@ -52,14 +53,14 @@ const createSponsor = (req, res, next) => {
   const newSponsorAccount = new Sponsor({
     about: {
       corporationName: name,
-      addressLine1: address1,
-      addressLine2: address2,
+      addressLine1,
+      addressLine2,
       region,
       city,
       country
     },
     contactDetails: {
-      authorizedRepresentative: representativeName,
+      authorizedRepresentative,
       contactNumber,
     },
     loginDetails: {

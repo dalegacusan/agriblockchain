@@ -39,32 +39,36 @@ export default function ThirdStep(props) {
     let type = '';
     if (openRegistrationData.type === 'ngo' || openRegistrationData.type === 'farmer') {
       type = openRegistrationData.type;
-    } else if (openRegistrationData.type === 'corporation' || openRegistrationData.type === 'individual') {
+    } else if (openRegistrationData.type === 'sponsor') {
       type = 'sponsor';
     }
     setLoading(true);
     if (type === 'sponsor') {
-      axios.post(`http://192.168.1.2:7545/api/crowdfunding/addNewFunder/`, openRegistrationData)
+      axios.post(`/api/sponsor/create`, openRegistrationData)
         .then(res => {
-          const { data } = res.data;
-          const { blockchain } = data;
-          const { address } = blockchain;
-          axios.post(
-            `http://192.168.1.2:7545/api/crowdfunding/mint/`,
-            {
-              amount: 100000,
-              bodyAddress: address,
-              // Enter Address Key
-              bodyPrivateKey: '0x6c68b1bc58f1fc4fefffdfe1849e8c0c94430784ec6615616c4a22d3ceced0dd'
-            }
-          )
-            .then(result => {
-              console.log(res);
-              alert('Successful registration!')
-              setOpenRegistrationData({})
-              setLoading(false);
-              history.push('/');
-            })
+          alert('Successful registration!');
+
+          setOpenRegistrationData({});
+          setLoading(false);
+
+          history.push('/');
+
+          // axios.post(
+          //   `http://192.168.1.2:7545/api/crowdfunding/mint/`,
+          //   {
+          //     amount: 100000,
+          //     bodyAddress: address,
+          //     // Enter Address Key
+          //     bodyPrivateKey: '0x6c68b1bc58f1fc4fefffdfe1849e8c0c94430784ec6615616c4a22d3ceced0dd'
+          //   }
+          // )
+          //   .then(result => {
+          //     console.log(res);
+          //     alert('Successful registration!')
+          //     setOpenRegistrationData({})
+          //     setLoading(false);
+          //     history.push('/');
+          //   })
         })
         .catch(err => {
           alert('Something went wrong. Please check logs.');

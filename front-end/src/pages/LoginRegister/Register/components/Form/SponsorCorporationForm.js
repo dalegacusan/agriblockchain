@@ -24,7 +24,7 @@ export default function SponsorCorporationForm() {
   const handleChange = (e) => {
     setOpenRegistrationData({
       ...openRegistrationData,
-      type: 'corporation',
+      type: 'sponsor',
       [e.target.name]: e.target.value,
     });
   }
@@ -59,7 +59,6 @@ export default function SponsorCorporationForm() {
         variant="outlined"
         id="contactNumber"
         name="contactNumber"
-        type="number"
         value={openRegistrationData.contactNumber}
         onChange={handleChange}
       />
@@ -74,10 +73,10 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
-        id="representativeName"
-        name="representativeName"
+        id="authorizedRepresentative"
+        name="authorizedRepresentative"
         onChange={handleChange}
-        value={openRegistrationData.representativeName}
+        value={openRegistrationData.authorizedRepresentative}
       />
 
       <br /><br />
@@ -94,9 +93,9 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
-        id="address1"
-        name="address1"
-        value={openRegistrationData.address1}
+        id="addressLine1"
+        name="addressLine1"
+        value={openRegistrationData.addressLine1}
         onChange={handleChange}
       />
 
@@ -110,9 +109,9 @@ export default function SponsorCorporationForm() {
           shrink: true,
         }}
         variant="outlined"
-        id="address2"
-        name="address2"
-        value={openRegistrationData.address2}
+        id="addressLine2"
+        name="addressLine2"
+        value={openRegistrationData.addressLine2}
         onChange={handleChange}
       />
 
