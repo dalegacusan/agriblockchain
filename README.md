@@ -42,14 +42,14 @@ Lorem ipsum
 
 ## Screenshots
 
-## Team
+## Acknowledgements
 
 <b>🏆 Achievements</b>
 * Top 3 Projects *( Score: 85% / 100% )*
 * Certified Blockchain Developer 
 
 <img src="https://imgur.com/bYSaTUY.png" width="100"/>
-
+<p>Mentor: Robbie del Rosario</p>
 <a href="https://github.com/swenceslao/agriblockchain/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=swenceslao/agriblockchain" />
 </a>
