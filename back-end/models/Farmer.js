@@ -17,12 +17,12 @@ const farmerSchema = new mongoose.Schema({
   },
   contactDetails: {
     emailAddress: String,
-    contactNumber: String
+    contactNumber: String,
   },
   loginDetails: {
     emailAddress: { type: String, unique: true },
     username: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    password: { type: String, required: true },
   },
   producePortfolio: { type: Array, default: [] },
   programsParticipated: { type: Array, default: [] },
@@ -32,10 +32,10 @@ farmerSchema.plugin(uniqueValidator);
 
 farmerSchema.set('toJSON', {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 
 module.exports = mongoose.model('Farmer', farmerSchema);

@@ -28,7 +28,7 @@ const viewNGO = async (req, res, next) => {
 
     next(err);
   }
-}
+};
 
 // @dev: NGO Details are still hard-coded
 const createNGO = (req, res, next) => {
@@ -44,12 +44,12 @@ const createNGO = (req, res, next) => {
     contactDetails: {
       authorizedRepresentative: 'Michael C. Lopez',
       contactNumber: '845-435-1111',
-      emailAddress: 'lopezmichael@gmail.com'
+      emailAddress: 'lopezmichael@gmail.com',
     },
     loginDetails: {
       username: 'red@cross.com',
-      password: 'redcrosspassword'
-    }
+      password: 'redcrosspassword',
+    },
   });
 
   newNGOAccount.save()
@@ -57,21 +57,20 @@ const createNGO = (req, res, next) => {
       console.log('Successfully saved NGO to the database.');
 
       res.status(200).json({
-        message: "Successfully saved NGO to the database."
+        message: 'Successfully saved NGO to the database.',
       });
-
     })
-    .catch(err => {
+    .catch((err) => {
       console.log('Error: ', err);
 
       res.status(400).json({
-        message: "Failed to save NGO to the database."
+        message: 'Failed to save NGO to the database.',
       });
     });
-}
+};
 
 module.exports = {
   viewAllNGO,
   viewNGO,
-  createNGO
-}
+  createNGO,
+};

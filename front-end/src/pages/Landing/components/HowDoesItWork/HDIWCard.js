@@ -8,29 +8,29 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 
 export default function HDIWCard(props) {
-  const { description } = props;
-  const { title } = props;
-  const { image } = props;
+	const { description } = props;
+	const { title } = props;
+	const { image } = props;
 
-  return (
-    <Box my={2} mx={2}>
-      <Card>
-        <CardContent>
-          <Box px={1} py={2} display='flex' flexDirection='row' alignItems='center'>
-            <Box px={5} justifyContent='space-between'>
-              <img src={image} alt='icon' width={100} />
-            </Box>
-            <Box px={1} justifyContent='space-between'>
-              <Typography variant="h5" component="p">
-                {title}
-              </Typography>
-              <Typography variant="body2" component="p">
-                {description}
-              </Typography>
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
-  );
+	return (
+		<Box my={2} mx={2}>
+			<Card>
+				<CardContent>
+					<Box px={1} py={2} display='flex' flexDirection='row' alignItems='center'>
+						<Box px={5} justifyContent='space-between'>
+							<img src={image} alt='icon' width={100} />
+						</Box>
+						<Box px={1} justifyContent='space-between'>
+							<Typography variant="h5" component="p">
+								{title}
+							</Typography>
+							<Typography variant="body2" component="p">
+								{description}
+							</Typography>
+						</Box>
+					</Box>
+				</CardContent>
+			</Card>
+		</Box>
+	);
 }

@@ -4,20 +4,18 @@ const Program = require('../models/Program');
 // @dev - For updater functions, use https://www.npmjs.com/package/mongoose-unique-validator#find--updates
 
 const viewAllSponsors = async (req, res, next) => {
-
   try {
     const allSponsors = await Sponsor.find({});
 
     res.status(200).json(allSponsors);
   } catch (err) {
     res.status(400).json({
-      message: 'Failed to retrieve all sponsors.'
+      message: 'Failed to retrieve all sponsors.',
     });
 
     next(err);
   }
-
-}
+};
 
 const viewSponsor = async (req, res, next) => {
   const { sponsorId } = req.params;
@@ -28,12 +26,12 @@ const viewSponsor = async (req, res, next) => {
     res.status(200).json(oneSponsor);
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve sponsor.`
+      message: 'Failed to retrieve sponsor.',
     });
 
     next(err);
   }
-}
+};
 
 const createSponsor = (req, res, next) => {
   console.log(req.body);
@@ -57,7 +55,7 @@ const createSponsor = (req, res, next) => {
       addressLine2,
       region,
       city,
-      country
+      country,
     },
     contactDetails: {
       authorizedRepresentative,
@@ -65,30 +63,30 @@ const createSponsor = (req, res, next) => {
     },
     loginDetails: {
       username,
-      password
-    }
+      password,
+    },
   });
 
   newSponsorAccount.save()
-    .then(data => {
+    .then((data) => {
       const { about } = data;
       const { corporationName } = about;
       console.log(`Successfully saved Sponsor ${corporationName} to the database.`);
 
       res.status(200).json({
-        message: `Successfully saved Sponsor ${corporationName} to the database.`
+        message: `Successfully saved Sponsor ${corporationName} to the database.`,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log('Error: ', err);
 
       res.status(400).json({
-        message: "Failed to save sponsor to the database."
+        message: 'Failed to save sponsor to the database.',
       });
 
       next(err);
     });
-}
+};
 
 const getBalance = async (req, res, next) => {
   const { sponsorId } = req.params;
@@ -100,12 +98,12 @@ const getBalance = async (req, res, next) => {
     res.status(200).json({ balance });
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve balance.`
+      message: 'Failed to retrieve balance.',
     });
 
     next(err);
   }
-}
+};
 
 // @dev: assumes that a sponsor can pledge multiple times
 //     : maybe return program name instead of programId?
@@ -117,12 +115,12 @@ const getPledge = async (req, res, next) => {
     const sponsor = await Sponsor.findById(sponsorId);
     const { sponsoredPrograms } = sponsor;
     // Switch to .filter() if a sponsor can pledge only ONCE
-    const pledges = sponsoredPrograms.filter(program => program.programId === programId);
+    const pledges = sponsoredPrograms.filter((program) => program.programId === programId);
 
-    res.status(200).json(pledges)
+    res.status(200).json(pledges);
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve pledge/s.`
+      message: 'Failed to retrieve pledge/s.',
     });
 
     next(err);
@@ -146,7 +144,7 @@ const getPledge = async (req, res, next) => {
 
   //   next(err);
   // }
-}
+};
 
 const revertPledge = async (req, res, next) => {
   const { sponsorId, programId } = req.params;
@@ -155,8 +153,8 @@ const revertPledge = async (req, res, next) => {
     const program = await Program.findById(programId);
     const { sponsors } = program;
 
-    const pledges = sponsors.filter(sponsor => sponsor.sponsorId === sponsorId);
-    const amountFundedPerPledge = pledges.map(sponsor => sponsor.amountFunded);
+    const pledges = sponsors.filter((sponsor) => sponsor.sponsorId === sponsorId);
+    const amountFundedPerPledge = pledges.map((sponsor) => sponsor.amountFunded);
     const totalPledgedAmount = amountFundedPerPledge.reduce((total, currentValue) => total += currentValue);
 
     /// Promises to be passed to Promise.all()
@@ -164,32 +162,31 @@ const revertPledge = async (req, res, next) => {
       sponsorId,
       {
         $inc: { balance: totalPledgedAmount },
-        $pull: { sponsoredPrograms: { programId } }
-      }
-    )
+        $pull: { sponsoredPrograms: { programId } },
+      },
+    );
     const reduceProgramBalance = Program.findByIdAndUpdate(
       programId,
       {
         $inc: { balance: -totalPledgedAmount },
-        $pull: { sponsors: { sponsorId } }
-      }
-    )
+        $pull: { sponsors: { sponsorId } },
+      },
+    );
 
     Promise.all([addAmountToSponsor, reduceProgramBalance])
       .then(() => {
         res.status(200).json({
-          message: 'Successfully reverted pledge/s.'
+          message: 'Successfully reverted pledge/s.',
         });
       });
-
   } catch (err) {
     res.status(400).json({
-      message: `Failed to revert pledge/s.`
+      message: 'Failed to revert pledge/s.',
     });
 
     next(err);
   }
-}
+};
 
 module.exports = {
   viewSponsor,
@@ -197,5 +194,5 @@ module.exports = {
   createSponsor,
   getBalance,
   getPledge,
-  revertPledge
-}
+  revertPledge,
+};

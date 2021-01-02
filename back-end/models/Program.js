@@ -5,8 +5,8 @@ const programSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
   about: {
     // programPicture: String,
-    status: { type: String, default: "active" },
-    stage: { type: String, default: "crowdfunding" },
+    status: { type: String, default: 'active' },
+    stage: { type: String, default: 'crowdfunding' },
     completed: { type: Boolean, default: false },
     programName: String,
     programDescription: String,
@@ -20,7 +20,7 @@ const programSchema = new mongoose.Schema({
     // fundingEndDate: Date,
     // procurementStartDate: Date,
     // procurementEndDate: Date,
-    programDate: { type: Date, default: new Date() }
+    programDate: { type: Date, default: new Date() },
   },
   produceRequirements: { type: Array, default: [] },
   farmersParticipating: { type: Array, default: [] },
@@ -37,8 +37,8 @@ programSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     // returnedObject.id = returnedObject._id.toString()
     // delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
+    delete returnedObject.__v;
+  },
+});
 
 module.exports = mongoose.model('Program', programSchema);

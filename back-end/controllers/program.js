@@ -3,20 +3,18 @@ const NGO = require('../models/NGO');
 const Sponsor = require('../models/Sponsor');
 
 const viewAllPrograms = async (req, res, next) => {
-
   try {
     const allPrograms = await Program.find({});
 
     res.status(200).json(allPrograms);
   } catch (err) {
     res.status(400).json({
-      message: 'Failed to retrieve all programs.'
+      message: 'Failed to retrieve all programs.',
     });
 
     next(err);
-  };
-
-}
+  }
+};
 
 const viewProgram = async (req, res, next) => {
   const { programId } = req.params;
@@ -27,20 +25,20 @@ const viewProgram = async (req, res, next) => {
     res.status(200).json(oneProgram);
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve program ${programId}.`
+      message: `Failed to retrieve program ${programId}.`,
     });
 
     next(err);
   }
-}
+};
 
 const createProgram = (req, res, next) => {
   const {
-    programName,        // from User
-    programDescription,              // from User
-    cityAddress,        // from User
-    ngo,                // AUTOFILL
-    requiredAmount,     // from User 
+    programName, // from User
+    programDescription, // from User
+    cityAddress, // from User
+    ngo, // AUTOFILL
+    requiredAmount, // from User
   } = req.body;
 
   const newProgram = new Program({
@@ -50,12 +48,12 @@ const createProgram = (req, res, next) => {
       cityAddress,
       ngo,
       requiredAmount,
-    }
+    },
   });
 
   // Save new program to the database
   newProgram.save()
-    .then(data => {
+    .then((data) => {
       const { id } = data;
       console.log(`Successfully saved Program ${programName} to the database.`);
 
@@ -63,41 +61,40 @@ const createProgram = (req, res, next) => {
       const programToPush = {
         programId: id,
         programName,
-      }
+      };
 
       // Add programToPush object to NGO's activePrograms array
       NGO.findByIdAndUpdate(
         ngo,
-        { $push: { 'programs.activePrograms': programToPush } }
+        { $push: { 'programs.activePrograms': programToPush } },
       )
         .then(() => {
           console.log('Successfully added Program to the active programs of NGO.');
 
           res.status(200).json({
-            message: 'Successfully saved NGO\'s new program to the database.'
+            message: 'Successfully saved NGO\'s new program to the database.',
           });
         })
         .catch((err) => {
           console.log('Error: ', err);
 
           res.status(400).json({
-            message: 'Failed to add program to the active programs of NGO.'
+            message: 'Failed to add program to the active programs of NGO.',
           });
 
           next(err);
         });
-
     })
-    .catch(err => {
+    .catch((err) => {
       console.log('Error: ', err);
 
       res.status(400).json({
-        message: 'Failed to save program to the database.'
+        message: 'Failed to save program to the database.',
       });
 
       next(err);
     });
-}
+};
 
 const getBalance = async (req, res, next) => {
   const { programId } = req.params;
@@ -109,59 +106,58 @@ const getBalance = async (req, res, next) => {
     res.status(200).json({ balance });
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve balance.`
+      message: 'Failed to retrieve balance.',
     });
 
     next(err);
   }
-}
+};
 
 const deleteProgram = async (req, res, next) => {
   const { programId } = req.params;
 
   // Delete document from the database
   Program.findByIdAndDelete(programId)
-    .then(data => {
+    .then((data) => {
       const { about } = data;
       const { ngo } = about;
 
       // Remove from ngo's programs array
       NGO.findByIdAndUpdate(
         ngo,
-        { $pull: { 'programs.activePrograms': { programId } } }
-      ).then(data => {
+        { $pull: { 'programs.activePrograms': { programId } } },
+      ).then(() => {
         res.status(200).json({
           status: 'Successfully deleted program from the database.',
         });
-      }).catch(err => {
+      }).catch((err) => {
         console.log('Error: ', err);
 
         res.status(400).json({
-          message: 'Failed to remove program from NGO\'s active programs.'
+          message: 'Failed to remove program from NGO\'s active programs.',
         });
 
         next(err);
-      })
+      });
     })
-    .catch(err => {
+    .catch((err) => {
       console.log('Error: ', err);
 
       res.status(400).json({
-        message: 'Failed to delete program.'
+        message: 'Failed to delete program.',
       });
 
       next(err);
-    })
+    });
+};
 
-}
-
-// @dev: Add restrictions 
+// @dev: Add restrictions
 // - A sponsor must have sufficient balance
 // - A program can't have any more sponsor if NOT crowdfunding phase anymore
 const addSponsor = async (req, res, next) => {
   const { programId, sponsorId } = req.params;
   let { amountFunded } = req.body;
-  amountFunded = parseInt(amountFunded);
+  amountFunded = Number(amountFunded);
 
   try {
     // Get Sponsor and Program Name
@@ -179,73 +175,71 @@ const addSponsor = async (req, res, next) => {
       programName,
       amountFunded,
       dateFunded: new Date(),
-    }
+    };
     // Pushed to Program's [sponsors] array
     const sponsorToPush = {
       sponsorId,
       corporationName,
       amountFunded,
       dateFunded: new Date(),
-    }
+    };
 
     // Promises to be passed to Promise.all()
     const addProgramToSponsor = Sponsor.findByIdAndUpdate(
       sponsorId,
       {
         $push: { sponsoredPrograms: programToPush },
-        $inc: { balance: -amountFunded } // Decrease sponsor balance
-      }
-    )
+        $inc: { balance: -amountFunded }, // Decrease sponsor balance
+      },
+    );
     const addSponsorToProgram = Program.findByIdAndUpdate(
       programId,
       {
         $push: { sponsors: sponsorToPush },
-        $inc: { balance: amountFunded } // Increase program balance
+        $inc: { balance: amountFunded }, // Increase program balance
       },
-      { new: true }
-    )
+      { new: true },
+    );
 
     Promise.all([addProgramToSponsor, addSponsorToProgram])
-      .then(values => {
-        const sponsor = values[0];
+      .then((values) => {
         const program = values[1];
 
         const { balance } = program;
         const { about } = program;
         const { requiredAmount } = about;
 
-        /* 
+        /*
           Check if current balance of Program is >= required amount
           IF TRUE, set Program's stage to "procurement"
         */
         if (balance >= requiredAmount) {
-          program.about.stage = "procurement";
+          program.about.stage = 'procurement';
 
           program.save()
             .then(() => {
-              console.log("Program is now in Procurement Phase!");
+              console.log('Program is now in Procurement Phase!');
 
               res.status(200).json({
-                message: 'Program is now in Procurement Phase.'
+                message: 'Program is now in Procurement Phase.',
               });
-            })
+            });
         } else {
           res.status(200).json({
-            message: 'Successfully added sponsor to program.'
+            message: 'Successfully added sponsor to program.',
           });
         }
-      })
-
+      });
   } catch (err) {
     console.log('Error: ', err);
 
     res.status(400).json({
-      message: 'Something went wrong.'
+      message: 'Something went wrong.',
     });
 
     next(err);
   }
-}
+};
 
 module.exports = {
   viewAllPrograms,
@@ -253,5 +247,5 @@ module.exports = {
   createProgram,
   getBalance,
   deleteProgram,
-  addSponsor
-}
+  addSponsor,
+};

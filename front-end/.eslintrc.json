@@ -1,7 +1,21 @@
 {
   "extends": ["airbnb", "prettier"],
   "plugins": ["prettier"],
+  "globals": {
+    "localStorage": true // Disables localStorage lint error
+  },
   "rules": {
-    "no-unused-vars": "warn"
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "no-unused-vars": "warn",
+    "indent": [2, "tab", { "SwitchCase": 1, "VariableDeclarator": 1 }],
+    "no-tabs": 0,
+    "react/prop-types": 0,
+    "react/jsx-indent": [2, "tab"],
+    "react/jsx-indent-props": [2, "tab"],
+    "no-console": "off",
+    "react/no-array-index-key": "warn", // Optional
+    "react/jsx-props-no-spreading": "warn", // Optional
+    "no-param-reassign": "warn", // Optional
+    "no-shadow": "warn" // Optional
   }
 }
