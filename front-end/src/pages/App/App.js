@@ -2,14 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Components
-import Header from '../../components/Header/Header';
-// CSS
-import './App.css';
+import Layout from '../../components/Layout/Layout';
 // MaterialUI
-import CssBaseline from '@material-ui/core/CssBaseline';
 // Contexts
-import { RegisterDialogProvider } from '../../contexts/RegisterDialogContext';
-import { LoginDialogProvider } from '../../contexts/LoginDialogContext';
 // Pages
 import LandingPage from '../Landing/Landing';
 import AboutPage from '../About/AboutPage';
@@ -19,54 +14,48 @@ import Register from '../LoginRegister/Register/Register';
 import Profile from '../Profile/Profile';
 import Programs from '../Programs/Programs';
 import CreateProgram from '../Programs/CreateProgram/CreateProgram';
-import RegisterDialog from '../LoginRegister/Register/RegisterDialog';
-import LoginDialog from '../LoginRegister/Login/LoginDialog';
+import PageNotFound from '../Error/404/PageNotFound';
+// CSS
+import './App.css';
 
 function App() {
 
   return (
     <div className="App">
 
-      <CssBaseline />
-      {
-        <Router>
-          <LoginDialogProvider>
-            <RegisterDialogProvider>
-              <Header />
-              <RegisterDialog />
-              <LoginDialog />
-            </RegisterDialogProvider>
-            <Switch>
-              {/* Screen 002 - Menu Items */}
-              {/* Screen 001 */}
-              <Route exact path='/' render={() => <LandingPage />} />
+      <Layout>
+        <Switch>
+          {/* Screen 002 - Menu Items */}
+          {/* Screen 001 */}
+          <Route exact path='/' render={() => <LandingPage />} />
 
-              <Route exact path='/farmers' render={() => <FarmersList />} />
+          <Route exact path='/farmers' render={() => <FarmersList />} />
 
-              {/* Screen 003 */}
-              {/* <Route exact path='/login' render={() => <Login />} /> */}
+          {/* Screen 003 */}
+          {/* <Route exact path='/login' render={() => <Login />} /> */}
 
-              {/* Screen 004 */}
-              <Route exact path='/register/:userType' render={() => <Register />} />
+          {/* Screen 004 */}
+          <Route exact path='/register/:userType' render={() => <Register />} />
 
-              {/* Screen 005 */}
-              <Route exact path='/profile' render={() => <Profile />} />
+          {/* Screen 005 */}
+          <Route exact path='/profile' render={() => <Profile />} />
 
-              {/* Screen 006 */}
-              {/* Screen 007 */}
-              <Route exact path='/programs' render={() => <Programs />} />
-              {/* Screen 008 */}
-              <Route exact path='/program/create' render={() => <CreateProgram />} />
-              {/* Screen 009 */}
-              <Route exact path='/program/:programId' render={() => <ProgramPage />} />
+          {/* Screen 006 */}
+          {/* Screen 007 */}
+          <Route exact path='/programs' render={() => <Programs />} />
+          {/* Screen 008 */}
+          <Route exact path='/program/create' render={() => <CreateProgram />} />
+          {/* Screen 009 */}
+          <Route exact path='/program/:programId' render={() => <ProgramPage />} />
 
-              {/* Screen 010 */}
-              <Route exact path='/about' render={() => <AboutPage />} />
-            </Switch>
-          </LoginDialogProvider>
-        </Router>
-      }
+          {/* Screen 010 */}
+          <Route exact path='/about' render={() => <AboutPage />} />
 
+          {/* Error 404 - Page Not Found */}
+          {/* https://stackoverflow.com/questions/32128978/react-router-no-not-found-route */}
+          <Route path='*' exact={true} render={() => <PageNotFound />} />
+        </Switch>
+      </Layout>
     </div>
   );
 }

@@ -36,6 +36,10 @@ mongoose.connect(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology
 // Set up routes
 require('./routes')(app);
 
+app.get('*', (req, res) => {
+  res.status(404).send('404');
+})
+
 app.listen(config.PORT, () => {
   console.log(`Server running on port ${config.PORT}`);
 })
