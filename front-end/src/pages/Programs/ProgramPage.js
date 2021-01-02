@@ -57,7 +57,7 @@ export default withRouter((props) => {
 	const confirm = useConfirm();
 	const { match } = props;
 
-	const { loginData } = useContext(LoginDialogContext);
+	const { loginData, setLoginData } = useContext(LoginDialogContext);
 	const [program, setProgram] = useState({
 		"id": "",
 		"balance": 0,
@@ -222,6 +222,15 @@ export default withRouter((props) => {
 						open: false,
 						pledgeAmount: 0
 					})
+					axios.get(`/api/sponsor/${loginData.uid}/balance`, {
+						amountFunded: pledgeDialog.pledgeAmount
+					})
+						.then(res => {
+							const { data } = res;
+							const { balance } = data;
+							setLoginData({ ...loginData, balance });
+							localStorage.setItem("loginCreds", JSON.stringify({ ...loginData, balance }))
+						})
 					getProgramDetails()
 				})
 				.catch(err => {
@@ -338,8 +347,6 @@ export default withRouter((props) => {
 				setExecutionLoading(false)
 			});
 	}
-
-
 
 	useEffect(() => {
 		getProgramDetails()

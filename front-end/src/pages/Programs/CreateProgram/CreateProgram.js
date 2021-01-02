@@ -40,14 +40,11 @@ export default function CreateProgram() {
 
 	const { loginData } = useContext(LoginDialogContext)
 
-	// ====================================================================== //
-	//  "ngo" field assumes that the ID of the current NGO is being tracked   //
-	// ====================================================================== //
 	const [newProgram, setNewProgram] = useState({
 		programName: '',
 		about: '',
 		cityAddress: '',
-		ngo: loginData.uid,             // must be ngo: '5fcdafdafcda8f250439db05'
+		ngo: loginData.uid,
 		requiredAmount: 0,
 		programDate: new Date().toLocaleDateString(),
 	});
@@ -219,19 +216,16 @@ export default function CreateProgram() {
 								/>
 							</MuiPickersUtilsProvider>
 						</Box>
-						{/* <GeneralProgramInfoForm /> */}
 
-						{/* <ProgramTimelineForm />
-
-            
-            <ProduceRequirementsForm />
-
-            <FundRequirementsForm />
-
-            <SponsorshipOptions /> */}
+						{/* 
+							<GeneralProgramInfoForm />
+							<ProgramTimelineForm />
+							<ProduceRequirementsForm />
+							<FundRequirementsForm />
+							<SponsorshipOptions /> 
+						*/}
 
 						{/* Must be able to add more than one produce */}
-
 						<Box display="flex" flexDirection="row-reverse" mt={5}>
 							<Button onClick={handleSubmit} color="primary" variant="contained">Submit</Button>
 						</Box>

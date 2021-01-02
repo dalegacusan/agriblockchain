@@ -69,7 +69,7 @@ export default function ButtonAppBar() {
 	const confirm = useConfirm();
 
 	const [open, setOpen] = useState(false);
-	const [loggedIn, setLogginIn] = useState(false);
+	const [loggedIn, setLoggedIn] = useState(false);
 	const { setOpenRegisterDialog } = useContext(RegisterDialogContext);
 	const { setOpenLoginDialog, loginData, setLoginData } = useContext(LoginDialogContext);
 
@@ -113,10 +113,10 @@ export default function ButtonAppBar() {
 	useEffect(() => {
 		if (loginData.type !== '' && loginData.uid !== '') {
 			// logged in
-			setLogginIn(true)
+			setLoggedIn(true)
 		} else {
 			// not logged in
-			setLogginIn(false)
+			setLoggedIn(false)
 		}
 	}, [loginData])
 
@@ -192,12 +192,21 @@ export default function ButtonAppBar() {
 					<ListItemLink to='/' onClick={handleDrawerClose}>
 						<ListItemText primary='Home' />
 					</ListItemLink>
-					<ListItemLink to='/login' onClick={handleDrawerClose}>
-						<ListItemText primary='Login' />
-					</ListItemLink>
-					<ListItem button onClick={chooseRegisterType}>
-						<ListItemText primary='Register' />
-					</ListItem>
+					{
+						loginData.type !== '' && loginData.uid !== ''
+							?
+							null
+							: (
+								<>
+									<ListItemLink to='/login' onClick={handleDrawerClose}>
+										<ListItemText primary='Login' />
+									</ListItemLink>
+									<ListItem button onClick={chooseRegisterType}>
+										<ListItemText primary='Register' />
+									</ListItem>
+								</>
+							)
+					}
 					<ListItemLink to='/programs' onClick={handleDrawerClose}>
 						<ListItemText primary='Programs' />
 					</ListItemLink>

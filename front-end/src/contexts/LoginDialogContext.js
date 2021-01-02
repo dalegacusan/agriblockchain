@@ -32,7 +32,7 @@ export const LoginDialogProvider = props => {
 	// - Retrieves data from the database using the auto-filled UID
 	useEffect(() => {
 		if (loginData.uid !== '') {
-			if (loginData.type === 'corporation' || loginData.type === 'individual') {
+			if (loginData.type === 'sponsor') {
 				console.log('Sponsor is attempting to log in.');
 				axios.get(`/api/sponsor/${loginData.uid}`)
 					.then(res => setLoginData({ ...loginData, balance: res.data.balance }))
