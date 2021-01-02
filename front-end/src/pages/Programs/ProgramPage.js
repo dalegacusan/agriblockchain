@@ -159,7 +159,7 @@ export default withRouter(function ProgramPage(props) {
   }
 
   const submitPledge = () => {
-    if (loginData.type === "corporation" || loginData.type === "individual") {
+    if (loginData.type === "sponsor") {
       setPledgeDialog({
         ...pledgeDialog,
         loading: true
@@ -412,7 +412,7 @@ export default withRouter(function ProgramPage(props) {
               </Box>
               <Box display={program.about.stage === "crowdfunding" ? "block" : "none"}>
                 {
-                  loginData.username !== "" && (loginData.type === "individual" || loginData.type === "corporation") ?
+                  loginData.username !== "" && loginData.type === "sponsor" ?
                     <Button
                       variant="contained"
                       color="primary"

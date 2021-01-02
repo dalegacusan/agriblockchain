@@ -1,12 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
 // Components
 import Layout from '../../components/Layout/Layout';
 // MaterialUI
 // Contexts
-// Pages
 import LandingPage from '../Landing/Landing';
+// Pages
 import AboutPage from '../About/AboutPage';
 import ProgramPage from '../Programs/ProgramPage';
 import FarmersList from '../FarmersList/FarmersList';
@@ -53,7 +52,7 @@ function App() {
 
           {/* Error 404 - Page Not Found */}
           {/* https://stackoverflow.com/questions/32128978/react-router-no-not-found-route */}
-          <Route path='*' exact={true} render={() => <PageNotFound />} />
+          <Route path='*' exact render={() => <PageNotFound />} />
         </Switch>
       </Layout>
     </div>

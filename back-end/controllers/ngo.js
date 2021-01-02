@@ -1,20 +1,18 @@
 const NGO = require('../models/NGO');
 
 const viewAllNGO = async (req, res, next) => {
-
   try {
     const allNGO = await NGO.find({});
 
     res.status(200).json(allNGO);
   } catch (err) {
     res.status(400).json({
-      message: 'Failed to retrieve all NGOs.'
+      message: 'Failed to retrieve all NGOs.',
     });
 
     next(err);
   }
-
-}
+};
 
 const viewNGO = async (req, res, next) => {
   const { ngoId } = req.params;
@@ -25,7 +23,7 @@ const viewNGO = async (req, res, next) => {
     res.status(200).json(oneNGO);
   } catch (err) {
     res.status(400).json({
-      message: `Failed to retrieve NGO.`
+      message: ',Failed to retrieve NGO.',
     });
 
     next(err);

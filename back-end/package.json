@@ -1,25 +1,46 @@
 {
-  "name": "back-end",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "flat": "^5.0.2",
-    "mongoose": "^5.10.16",
-    "mongoose-unique-validator": "^2.0.3"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.6"
-  }
+	"name": "back-end",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev": "nodemon index.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.0",
+		"cors": "^2.8.5",
+		"dotenv": "^8.2.0",
+		"express": "^4.17.1",
+		"flat": "^5.0.2",
+		"mongoose": "^5.10.16",
+		"mongoose-unique-validator": "^2.0.3"
+	},
+	"eslintConfig": {
+		"extends": "airbnb-base",
+		"env": {
+			"es6": true,
+			"browser": true
+		},
+		"rules": {
+			"linebreak-style": [
+				"error",
+				"windows"
+			]
+		}
+	},
+	"devDependencies": {
+		"eslint": "^7.2.0",
+		"eslint-config-airbnb-base": "^14.2.1",
+		"eslint-config-node": "^4.1.0",
+		"eslint-config-prettier": "^7.1.0",
+		"eslint-plugin-import": "^2.22.1",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-prettier": "^3.3.0",
+		"nodemon": "^2.0.6",
+		"prettier": "^2.2.1"
+	}
 }

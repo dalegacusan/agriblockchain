@@ -5,7 +5,7 @@ const viewAllFarmers = async (req, res, next) => {
   try {
     const allFarmers = await Farmer.find({});
 
-    res.status(200).json(alLFarmers)
+    res.status(200).json(alLFarmers);
   } catch (err) {
     res.status(400).json({
       message: 'Failed to retrieve all farmers.'
@@ -22,7 +22,7 @@ const viewFarmer = async (req, res, next) => {
   try {
     const oneFarmer = await Farmer.findById(farmerId);
 
-    res.status(200).json(oneFarmer)
+    res.status(200).json(oneFarmer);
   } catch (err) {
     res.status(400).json({
       message: `Failed to retrieve farmer.`
