@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+
+// MaterialUI
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -6,9 +8,12 @@ import Dialog from '@material-ui/core/Dialog';
 import List from '@material-ui/core/List';
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-
-import ListItemLink from '../../../components/Header/ListItemLink';
-import { RegisterDialogContext } from '../../../contexts/RegisterDialogContext';
+// Contexts
+import { RegisterDialogContext } from '../../contexts/RegisterDialogContext';
+// Components
+import ListItemLink from '../Header/ListItemLink';
+// Pages
+// CSS
 
 export default function RegisterDialog() {
 

@@ -7,8 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
-import { RegistrationDataContext } from '../../../../../contexts/RegistrationDataContext';
-
+import { RegistrationDataContext } from '../../../../contexts/RegistrationDataContext';
 
 const useStyles = makeStyles((theme) => ({
 	formControl: {
@@ -17,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function NGOForm() {
+export default function SponsorCorporationForm() {
 	const classes = useStyles();
 
 	const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
@@ -25,17 +24,17 @@ export default function NGOForm() {
 	const handleChange = (e) => {
 		setOpenRegistrationData({
 			...openRegistrationData,
-			type: 'ngo',
+			type: 'sponsor',
 			[e.target.name]: e.target.value,
 		});
 	}
 
 	return (
 		<form noValidate autoComplete="off">
-			{/* NGO Name */}
+			{/* Corporation Name */}
 			<TextField
-				label="NGO Name"
-				placeholder="NGO Name"
+				label="Corporation Name"
+				placeholder="Corporation Name"
 				fullWidth
 				margin="normal"
 				InputLabelProps={{
@@ -60,7 +59,6 @@ export default function NGOForm() {
 				variant="outlined"
 				id="contactNumber"
 				name="contactNumber"
-				type="number"
 				value={openRegistrationData.contactNumber}
 				onChange={handleChange}
 			/>
@@ -75,10 +73,10 @@ export default function NGOForm() {
 					shrink: true,
 				}}
 				variant="outlined"
-				id="representativeName"
-				name="representativeName"
+				id="authorizedRepresentative"
+				name="authorizedRepresentative"
 				onChange={handleChange}
-				value={openRegistrationData.representativeName}
+				value={openRegistrationData.authorizedRepresentative}
 			/>
 
 			<br />
@@ -96,9 +94,9 @@ export default function NGOForm() {
 					shrink: true,
 				}}
 				variant="outlined"
-				id="address1"
-				name="address1"
-				value={openRegistrationData.address1}
+				id="addressLine1"
+				name="addressLine1"
+				value={openRegistrationData.addressLine1}
 				onChange={handleChange}
 			/>
 
@@ -112,9 +110,9 @@ export default function NGOForm() {
 					shrink: true,
 				}}
 				variant="outlined"
-				id="address2"
-				name="address2"
-				value={openRegistrationData.address2}
+				id="addressLine2"
+				name="addressLine2"
+				value={openRegistrationData.addressLine2}
 				onChange={handleChange}
 			/>
 

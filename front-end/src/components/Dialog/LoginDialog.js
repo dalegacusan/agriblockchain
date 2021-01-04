@@ -1,5 +1,7 @@
 import React, { useContext, useState, Fragment, useEffect } from 'react';
 import axios from 'axios';
+
+// MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -15,9 +17,11 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
-
-import { LoginDialogContext } from '../../../contexts/LoginDialogContext';
-
+// Contexts
+import { LoginDialogContext } from '../../contexts/LoginDialogContext';
+// Components
+// Pages
+// CSS
 const useStyles = makeStyles((theme) => ({
 	avatar: {
 		color: theme.palette.secondary.contrastText,

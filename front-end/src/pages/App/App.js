@@ -9,7 +9,7 @@ import LandingPage from '../Landing/Landing';
 import AboutPage from '../About/AboutPage';
 import ProgramPage from '../Programs/ProgramPage';
 import FarmersList from '../FarmersList/FarmersList';
-import Register from '../LoginRegister/Register/Register';
+import Register from '../Register/Register';
 import Profile from '../Profile/Profile';
 import Programs from '../Programs/Programs';
 import CreateProgram from '../Programs/CreateProgram/CreateProgram';

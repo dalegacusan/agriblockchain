@@ -2,12 +2,11 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
-import NGOProfile from './profiles/NGOProfile/NGOProfile';
-import PartnerFarmerProfile from './profiles/PartnerFarmerProfile/PartnerFarmerProfile';
-import SponsorCorporationProfile from './profiles/SponsorCorporationProfile/SponsorCorporationProfile';
-import SponsorIndividualProfile from './profiles/SponsorIndividualProfile/SponsorIndividualProfile';
-import ProgramProfile from './profiles/ProgramProfile/ProgramProfile';
-
+import NGO from './profiles/NGO/NGO';
+import Farmer from './profiles/Farmer/Farmer';
+import Sponsor from './profiles/Sponsor/Sponsor';
+import Program from './profiles/Program/Program';
+import PageNotFound from '../Error/404/PageNotFound';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -21,17 +20,18 @@ export default function Profile(props) {
 	const classes = useStyles();
 
 	let toDisplay;
-
-	if (currentUser === "ngo") {
-		toDisplay = <NGOProfile currentUser={currentUser} />;
-	} else if (currentUser === "corporation") {
-		toDisplay = <SponsorCorporationProfile currentUser={currentUser} />
-	} else if (currentUser === "individual") {
-		toDisplay = <SponsorIndividualProfile currentUser={currentUser} />
-	} else if (currentUser === "farmer") {
-		toDisplay = <PartnerFarmerProfile currentUser={currentUser} />
-	} else if (currentUser === "program") {
-		toDisplay = <ProgramProfile currentUser={currentUser} />
+	switch (currentUser) {
+		case 'ngo':
+			toDisplay = <NGO currentUser={currentUser} />;
+			break;
+		case 'sponsor':
+			toDisplay = <Sponsor currentUser={currentUser} />
+			break;
+		case 'farmer':
+			toDisplay = <Farmer currentUser={currentUser} />
+			break;
+		default:
+			toDisplay = <PageNotFound />
 	}
 
 	return (

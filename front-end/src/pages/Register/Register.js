@@ -2,13 +2,12 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
-import Agreement from './FirstStep/Agreement';
+import Agreement from './Agreement/Agreement';
 import RegisterStepper from './components/RegisterStepper';
-import SecondStep from './SecondStep/SecondStep';
-import ThirdStep from './ThirdStep/ThirdStep';
+import RegistrationForm from './RegistrationForm/RegistrationForm';
+import LoginForm from './LoginForm/LoginForm';
 
-import { RegistrationDataProvider } from '../../../contexts/RegistrationDataContext';
-
+import { RegistrationDataProvider } from '../../contexts/RegistrationDataContext';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -56,7 +55,7 @@ export default withRouter((props) => {
 		);
 	} else if (activeStep === 1) {
 		toDisplay = (
-			<SecondStep
+			<RegistrationForm
 				currentUser={match.params.userType}
 				classes={classes}
 				activeStep={activeStep}
@@ -67,7 +66,7 @@ export default withRouter((props) => {
 		);
 	} else {
 		toDisplay = (
-			<ThirdStep
+			<LoginForm
 				currentUser={match.params.userType}
 				classes={classes}
 				activeStep={activeStep}

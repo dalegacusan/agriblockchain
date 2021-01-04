@@ -4,8 +4,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // Components
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from '../Header/Header';
-import RegisterDialog from '../../pages/LoginRegister/Register/RegisterDialog';
-import LoginDialog from '../../pages/LoginRegister/Login/LoginDialog';
+import RegisterDialog from '../Dialog/RegisterDialog';
+import LoginDialog from '../Dialog/LoginDialog';
 // MaterialUI
 // Contexts
 import { RegisterDialogProvider } from '../../contexts/RegisterDialogContext';

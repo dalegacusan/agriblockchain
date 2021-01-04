@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-import { RegistrationDataContext } from '../../../../contexts/RegistrationDataContext';
+import { RegistrationDataContext } from '../../../contexts/RegistrationDataContext';
 
 const useStyles = makeStyles((theme) => ({
 	backdrop: {

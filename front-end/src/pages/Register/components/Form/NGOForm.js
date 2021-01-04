@@ -7,7 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import Divider from '@material-ui/core/Divider';
 
-import { RegistrationDataContext } from '../../../../../contexts/RegistrationDataContext';
+import { RegistrationDataContext } from '../../../../contexts/RegistrationDataContext';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SponsorIndividualForm() {
+export default function NGOForm() {
 	const classes = useStyles();
 
 	const { openRegistrationData, setOpenRegistrationData } = useContext(RegistrationDataContext);
@@ -25,74 +25,26 @@ export default function SponsorIndividualForm() {
 	const handleChange = (e) => {
 		setOpenRegistrationData({
 			...openRegistrationData,
-			type: 'individual',
+			type: 'ngo',
 			[e.target.name]: e.target.value,
 		});
 	}
 
 	return (
 		<form noValidate autoComplete="off">
-			{/* First Name */}
+			{/* NGO Name */}
 			<TextField
-				label="First Name"
-				placeholder="First Name"
+				label="NGO Name"
+				placeholder="NGO Name"
 				fullWidth
 				margin="normal"
 				InputLabelProps={{
 					shrink: true,
 				}}
 				variant="outlined"
-				id="firstName"
-				name="firstName"
-				value={openRegistrationData.firstName}
-				onChange={handleChange}
-			/>
-
-			{/* Middle Name */}
-			<TextField
-				label="Middle Name"
-				placeholder="Middle Name"
-				fullWidth
-				margin="normal"
-				InputLabelProps={{
-					shrink: true,
-				}}
-				variant="outlined"
-				id="middleName"
-				name="middleName"
-				value={openRegistrationData.middleName}
-				onChange={handleChange}
-			/>
-
-			{/* Last Name */}
-			<TextField
-				label="Last Name"
-				placeholder="Last Name"
-				fullWidth
-				margin="normal"
-				InputLabelProps={{
-					shrink: true,
-				}}
-				variant="outlined"
-				id="lastName"
-				name="lastName"
-				value={openRegistrationData.lastName}
-				onChange={handleChange}
-			/>
-
-			{/* Suffix */}
-			<TextField
-				label="Suffix"
-				placeholder="Suffix"
-				fullWidth
-				margin="normal"
-				InputLabelProps={{
-					shrink: true,
-				}}
-				variant="outlined"
-				id="suffix"
-				name="suffix"
-				value={openRegistrationData.suffix}
+				id="name"
+				name="name"
+				value={openRegistrationData.name}
 				onChange={handleChange}
 			/>
 
@@ -106,75 +58,28 @@ export default function SponsorIndividualForm() {
 					shrink: true,
 				}}
 				variant="outlined"
-				type="number"
 				id="contactNumber"
 				name="contactNumber"
+				type="number"
 				value={openRegistrationData.contactNumber}
 				onChange={handleChange}
 			/>
 
-			{/* Email Address */}
+			{/* Authorized Representative */}
 			<TextField
-				label="Email address"
-				placeholder="Email Address"
+				label="Authorized Representative"
+				placeholder="Authorized Representative"
 				fullWidth
 				margin="normal"
 				InputLabelProps={{
 					shrink: true,
 				}}
 				variant="outlined"
-				id="emailAddress"
-				name="emailAddress"
-				value={openRegistrationData.emailAddress}
+				id="representativeName"
+				name="representativeName"
 				onChange={handleChange}
+				value={openRegistrationData.representativeName}
 			/>
-
-			{/* Civil Status */}
-			<br />
-			<br />
-			<FormControl variant="outlined" style={{ width: "100%" }}>
-				<InputLabel id="demo-simple-select-outlined-label">Civil Status</InputLabel>
-				<Select
-					labelId="demo-simple-select-outlined-label"
-					label="Civil Status"
-					id="civilStatus"
-					name="civilStatus"
-					value={openRegistrationData.civilStatus}
-					onChange={handleChange}
-					defaultValue=""
-				>
-					<MenuItem value="">
-						<em>None</em>
-					</MenuItem>
-					<MenuItem value="single">Single</MenuItem>
-					<MenuItem value="married">Married</MenuItem>
-					<MenuItem value="divorced">Divorced</MenuItem>
-					<MenuItem value="widowed">Widowed</MenuItem>
-				</Select>
-			</FormControl>
-
-			{/* Gender */}
-			<br />
-			<br />
-			<FormControl variant="outlined" style={{ width: "100%" }}>
-				<InputLabel id="demo-simple-select-outlined-label">Gender</InputLabel>
-				<Select
-					labelId="demo-simple-select-outlined-label"
-					label="Gender"
-					id="gender"
-					name="gender"
-					value={openRegistrationData.gender}
-					onChange={handleChange}
-					defaultValue=""
-				>
-					<MenuItem value="">
-						<em>None</em>
-					</MenuItem>
-					<MenuItem value="male">Male</MenuItem>
-					<MenuItem value="female">Female</MenuItem>
-					<MenuItem value="lgbtqia">LGBTQIA</MenuItem>
-				</Select>
-			</FormControl>
 
 			<br />
 			<br />

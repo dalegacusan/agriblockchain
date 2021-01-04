@@ -2,11 +2,9 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
-import PartnerFarmerForm from '../components/Form/PartnerFarmerForm';
+import PartnerFarmerForm from '../components/Form/FarmerForm';
 import NGOForm from '../components/Form/NGOForm';
-import SponsorCorporationForm from '../components/Form/SponsorCorporationForm';
-import SponsorIndividualForm from '../components/Form/SponsorIndividualForm';
-
+import SponsorForm from '../components/Form/SponsorForm';
 
 export default function SecondStep(props) {
 	const { currentUser, classes, activeStep, steps, handleBack, handleNext } = props;
@@ -16,9 +14,9 @@ export default function SecondStep(props) {
 	if (currentUser === "ngo") {
 		toDisplay = <NGOForm currentUser={currentUser} />;
 	} else if (currentUser === "corporation") {
-		toDisplay = <SponsorCorporationForm currentUser={currentUser} />
+		toDisplay = <SponsorForm currentUser={currentUser} />
 	} else if (currentUser === "individual") {
-		toDisplay = <SponsorIndividualForm currentUser={currentUser} />
+		toDisplay = <SponsorForm currentUser={currentUser} />
 	} else if (currentUser === "farmer") {
 		toDisplay = <PartnerFarmerForm currentUser={currentUser} />
 	}

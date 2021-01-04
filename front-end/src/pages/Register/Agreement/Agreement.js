@@ -8,7 +8,8 @@ import Radio from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { RegistrationDataContext } from '../../../../contexts/RegistrationDataContext';
+
+import { RegistrationDataContext } from '../../../contexts/RegistrationDataContext';
 
 export default function Agreement(props) {
 	const { handleNext, classes } = props;
