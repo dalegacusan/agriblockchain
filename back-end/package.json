@@ -30,7 +30,16 @@
 				"error",
 				"windows"
 			],
-			"no-console": "off"
+			"no-console": "off",
+			"indent": [
+				2,
+				"tab",
+				{
+					"SwitchCase": 1,
+					"VariableDeclarator": 1
+				}
+			],
+			"no-tabs": 0
 		}
 	},
 	"devDependencies": {

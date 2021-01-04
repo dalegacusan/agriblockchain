@@ -12,7 +12,7 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import PartnerFarmerForm from './FarmerForm';
-import SponsorIndividual from './SponsorIndividualForm';
+import SponsorIndividual from './SponsorForm';
 import NGOForm from './NGOForm';
 
 const useStyles = makeStyles((theme) => ({

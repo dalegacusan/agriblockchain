@@ -12,7 +12,7 @@ import { RegistrationDataProvider } from '../../contexts/RegistrationDataContext
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: '100%',
-		flexGrow: 1
+		flexGrow: 1,
 	},
 	backButton: {
 		marginRight: theme.spacing(1),

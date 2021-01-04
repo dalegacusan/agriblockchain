@@ -13,9 +13,7 @@ export default function SecondStep(props) {
 
 	if (currentUser === "ngo") {
 		toDisplay = <NGOForm currentUser={currentUser} />;
-	} else if (currentUser === "corporation") {
-		toDisplay = <SponsorForm currentUser={currentUser} />
-	} else if (currentUser === "individual") {
+	} else if (currentUser === "sponsor") {
 		toDisplay = <SponsorForm currentUser={currentUser} />
 	} else if (currentUser === "farmer") {
 		toDisplay = <PartnerFarmerForm currentUser={currentUser} />
@@ -25,7 +23,7 @@ export default function SecondStep(props) {
 		<Box mt={3}>
 			<Typography component="h6" gutterBottom>Personal Information</Typography>
 
-			{ toDisplay}
+			{toDisplay}
 
 			{/* 
         // ========================
