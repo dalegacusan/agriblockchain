@@ -9,7 +9,6 @@ import Divider from '@material-ui/core/Divider';
 
 import { RegistrationDataContext } from '../../../../contexts/RegistrationDataContext';
 
-
 const useStyles = makeStyles(() => ({
 	formControl: {
 		margin: "0 0%",

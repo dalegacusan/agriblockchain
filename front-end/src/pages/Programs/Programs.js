@@ -71,17 +71,20 @@ export default function Programs() {
 			<Box display={loginData.username === '' && loginData.type === '' ? "block" : "none"}>
 				<Alert severity="info">Log in to Bayanihan to get more details about the programs.</Alert>
 			</Box>
+
 			<Box my={3}>
 				{
-					loading ? (
-						<Box width="100%" textAlign="center">
-							<CircularProgress />
-						</Box>
-					)
+					loading
+						? (
+							<Box width="100%" textAlign="center">
+								<CircularProgress />
+							</Box>
+						)
 						: (
 							<Grid container spacing={2}>
 								{
-									programs.length !== 0 ?
+									programs.length !== 0
+										?
 										programs.map((program, index) => {
 											const { about, timeline, _id } = program;
 											const { programName, programDescription, stage, status } = about;
@@ -101,9 +104,11 @@ export default function Programs() {
 											)
 										})
 										: (
-											<Alert severity="info">
-												No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
-											</Alert>
+											<Box>
+												<Alert severity="info">
+													No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
+												</Alert>
+											</Box>
 										)
 								}
 							</Grid>

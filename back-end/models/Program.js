@@ -14,8 +14,9 @@ const programSchema = new mongoose.Schema({
 		ngoUnder: String,
 	},
 	timeline: {
-		dateCreated: { type: Date },
-		executionDate: { type: Date, default: new Date() }, // @dev: Remove default once select from calendar is working
+		// @dev: Remove default once select from calendar is working
+		dateCreated: { type: Date, default: new Date() },
+		executionDate: { type: Date, default: new Date() },
 	},
 	produceRequirements: { type: Array, default: [] },
 	farmersParticipating: { type: Array, default: [] },

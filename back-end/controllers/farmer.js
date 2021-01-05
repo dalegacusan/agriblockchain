@@ -35,9 +35,7 @@ const createFarmer = (req, res, next) => {
 	const newFarmerAccount = new Farmer({
 		about: {
 			firstName: 'Joseph',
-			middleName: 'Sultan',
 			lastName: 'Hermano',
-			suffix: 'M',
 			addressLine1: '2050 Roane Avenue, Washington MD, Maryland',
 			addressLine2: '3274 Ingram Street, Galion, Ohio',
 			region: 'NCR',
@@ -45,11 +43,12 @@ const createFarmer = (req, res, next) => {
 			country: 'Philippines',
 		},
 		contactDetails: {
-			emailAddress: 'josephhermano@gmail.com',
 			contactNumber: '937-538-5148',
+			contactEmailAddress: 'josephhermano@gmail.com',
 		},
 		loginDetails: {
 			username: 'josephhermano',
+			emailAddress: 'josephhermano@gmail.com',
 			password: 'hermanojoseph123',
 		},
 	});

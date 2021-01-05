@@ -34,19 +34,19 @@ const viewProgram = async (req, res, next) => {
 
 const createProgram = (req, res, next) => {
 	const {
-		programName, // from User
-		programDescription, // from User
-		cityAddress, // from User
-		ngo, // AUTOFILL
-		requiredAmount, // from User
+		programName,
+		programDescription,
+		addressLine,
+		ngoUnder, // AUTOFILL
+		requiredAmount,
 	} = req.body;
 
 	const newProgram = new Program({
 		about: {
 			programName,
 			programDescription,
-			cityAddress,
-			ngo,
+			addressLine,
+			ngoUnder,
 			requiredAmount,
 		},
 	});
@@ -54,19 +54,14 @@ const createProgram = (req, res, next) => {
 	// Save new program to the database
 	newProgram.save()
 		.then((data) => {
-			const { id } = data;
+			const { id: programId, about } = data;
+			const { ngoUnder: programNGOId } = about;
 			console.log(`Successfully saved Program ${programName} to the database.`);
 
-			// Pushed to NGO's [activePrograms] array
-			const programToPush = {
-				programId: id,
-				programName,
-			};
-
-			// Add programToPush object to NGO's activePrograms array
+			// Add Program ID to NGO's activePrograms array
 			NGO.findByIdAndUpdate(
-				ngo,
-				{ $push: { 'programs.activePrograms': programToPush } },
+				programNGOId,
+				{ $push: { 'programDetails.activePrograms': programId } },
 			)
 				.then(() => {
 					console.log('Successfully added Program to the active programs of NGO.');

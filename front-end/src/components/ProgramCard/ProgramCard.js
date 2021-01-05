@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 
 // Components
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
-import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -49,6 +49,9 @@ export default function ProgramCard(props) {
 		programId
 	} = props;
 	const classes = useStyles();
+	const location = useLocation();
+
+	console.log(location.pathname);
 
 	const { loginData } = useContext(LoginDialogContext);
 	const [stage, setStage] = useState('');
@@ -137,7 +140,6 @@ export default function ProgramCard(props) {
 					)
 					: null
 			}
-
 		</Card>
 	);
 }

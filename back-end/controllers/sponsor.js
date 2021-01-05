@@ -34,47 +34,50 @@ const viewSponsor = async (req, res, next) => {
 };
 
 const createSponsor = (req, res, next) => {
-	console.log(req.body);
 	const {
 		username,
+		emailAddress,
 		password,
-		name,
+		firstName,
+		lastName,
 		addressLine1,
 		addressLine2,
-		authorizedRepresentative,
-		contactNumber,
 		region,
 		city,
 		country,
+		corporationUnder,
+		contactNumber,
+		contactEmailAddress,
 	} = req.body;
 
 	const newSponsorAccount = new Sponsor({
 		about: {
-			corporationName: name,
+			firstName,
+			lastName,
 			addressLine1,
 			addressLine2,
 			region,
 			city,
 			country,
+			corporationUnder,
 		},
 		contactDetails: {
-			authorizedRepresentative,
 			contactNumber,
+			contactEmailAddress,
 		},
 		loginDetails: {
 			username,
+			emailAddress,
 			password,
 		},
 	});
 
 	newSponsorAccount.save()
 		.then((data) => {
-			const { about } = data;
-			const { corporationName } = about;
-			console.log(`Successfully saved Sponsor ${corporationName} to the database.`);
+			console.log(`Successfully saved Sponsor ${firstName} ${lastName} to the database.`);
 
 			res.status(200).json({
-				message: `Successfully saved Sponsor ${corporationName} to the database.`,
+				message: `Successfully saved Sponsor ${firstName} ${lastName} to the database.`,
 			});
 		})
 		.catch((err) => {

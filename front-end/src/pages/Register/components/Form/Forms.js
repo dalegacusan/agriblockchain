@@ -11,7 +11,7 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import PartnerFarmerForm from './FarmerForm';
+import FarmerForm from './FarmerForm';
 import SponsorIndividual from './SponsorForm';
 import NGOForm from './NGOForm';
 
@@ -48,7 +48,7 @@ export default function Form() {
 				{/* <NGOForm /> */}
 				{/* <SponsorCorporationForm /> */}
 				{/* <SponsorIndividual /> */}
-				<PartnerFarmerForm />
+				<FarmerForm />
 
 				<Box display="flex" flexDirection="row-reverse">
 					<Box p={1}>

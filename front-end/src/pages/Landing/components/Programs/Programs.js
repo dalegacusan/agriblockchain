@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -15,6 +16,9 @@ import ProgramCard from './ProgramCard';
 
 export default function Programs() {
 	const [programs, setPrograms] = useState([]);
+	const location = useLocation();
+
+	console.log(location.pathname);
 
 	useEffect(() => {
 		axios.get('/api/program/all')

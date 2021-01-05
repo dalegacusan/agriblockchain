@@ -33,6 +33,11 @@ const viewNGO = async (req, res, next) => {
 // @dev: NGO Details are still hard-coded
 const createNGO = (req, res, next) => {
 	const newNGOAccount = new NGO({
+		loginDetails: {
+			username: 'redcrossphilippines',
+			emailAddress: 'red@cross.com',
+			password: 'redcrosspassword',
+		},
 		about: {
 			ngoName: 'Philippine Red Cross',
 			addressLine1: 'Mandaluyong City',
@@ -42,13 +47,14 @@ const createNGO = (req, res, next) => {
 			country: 'Philippines',
 		},
 		contactDetails: {
-			authorizedRepresentative: 'Michael C. Lopez',
+			authorizedRepresentative: {
+				firstName: 'Michael',
+				lastName: 'Lopez',
+				representativeContactNumber: '883-5633',
+				representativeEmailAddress: 'michaellopez@gmail.com',
+			},
 			contactNumber: '845-435-1111',
-			emailAddress: 'lopezmichael@gmail.com',
-		},
-		loginDetails: {
-			username: 'red@cross.com',
-			password: 'redcrosspassword',
+			emailAddress: 'redcrossphilippines@gmail.com',
 		},
 	});
 
@@ -66,6 +72,8 @@ const createNGO = (req, res, next) => {
 			res.status(400).json({
 				message: 'Failed to save NGO to the database.',
 			});
+
+			next(err);
 		});
 };
 
