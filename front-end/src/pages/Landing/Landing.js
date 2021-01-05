@@ -6,8 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
-import Programs from './components/Programs/Programs';
+// import Programs from './components/Programs/Programs';
 import HowDoesItWork from './components/HowDoesItWork/HowDoesItWork';
 import Slideshow from './components/Slideshow';
 // Contexts
@@ -58,7 +57,7 @@ export default function LandingPage() {
 				</Box>
 				<HowDoesItWork classes={classes} />
 			</Container>
-
+			{/* 
 			<Container component={Box} maxWidth="lg" my={1} py={2}>
 				<Box pb={2}>
 					<Typography component='h1' variant='h3' className={classes.centerText}>
@@ -66,7 +65,7 @@ export default function LandingPage() {
 					</Typography>
 				</Box>
 				<Programs />
-			</Container>
+			</Container> */}
 		</Box>
 	)
 }

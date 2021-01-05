@@ -17,7 +17,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 // Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 // Components
-import ProgramCard from './ProgramCard';
+import ProgramCard from '../../components/ProgramCard/ProgramCard';
 // Pages
 // CSS
 const useStyles = makeStyles((theme) => ({
@@ -86,19 +86,19 @@ export default function Programs() {
 									programs.length !== 0
 										?
 										programs.map((program, index) => {
-											const { about, timeline, _id } = program;
-											const { programName, programDescription, stage, status } = about;
-											const { programDate } = timeline;
+											const { id, status, stage, about, timeline } = program;
+											const { programName, programDescription } = about;
+											const { executionDate } = timeline;
 
 											return (
 												<Grid key={index} item xs={12} md={6} lg={4}>
 													<ProgramCard
 														programName={programName}
-														programDate={moment(programDate).format('dddd, MMMM Do YYYY')}
+														programDate={moment(executionDate).format('dddd, MMMM Do YYYY')}
 														programDescription={programDescription}
 														programStage={stage}
 														programStatus={status}
-														programId={_id}
+														programId={id}
 													/>
 												</Grid>
 											)

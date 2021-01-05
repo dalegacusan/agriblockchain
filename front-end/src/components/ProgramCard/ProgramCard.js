@@ -113,33 +113,28 @@ export default function ProgramCard(props) {
 					{programDescription}
 				</Typography>
 			</CardContent>
-			{
-				true
-					? (
-						<CardActions>
-							{
-								loginData.username === '' && loginData.type === '' ? (
-									<Button
-										disabled
-										size="small"
-									>
-										Learn More
-									</Button>
-								)
-									: (
-										<Link component={RouterLink} to={`/program/${programId}`} underline='none'>
-											<Button
-												size="small"
-											>
-												Learn More
-											</Button>
-										</Link>
-									)
-							}
-						</CardActions>
-					)
-					: null
-			}
+			<CardActions>
+				{
+					(loginData.username === '' && loginData.type === '') && location.pathname === "/programs"
+						? (
+							<Button
+								disabled
+								size="small"
+							>
+								Learn More
+							</Button>
+						)
+						: (
+							<Link component={RouterLink} to={`/program/${programId}`} underline='none'>
+								<Button
+									size="small"
+								>
+									Learn More
+								</Button>
+							</Link>
+						)
+				}
+			</CardActions>
 		</Card>
 	);
 }
