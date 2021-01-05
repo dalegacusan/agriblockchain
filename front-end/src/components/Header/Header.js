@@ -148,11 +148,11 @@ export default function ButtonAppBar() {
 					>
 						<Box display="flex" flexDirection="row" alignItems="center">
 							<Avatar className={classes.avatar}>
-								{loginData.username && loginData.username !== '' ? loginData.username.substring(0, 2) : ''}
+								{loginData.displayName && loginData.displayName !== '' ? loginData.displayName.substring(0, 2) : ''}
 							</Avatar>
 							<Box mx={1} pr={1} borderRight="1px solid #efefef">
 								<Typography>
-									{loginData.username && loginData.username !== '' ? loginData.username : ''}
+									{loginData.displayName && loginData.displayName !== '' ? loginData.displayName : ''}
 								</Typography>
 								{
 									!(loginData.type === 'ngo')

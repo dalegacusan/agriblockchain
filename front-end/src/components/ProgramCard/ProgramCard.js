@@ -51,8 +51,6 @@ export default function ProgramCard(props) {
 	const classes = useStyles();
 	const location = useLocation();
 
-	console.log(location.pathname);
-
 	const { loginData } = useContext(LoginDialogContext);
 	const [stage, setStage] = useState('');
 	const [status, setStatus] = useState('');

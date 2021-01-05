@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 	avatar: {
 		color: theme.palette.secondary.contrastText,
 		backgroundColor: theme.palette.secondary.main,
-		textTransform: "uppercase",
+		textTransform: 'uppercase',
 	},
 	loginItem: {
 
@@ -40,6 +40,8 @@ export default function LoginDialog() {
 	const [tempData, setTempData] = useState({
 		type: '',
 		uid: '',
+		displayName: '',
+		username: '',
 		walletBalance: 0,
 	})
 	const [allNgos, setAllNgos] = useState([]);
@@ -61,7 +63,7 @@ export default function LoginDialog() {
 
 	const handleClose = () => {
 		setOpenLoginDialog(false)
-		setSelectedIndex("")
+		setSelectedIndex('')
 		setTempData({
 			username: '',
 			type: '',
@@ -118,143 +120,163 @@ export default function LoginDialog() {
 	}, [openLoginDialog])
 
 	return (
-		<Dialog aria-labelledby="LoginDialogTitle" open={openLoginDialog} fullWidth maxWidth="xs">
-			<DialogTitle id="LoginDialogTitle">
+		<Dialog aria-labelledby='LoginDialogTitle' open={openLoginDialog} fullWidth maxWidth='xs'>
+			<DialogTitle id='LoginDialogTitle'>
 				Log In
 			</DialogTitle>
-			<DialogContent id="RegiserDialogContent">
+			<DialogContent id='RegiserDialogContent'>
 				<DialogContentText>
 					To log in to the system, select a user.
 				</DialogContentText>
 				<Box>
-					<Typography variant="subtitle2" component="h6">
+					<Typography variant='subtitle2' component='h6'>
 						NGO
 					</Typography>
-					{allNgos.length > 0 && allNgos.map((ngo, index) => (
-						<List component="div" key={index}>
-							<ListItem
-								button
-								selected={selectedIndex === ngo.id}
-								onClick={(e) => {
-									handleListItemClick(e, ngo.id, {
-										type: "ngo",
-										username: ngo.about.ngoName,
-										uid: ngo.id,
-									})
-								}}
-								style={{ borderRadius: 8 }}
-							>
-								<ListItemIcon>
-									<Avatar className={classes.avatar}>
-										{ngo.about.ngoName !== undefined && ngo.about.ngoName[0]}
-									</Avatar>
-								</ListItemIcon>
-								<ListItemText
-									primary={ngo.about.ngoName}
-									secondary={(
-										<>
-											<Typography variant="caption">
-												System ID:
-												{' '}
-												{ngo.id}
-											</Typography>
-										</>
-									)}
-								/>
-							</ListItem>
-							<Divider variant="inset" component="li" />
-						</List>
-					))}
+					{allNgos.length > 0 && allNgos.map((ngo, index) => {
+						const { id: ngoId, loginDetails, about } = ngo;
+						const { username } = loginDetails;
+						const { ngoName } = about;
+						return (
+							<List component='div' key={index}>
+								<ListItem
+									button
+									selected={selectedIndex === ngoId}
+									onClick={(e) => {
+										handleListItemClick(e, ngoId, {
+											type: 'ngo',
+											displayName: ngoName,
+											username,
+											uid: ngoId,
+										})
+									}}
+									style={{ borderRadius: 8 }}
+								>
+									<ListItemIcon>
+										<Avatar className={classes.avatar}>
+											{ngoName !== undefined && ngoName[0]}
+										</Avatar>
+									</ListItemIcon>
+									<ListItemText
+										primary={ngoName}
+										secondary={(
+											<>
+												<Typography variant='caption'>
+													System ID:
+													{' '}
+													{ngoId}
+												</Typography>
+											</>
+										)}
+									/>
+								</ListItem>
+								<Divider variant='inset' component='li' />
+							</List>
+						)
+					})}
 				</Box>
 				<Box>
-					<Typography variant="subtitle2" component="h6">
+					<Typography variant='subtitle2' component='h6'>
 						Farmer
 					</Typography>
-					{allFarmers.length > 0 && allFarmers.map((farmer, index) => (
-						<List component="div" key={index}>
-							<ListItem
-								button
-								selected={selectedIndex === farmer.id}
-								onClick={(e) => {
-									handleListItemClick(e, farmer.id, {
-										type: "farmer",
-										username: farmer.about.firstName,
-										uid: farmer.id,
-									})
-								}}
-								style={{ borderRadius: 8 }}
-							>
-								<ListItemIcon>
-									<Avatar className={classes.avatar}>
-										{farmer.about.firstName !== undefined && farmer.about.firstName[0]}
-									</Avatar>
-								</ListItemIcon>
-								<ListItemText
-									primary={`${farmer.about.firstName} ${farmer.about.middleName} ${farmer.about.lastName}`}
-									secondary={(
-										<>
-											<Typography variant="caption">
-												System ID:
-												{' '}
-												{farmer.id}
-											</Typography>
-										</>
-									)}
-								/>
-							</ListItem>
-							<Divider variant="inset" component="li" />
-						</List>
-					))}
+					{allFarmers.length > 0 && allFarmers.map((farmer, index) => {
+						const { id: farmerId, loginDetails, about } = farmer;
+						const { username } = loginDetails;
+						const { firstName, lastName } = about;
+						return (
+							<>
+								<List component='div' key={index}>
+									<ListItem
+										button
+										selected={selectedIndex === farmerId}
+										onClick={(e) => {
+											handleListItemClick(e, farmerId, {
+												type: 'farmer',
+												displayName: `${firstName} ${lastName}`,
+												username,
+												uid: farmerId,
+											})
+										}}
+										style={{ borderRadius: 8 }}
+									>
+										<ListItemIcon>
+											<Avatar className={classes.avatar}>
+												{firstName !== undefined && firstName[0]}
+											</Avatar>
+										</ListItemIcon>
+										<ListItemText
+											primary={`${firstName} ${lastName}`}
+											secondary={(
+												<>
+													<Typography variant='caption'>
+														System ID:
+														{' '}
+														{farmerId}
+													</Typography>
+												</>
+											)}
+										/>
+									</ListItem>
+									<Divider variant='inset' component='li' />
+								</List>
+							</>
+						)
+					})}
 				</Box>
 				<Box>
-					<Typography variant="subtitle2" component="h6">
+					<Typography variant='subtitle2' component='h6'>
 						Sponsor
 					</Typography>
-					{allSponsors.length > 0 && allSponsors.map((sponsor, index) => (
-						<List component="div" key={index}>
-							<ListItem
-								button
-								selected={selectedIndex === sponsor.id}
-								onClick={(e) => {
-									handleListItemClick(e, sponsor.id, {
-										type: "sponsor",
-										username: sponsor.about.corporationName,
-										uid: sponsor.id,
-									})
-								}}
-								style={{ borderRadius: 8 }}
-							>
-								<ListItemIcon>
-									<Avatar className={classes.avatar}>
-										{sponsor.about.corporationName !== undefined && sponsor.about.corporationName[0]}
-									</Avatar>
-								</ListItemIcon>
-								<ListItemText
-									primary={sponsor.about.corporationName}
-									secondary={(
-										<>
-											<Typography variant="caption">
-												System ID:
-												{' '}
-												{sponsor.id}
-											</Typography>
-										</>
-									)}
-								/>
-							</ListItem>
-							<Divider variant="inset" component="li" />
-						</List>
-					))}
+					{allSponsors.length > 0 && allSponsors.map((sponsor, index) => {
+						const { id: sponsorId, loginDetails, about } = sponsor;
+						const { username } = loginDetails;
+						const { firstName, lastName } = about;
+						return (
+							<List component='div' key={index}>
+								<ListItem
+									button
+									selected={selectedIndex === sponsorId}
+									onClick={(e) => {
+										handleListItemClick(e, sponsorId, {
+											type: 'sponsor',
+											displayName: `${firstName} ${lastName}`,
+											username,
+											uid: sponsorId,
+										})
+									}}
+									style={{ borderRadius: 8 }}
+								>
+									<ListItemIcon>
+										<Avatar className={classes.avatar}>
+											{firstName !== undefined && firstName[0]}
+										</Avatar>
+									</ListItemIcon>
+									<ListItemText
+										primary={`${firstName} ${lastName}`}
+										secondary={(
+											<>
+												<Typography variant='caption'>
+													System ID:
+													{' '}
+													{sponsorId}
+												</Typography>
+											</>
+										)}
+									/>
+								</ListItem>
+								<Divider variant='inset' component='li' />
+							</List>
+						)
+					})}
 				</Box>
 			</DialogContent>
 			<DialogActions>
-				<Button onClick={handleClose} color="primary">
+				<Button onClick={handleClose} color='primary'>
 					Cancel
 				</Button>
 				<Button
 					onClick={handleSubmit}
-					color="primary"
-					disabled={selectedIndex === ""}
+					color='primary'
+					disabled={selectedIndex === ''}
 				>
 					Log In
 				</Button>
