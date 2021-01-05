@@ -1,10 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link as RouterLink, useHistory } from 'react-router-dom';
 
-// Components
-
-// CSS
-
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -25,12 +21,12 @@ import Link from '@material-ui/core/Link';
 import { useConfirm } from 'material-ui-confirm';
 import ListItemLink from './ListItemLink';
 import logo from './logo_01.svg';
-
 // Contexts
 import { RegisterDialogContext } from '../../contexts/RegisterDialogContext';
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
-
+// Components
 // Pages
+// CSS
 
 const drawerWidth = 320;
 

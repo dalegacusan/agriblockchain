@@ -16,6 +16,8 @@
     "react/no-array-index-key": "warn", // Optional
     "react/jsx-props-no-spreading": "warn", // Optional
     "no-param-reassign": "warn", // Optional
-    "no-shadow": "warn" // Optional
+    "no-shadow": "warn", // Optional
+    "react/jsx-one-expression-per-line": 0, // Optional
+    "react/no-unescaped-entities": 0 // Optional
   }
 }

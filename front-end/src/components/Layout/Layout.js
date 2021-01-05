@@ -4,6 +4,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 // Components
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import RegisterDialog from '../Dialog/RegisterDialog';
 import LoginDialog from '../Dialog/LoginDialog';
 // MaterialUI
@@ -29,6 +30,7 @@ export default function Layout(props) {
 
 					{children}
 
+					<Footer />
 				</LoginDialogProvider>
 			</Router>
 		</>
