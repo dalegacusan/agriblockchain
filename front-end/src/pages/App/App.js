@@ -37,7 +37,7 @@ function App() {
 					<Route exact path='/register/:userType' render={() => <Register />} />
 
 					{/* Screen 005 */}
-					<Route exact path='/profile' render={() => <Profile />} />
+					<Route exact path='/profile/:uid' render={() => <Profile />} />
 
 					{/* Screen 006 */}
 					{/* Screen 007 */}

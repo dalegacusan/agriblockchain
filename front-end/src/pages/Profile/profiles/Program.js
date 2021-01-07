@@ -2,12 +2,12 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
-import ActiveProgram from '../../components/ActiveProgram/ActiveProgram';
-import ProgramTimeline from './components/ProgramTimeline/ProgramTimeline';
-import AboutProgram from './components/AboutProgram/AboutProgram';
-import SponsorshipOptions from './components/SponsorshipOptions/SponsorshipOptions';
-import ActionButtons from './components/ActionButtons/ActionButtons';
-import FundingHistory from './components/FundingHistory/FundingHistory';
+import ActiveProgram from '../components/shared/ActiveProgram/ActiveProgram';
+import ProgramTimeline from '../components/Program/ProgramTimeline/ProgramTimeline';
+import AboutProgram from '../components/Program/AboutProgram/AboutProgram';
+import SponsorshipOptions from '../components/Program/SponsorshipOptions/SponsorshipOptions';
+import ActionButtons from '../components/Program/ActionButtons/ActionButtons';
+import FundingHistory from '../components/Program/FundingHistory/FundingHistory';
 
 
 const useStyles = makeStyles((theme) => ({

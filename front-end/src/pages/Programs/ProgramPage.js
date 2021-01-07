@@ -3,8 +3,6 @@ import { withRouter, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 
-// Components
-
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -25,13 +23,11 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Alert from '@material-ui/lab/Alert';
 import Backdrop from '@material-ui/core/Backdrop';
-import { useConfirm } from "material-ui-confirm";
-
+import { useConfirm } from 'material-ui-confirm';
 // Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
-
+// Components
 // Pages
-
 // CSS
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -59,59 +55,59 @@ export default withRouter((props) => {
 
 	const { loginData, setLoginData } = useContext(LoginDialogContext);
 	const [program, setProgram] = useState({
-		"id": "",
-		"balance": 0,
-		"about": {
-			"status": "",
-			"stage": "",
-			"completed": false,
-			"programName": "",
-			"about": "",
-			"cityAddress": "",
-			"ngo": "",
-			"requiredAmount": 0
+		'id': '',
+		'balance': 0,
+		'about': {
+			'status': '',
+			'stage': '',
+			'completed': false,
+			'programName': '',
+			'about': '',
+			'cityAddress': '',
+			'ngo': '',
+			'requiredAmount': 0
 		},
-		"timeline": {
-			"programDate": ""
+		'timeline': {
+			'programDate': ''
 		},
-		"produceRequirements": [],
-		"farmersParticipating": [],
+		'produceRequirements': [],
+		'farmersParticipating': [],
 		// Why does this have objects inside?
-		"sponsors": [
+		'sponsors': [
 			{
-				"sponsorId": "",
-				"amountFunded": 0,
-				"dateFunded": ""
+				'sponsorId': '',
+				'amountFunded': 0,
+				'dateFunded': ''
 			},
 			{
-				"sponsorId": "",
-				"amountFunded": 0,
-				"dateFunded": ""
+				'sponsorId': '',
+				'amountFunded': 0,
+				'dateFunded': ''
 			}
 		]
 	});
 	const [ngo, setNgo] = useState({
-		"id": "",
-		"about": {
-			"ngoName": "",
-			"addressLine1": "",
-			"addressLine2": "",
-			"region": "",
-			"city": "",
-			"country": "",
+		'id': '',
+		'about': {
+			'ngoName': '',
+			'addressLine1': '',
+			'addressLine2': '',
+			'region': '',
+			'city': '',
+			'country': '',
 		},
-		"programs": {
-			"activePrograms": [],
-			"completedPrograms": [],
+		'programs': {
+			'activePrograms': [],
+			'completedPrograms': [],
 		},
-		"contactDetails": {
-			"authorizedRepresentative": "",
-			"contactNumber": "",
-			"emailAddress": ""
+		'contactDetails': {
+			'authorizedRepresentative': '',
+			'contactNumber': '',
+			'emailAddress': ''
 		},
-		"loginDetails": {
-			"username": "",
-			"password": "",
+		'loginDetails': {
+			'username': '',
+			'password': '',
 		}
 	})
 	const [pledgeDialog, setPledgeDialog] = useState({
@@ -123,7 +119,7 @@ export default withRouter((props) => {
 		loading: false,
 		open: false,
 		produce: {
-			name: "",
+			name: '',
 			price: 0,
 			quantity: 0,
 		}
@@ -141,7 +137,7 @@ export default withRouter((props) => {
 
 				setProgram(data);
 
-				if (about && ngo !== "") {
+				if (about && ngo !== '') {
 					axios.get(`/api/ngo/${ngo}`)
 						.then(res => {
 							const { data } = res;
@@ -201,7 +197,7 @@ export default withRouter((props) => {
 	}
 
 	const submitPledge = () => {
-		if (loginData.type === "sponsor") {
+		if (loginData.type === 'sponsor') {
 			setPledgeDialog({
 				...pledgeDialog,
 				loading: true
@@ -229,7 +225,7 @@ export default withRouter((props) => {
 							const { data } = res;
 							const { balance } = data;
 							setLoginData({ ...loginData, balance });
-							localStorage.setItem("loginCreds", JSON.stringify({ ...loginData, balance }))
+							localStorage.setItem('loginCreds', JSON.stringify({ ...loginData, balance }))
 						})
 					getProgramDetails()
 				})
@@ -257,7 +253,7 @@ export default withRouter((props) => {
 	}
 
 	const submitProduce = () => {
-		if (loginData.type === "farmer") {
+		if (loginData.type === 'farmer') {
 			setProduceDialog({
 				...produceDialog,
 				loading: true
@@ -275,7 +271,7 @@ export default withRouter((props) => {
 						loading: false,
 						open: false,
 						produce: {
-							name: "",
+							name: '',
 							price: 0,
 							quantity: 0,
 						}
@@ -289,7 +285,7 @@ export default withRouter((props) => {
 						loading: false,
 						open: false,
 						produce: {
-							name: "",
+							name: '',
 							price: 0,
 							quantity: 0,
 						}
@@ -304,7 +300,7 @@ export default withRouter((props) => {
 				loading: false,
 				open: false,
 				produce: {
-					name: "",
+					name: '',
 					price: 0,
 					quantity: 0,
 				}
@@ -343,7 +339,7 @@ export default withRouter((props) => {
 
 			})
 			.catch(() => {
-				console.log("Canceled move to execution")
+				console.log('Canceled move to execution')
 				setExecutionLoading(false)
 			});
 	}
@@ -356,16 +352,16 @@ export default withRouter((props) => {
 		<>
 			{/* Backdrop Status */}
 			<Backdrop className={classes.backdrop} open={pledgeDialog.loading || produceDialog.loading || executionLoading}>
-				<CircularProgress size={28} color="inherit" />
+				<CircularProgress size={28} color='inherit' />
 				<Box ml={2}>
-					<Typography variant="button">
+					<Typography variant='button'>
 						Submitting
 					</Typography>
 				</Box>
 			</Backdrop>
 
 			{/* Main content */}
-			<Container maxWidth="md" component={Box} mb={5}>
+			<Container maxWidth='md' component={Box} mb={5}>
 				<Button
 					startIcon={<ArrowBackIcon />}
 					onClick={() => history.goBack()}
@@ -376,10 +372,10 @@ export default withRouter((props) => {
 					<Grid item sm={12} md={4} lg={5}>
 						<Box pb={2}>
 							<Box>
-								<Typography component="h1" variant="h2" gutterBottom>
+								<Typography component='h1' variant='h2' gutterBottom>
 									{program.about.programName}
 								</Typography>
-								<Typography component="h5" variant="h5" color="textSecondary" gutterBottom>
+								<Typography component='h5' variant='h5' color='textSecondary' gutterBottom>
 									NGO:
 									{' '}
 									{ngo.about.ngoName}
@@ -389,26 +385,26 @@ export default withRouter((props) => {
 									)
 								</Typography>
 								<Box>
-									<Typography display="inline" variant="subtitle2" gutterBottom>
+									<Typography display='inline' variant='subtitle2' gutterBottom>
 										Status: &nbsp;
 									</Typography>
-									<Typography display="inline" variant="overline" color="primary" gutterBottom>
+									<Typography display='inline' variant='overline' color='primary' gutterBottom>
 										Active
 									</Typography>
 								</Box>
 								<Box>
-									<Typography display="inline" variant="subtitle2">
+									<Typography display='inline' variant='subtitle2'>
 										Stage: &nbsp;&nbsp;
 									</Typography>
-									<Typography display="inline" variant="subtitle2" className={classes.stage}>
+									<Typography display='inline' variant='subtitle2' className={classes.stage}>
 										{program.about.stage}
 									</Typography>
 								</Box>
 								<Box>
-									<Typography display="inline" variant="subtitle2">
+									<Typography display='inline' variant='subtitle2'>
 										Program Date: &nbsp;
 									</Typography>
-									<Typography display="inline" variant="subtitle1">
+									<Typography display='inline' variant='subtitle1'>
 										{moment(program.timeline.programDate).format('dddd, MMMM Do YYYY')}
 									</Typography>
 								</Box>
@@ -416,10 +412,10 @@ export default withRouter((props) => {
 						</Box>
 					</Grid>
 					<Grid item sm={12} md={8} lg={7}>
-						<Box pb={2} display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+						<Box pb={2} display='flex' flexDirection='column' alignItems='center' justifyContent='space-between'>
 							<CircularProgressWithLabel value={program.balance / program.about.requiredAmount * 100} />
 							<Box my={2}>
-								<Typography variant="h6" component="div">
+								<Typography variant='h6' component='div'>
 									&#8369;
 									{program.balance}
 									{' '}
@@ -429,54 +425,54 @@ export default withRouter((props) => {
 									pledged
 								</Typography>
 							</Box>
-							<Box display={program.about.stage === "crowdfunding" ? "block" : "none"}>
+							<Box display={program.about.stage === 'crowdfunding' ? 'block' : 'none'}>
 								{
-									loginData.username !== "" && loginData.type === "sponsor" ? (
+									loginData.username !== '' && loginData.type === 'sponsor' ? (
 										<Button
-											variant="contained"
-											color="primary"
-											disabled={program.about.stage === "procurement"}
+											variant='contained'
+											color='primary'
+											disabled={program.about.stage === 'procurement'}
 											onClick={handlePledgeOpen}
 										>
 											Make a Pledge
 										</Button>
 									)
 										: (
-											<Typography variant="button" component="div" color="textSecondary">
+											<Typography variant='button' component='div' color='textSecondary'>
 												You must be sponsor to make a pledge
 											</Typography>
 										)
 								}
 							</Box>
-							<Box display={program.about.stage === "procurement" ? "block" : "none"} textAlign="center">
+							<Box display={program.about.stage === 'procurement' ? 'block' : 'none'} textAlign='center'>
 								{
-									loginData.username !== "" && loginData.type === "farmer" ? (
+									loginData.username !== '' && loginData.type === 'farmer' ? (
 										<Button
-											variant="contained"
-											color="primary"
+											variant='contained'
+											color='primary'
 											onClick={handleProduceOpen}
 										>
 											Offer Produce
 										</Button>
 									)
 										: (
-											<Typography variant="button" component="div" color="textSecondary" gutterBottom>
+											<Typography variant='button' component='div' color='textSecondary' gutterBottom>
 												You must be a farmer to offer produce
 											</Typography>
 										)
 								}
 								{
-									loginData.username !== "" && loginData.type === "ngo" ? (
+									loginData.username !== '' && loginData.type === 'ngo' ? (
 										<Button
-											variant="contained"
-											color="primary"
+											variant='contained'
+											color='primary'
 											onClick={moveToExecution}
 										>
 											Move to Execution
 										</Button>
 									)
 										:
-										""
+										''
 								}
 							</Box>
 						</Box>
@@ -484,25 +480,25 @@ export default withRouter((props) => {
 				</Grid>
 				<Divider />
 				<Box pt={3}>
-					<Box mb={2} display={error ? "block" : "none"}>
-						<Alert severity="error">Something went wrong. Please check logs.</Alert>
+					<Box mb={2} display={error ? 'block' : 'none'}>
+						<Alert severity='error'>Something went wrong. Please check logs.</Alert>
 					</Box>
-					<Box mb={2} display={success ? "block" : "none"}>
-						<Alert severity="success">Action successful!</Alert>
+					<Box mb={2} display={success ? 'block' : 'none'}>
+						<Alert severity='success'>Action successful!</Alert>
 					</Box>
-					<Typography component="p" variant="body1" paragraph>
+					<Typography component='p' variant='body1' paragraph>
 						{program.about.about}
 					</Typography>
-					<Typography variant="subtitle2">
+					<Typography variant='subtitle2'>
 						Current sponsors
 					</Typography>
 					{
 						program.sponsors.map((programSponsor, index) => (
-							<Box Box display="flex" key={index} flexDirection="row" alignItems="center" my={1}>
+							<Box Box display='flex' key={index} flexDirection='row' alignItems='center' my={1}>
 								<Avatar>
 									{programSponsor.corporationName && programSponsor.corporationName[0]}
 								</Avatar>
-								<Typography variant="subtitle1" style={{ marginLeft: 8 }}>
+								<Typography variant='subtitle1' style={{ marginLeft: 8 }}>
 									{programSponsor.corporationName && programSponsor.corporationName}
 									&nbsp;
 									(&#8369;
@@ -513,22 +509,22 @@ export default withRouter((props) => {
 						))
 					}
 					<br />
-					<Typography variant="subtitle2">
+					<Typography variant='subtitle2'>
 						Farmers participating
 					</Typography>
 					{
 						program.farmersParticipating.map((programFarmer, index) => (
-							<Box key={index} display="flex" flexDirection="row" alignItems="center" my={2}>
+							<Box key={index} display='flex' flexDirection='row' alignItems='center' my={2}>
 								<Avatar>
 									{programFarmer.farmerAbout && programFarmer.farmerAbout.firstName[0]}
 								</Avatar>
 								<Box ml={1}>
-									<Typography variant="subtitle1">
+									<Typography variant='subtitle1'>
 										{programFarmer.farmerAbout && programFarmer.farmerAbout.firstName}
 										{programFarmer.farmerAbout && programFarmer.farmerAbout.middletName}
 										{programFarmer.farmerAbout && programFarmer.farmerAbout.lastName}
 									</Typography>
-									<Typography variant="caption">
+									<Typography variant='caption'>
 										{programFarmer.quantity}
 										{' '}
 										kg of
@@ -543,40 +539,40 @@ export default withRouter((props) => {
 			</Container>
 
 			{/* Pledge dialog for sponsors */}
-			<Dialog open={pledgeDialog.open} onClose={handlePledgeClose} aria-labelledby="form-dialog-pledge">
-				<DialogTitle id="form-dialog-pledge">Make a Pledge</DialogTitle>
+			<Dialog open={pledgeDialog.open} onClose={handlePledgeClose} aria-labelledby='form-dialog-pledge'>
+				<DialogTitle id='form-dialog-pledge'>Make a Pledge</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						To pledge to this program, please enter the amount here.
 					</DialogContentText>
 					<TextField
 						autoFocus
-						label="Pledge Amount"
+						label='Pledge Amount'
 						fullWidth
-						variant="outlined"
-						id="pledgeAmount"
-						name="pledgeAmount"
-						type="number"
+						variant='outlined'
+						id='pledgeAmount'
+						name='pledgeAmount'
+						type='number'
 						value={setPledgeDialog.pledgeAmount}
 						onChange={(e) => setPledgeDialog({ ...pledgeDialog, pledgeAmount: e.target.value })}
 						InputProps={{
-							startAdornment: <InputAdornment position="start">&#8369;</InputAdornment>,
+							startAdornment: <InputAdornment position='start'>&#8369;</InputAdornment>,
 						}}
 					/>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handlePledgeClose} color="primary">
+					<Button onClick={handlePledgeClose} color='primary'>
 						Cancel
 					</Button>
-					<Button onClick={submitPledge} color="primary">
+					<Button onClick={submitPledge} color='primary'>
 						Pledge
 					</Button>
 				</DialogActions>
 			</Dialog>
 
 			{/* Offer produce dialog for farmers */}
-			<Dialog open={produceDialog.open} onClose={handleProduceClose} aria-labelledby="form-dialog-produce">
-				<DialogTitle id="form-dialog-produce">Offer Produce</DialogTitle>
+			<Dialog open={produceDialog.open} onClose={handleProduceClose} aria-labelledby='form-dialog-produce'>
+				<DialogTitle id='form-dialog-produce'>Offer Produce</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						To offer produce to this program, please enter the details below.
@@ -584,11 +580,11 @@ export default withRouter((props) => {
 					<Box my={2}>
 						<TextField
 							autoFocus
-							label="Produce name"
+							label='Produce name'
 							fullWidth
-							variant="outlined"
-							id="produceName"
-							name="name"
+							variant='outlined'
+							id='produceName'
+							name='name'
 							value={produceDialog.produce.name}
 							onChange={handleProduceChange}
 						/>
@@ -596,11 +592,11 @@ export default withRouter((props) => {
 					<Box my={2}>
 						<TextField
 							autoFocus
-							label="Produce quantity"
+							label='Produce quantity'
 							fullWidth
-							variant="outlined"
-							id="produceQuantity"
-							name="quantity"
+							variant='outlined'
+							id='produceQuantity'
+							name='quantity'
 							value={produceDialog.produce.quantity}
 							onChange={handleProduceChange}
 						/>
@@ -608,25 +604,25 @@ export default withRouter((props) => {
 					<Box my={2}>
 						<TextField
 							autoFocus
-							label="Price per quantity"
+							label='Price per quantity'
 							fullWidth
-							variant="outlined"
-							type="number"
-							id="price"
-							name="price"
+							variant='outlined'
+							type='number'
+							id='price'
+							name='price'
 							value={produceDialog.produce.price}
 							onChange={handleProduceChange}
 							InputProps={{
-								startAdornment: <InputAdornment position="start">&#8369;</InputAdornment>,
+								startAdornment: <InputAdornment position='start'>&#8369;</InputAdornment>,
 							}}
 						/>
 					</Box>
 				</DialogContent>
 				<DialogActions>
-					<Button onClick={handleProduceClose} color="primary">
+					<Button onClick={handleProduceClose} color='primary'>
 						Cancel
 					</Button>
-					<Button onClick={submitProduce} color="primary">
+					<Button onClick={submitProduce} color='primary'>
 						Submit Offer
 					</Button>
 				</DialogActions>
@@ -638,19 +634,19 @@ export default withRouter((props) => {
 function CircularProgressWithLabel(props) {
 	const { value } = props;
 	return (
-		<Box position="relative" display="inline-flex">
-			<CircularProgress size={240} variant="determinate" color="secondary" {...props} />
+		<Box position='relative' display='inline-flex'>
+			<CircularProgress size={240} variant='determinate' color='secondary' {...props} />
 			<Box
 				top={0}
 				left={0}
 				bottom={0}
 				right={0}
-				position="absolute"
-				display="flex"
-				alignItems="center"
-				justifyContent="center"
+				position='absolute'
+				display='flex'
+				alignItems='center'
+				justifyContent='center'
 			>
-				<Typography variant="h3" component="div" color="textSecondary">
+				<Typography variant='h3' component='div' color='textSecondary'>
 					{`${Math.round(value,)}%`}
 				</Typography>
 			</Box>

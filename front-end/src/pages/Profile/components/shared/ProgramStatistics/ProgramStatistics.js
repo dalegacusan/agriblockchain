@@ -8,22 +8,18 @@ export default function ProgramStatistics(props) {
 	if (currentUser === "ngo") {
 		toDisplay = (
 			<>
-				<p>
-					Total Programs:
+				<span>
 					<span>0</span>
-				</p>
-				<p>
-					Active Programs:
+					Total
+				</span>
+				<span>
 					<span>0</span>
-				</p>
-				<p>
-					Completed Programs:
+					Active
+				</span>
+				<span>
 					<span>0</span>
-				</p>
-				<p>
-					Cancelled Programs:
-					<span>0</span>
-				</p>
+					Completed
+				</span>
 			</>
 		);
 	} else if (currentUser === "corporation") {

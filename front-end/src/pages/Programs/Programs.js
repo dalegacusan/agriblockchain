@@ -64,19 +64,19 @@ export default function Programs() {
 	}, []);
 
 	return (
-		<Container maxWidth="lg" component={Box} mt={5}>
-			<Typography variant="h2" component="h1" gutterBottom>
+		<Container maxWidth='lg' component={Box} mt={5}>
+			<Typography variant='h2' component='h1' gutterBottom>
 				All Programs
 			</Typography>
-			<Box display={loginData.username === '' && loginData.type === '' ? "block" : "none"}>
-				<Alert severity="info">Log in to Bayanihan to get more details about the programs.</Alert>
+			<Box display={loginData.username === '' && loginData.type === '' ? 'block' : 'none'}>
+				<Alert severity='info'>Log in to Bayanihan to get more details about the programs.</Alert>
 			</Box>
 
 			<Box my={3}>
 				{
 					loading
 						? (
-							<Box width="100%" textAlign="center">
+							<Box width='100%' textAlign='center'>
 								<CircularProgress />
 							</Box>
 						)
@@ -105,7 +105,7 @@ export default function Programs() {
 										})
 										: (
 											<Box>
-												<Alert severity="info">
+												<Alert severity='info'>
 													No programs yet! If you are an NGO create a program now or wait for other NGOs to create programs.
 												</Alert>
 											</Box>
@@ -116,8 +116,8 @@ export default function Programs() {
 				}
 			</Box>
 			<Box display={loginData.type === 'ngo' ? 'block' : 'none'}>
-				<Link component={RouterLink} to="/program/create">
-					<Fab aria-label="Create Program" className={classes.fab} color="primary" variant="extended">
+				<Link component={RouterLink} to='/program/create'>
+					<Fab aria-label='Create Program' className={classes.fab} color='primary' variant='extended'>
 						<AddIcon />
 						Create Program
 					</Fab>

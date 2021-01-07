@@ -4,8 +4,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import ActiveProgram from '../../components/ActiveProgram/ActiveProgram';
-import ProgramStatistics from '../../components/ProgramStatistics/ProgramStatistics';
+import ProducePortfolio from '../components/Farmer/ProducePortfolio/ProducePortfolio';
+import ActiveProgram from '../components/shared/ActiveProgram/ActiveProgram';
+import ProgramStatistics from '../components/shared/ProgramStatistics/ProgramStatistics';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function NGOProfile(props) {
+export default function PartnerFarmerProfile(props) {
 	const { currentUser } = props;
 	const classes = useStyles();
 
@@ -22,11 +23,13 @@ export default function NGOProfile(props) {
 			<Grid container style={{ backgroundColor: 'lightgray' }}>
 				<Grid item xs={12}>
 
-					<Avatar>N</Avatar>
-					<p>NGO Name</p>
+					<Avatar>F</Avatar>
+					<p>Farmer Full Name</p>
 					<p>City Address</p>
+					<ProducePortfolio />
+					<Button variant="contained" color="primary">Update Produce Portfolio</Button>
 					<ProgramStatistics currentUser={currentUser} />
-					<Button variant="contained" color="primary">Create Program</Button>
+					<Button variant="contained" color="primary">Participate in a program</Button>
 					<ActiveProgram currentUser={currentUser} />
 
 				</Grid>

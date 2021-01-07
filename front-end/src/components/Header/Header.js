@@ -19,6 +19,7 @@ import Button from '@material-ui/core/Button';
 import Avatar from '@material-ui/core/Avatar';
 import Link from '@material-ui/core/Link';
 import { useConfirm } from 'material-ui-confirm';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemLink from './ListItemLink';
 import logo from './logo_01.svg';
 // Contexts
@@ -109,10 +110,10 @@ export default function ButtonAppBar() {
 	useEffect(() => {
 		if (loginData.type !== '' && loginData.uid !== '') {
 			// logged in
-			setLoggedIn(true)
+			setLoggedIn(true);
 		} else {
 			// not logged in
-			setLoggedIn(false)
+			setLoggedIn(false);
 		}
 	}, [loginData])
 
@@ -143,25 +144,42 @@ export default function ButtonAppBar() {
 						display={loggedIn ? "block" : "none"}
 					>
 						<Box display="flex" flexDirection="row" alignItems="center">
-							<Avatar className={classes.avatar}>
-								{loginData.displayName && loginData.displayName !== '' ? loginData.displayName.substring(0, 2) : ''}
-							</Avatar>
 							<Box mx={1} pr={1} borderRight="1px solid #efefef">
-								<Typography>
-									{loginData.displayName && loginData.displayName !== '' ? loginData.displayName : ''}
-								</Typography>
 								{
-									!(loginData.type === 'ngo')
+									loggedIn
 										? (
-											<Typography variant="caption">
-												Wallet:
-												{' '}
-												{loginData.balance}
-											</Typography>
+											<Link component={RouterLink} to={`/profile/${loginData.uid}`} style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)' }}>
+												<List component='div' style={{ padding: 0 }}>
+													<ListItem
+														button
+														style={{ borderRadius: 8 }}
+													>
+														<ListItemIcon>
+															<Avatar className={classes.avatar}>
+																{loginData.displayName && loginData.displayName !== '' ? loginData.displayName.substring(0, 2) : ''}
+															</Avatar>
+														</ListItemIcon>
+														{
+															loginData.type === 'ngo'
+																? (
+																	<ListItemText
+																		primary={loginData.displayName}
+																	/>
+																)
+																: (
+																	<ListItemText
+																		primary={loginData.displayName}
+																		secondary={`Wallet: ${loginData.balance}`}
+																	/>
+																)
+														}
+													</ListItem>
+												</List>
+											</Link>
 										)
-										: null
+										:
+										null
 								}
-
 							</Box>
 							<Button color="inherit" onClick={handleLogout} size="small">
 								Log Out
@@ -190,8 +208,13 @@ export default function ButtonAppBar() {
 					</ListItemLink>
 					{
 						loginData.type !== '' && loginData.uid !== ''
-							?
-							null
+							? (
+								<>
+									<ListItemLink to={`/profile/${loginData.uid}`} onClick={handleDrawerClose}>
+										<ListItemText primary='My Profile' />
+									</ListItemLink>
+								</>
+							)
 							: (
 								<>
 									<ListItemLink to='/login' onClick={handleDrawerClose}>
