@@ -3,10 +3,12 @@ import { withRouter, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 // MaterialUI
+import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import { makeStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import CircularProgress from '@material-ui/core/CircularProgress';
 // Contexts
 // Components
 import ProgramCard from '../../../components/ProgramCard/ProgramCard';
@@ -29,13 +31,35 @@ export default withRouter((props) => {
 	const [ngo, setNGO] = useState([]);
 
 	// Find a way to remove loginDetails from state
-	const getNGODetails = () => {
-		axios.get(`/api/ngo/${match.params.uid}`)
-			.then(res => {
-				const { data } = res;
-				setNGO([data]);
-			})
-			.catch(err => console.error(err));
+	const getNGODetails = async () => {
+
+		try {
+			const ngoRetrieved = await axios.get(`/api/ngo/${match.params.uid}`);
+			const { data } = ngoRetrieved;
+			const { programDetails } = data;
+			const { activePrograms } = programDetails;
+
+			const setProgramsPromises = activePrograms.map(async (programId) => {
+				const getProgram = await axios.get(`/api/program/${programId}`);
+
+				return getProgram;
+			});
+
+			const retrieveProgramsPromisesData = await Promise.all(setProgramsPromises)
+				.then(res => {
+					const newActiveProgramsArray = res.map(promiseResult => {
+						const { data } = promiseResult;
+
+						return data;
+					});
+
+					data.programDetails.activePrograms = newActiveProgramsArray;
+				});
+
+			setNGO([data]);
+		} catch (err) {
+			console.error(err);
+		}
 	}
 
 	useEffect(() => {
@@ -82,7 +106,12 @@ export default withRouter((props) => {
 							);
 						})
 					)
-					: <LoadingScreen />
+					: (
+						<Box width='100%' textAlign='center'>
+							<CircularProgress />
+						</Box>
+					)
+
 			}
 		</>
 	);

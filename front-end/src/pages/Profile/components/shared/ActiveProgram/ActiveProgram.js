@@ -5,45 +5,20 @@ import moment from 'moment';
 // MaterialUI
 import Grid from '@material-ui/core/Grid';
 import { withStyles } from '@material-ui/core/styles';
-import LinearProgress from "@material-ui/core/LinearProgress";
 // Contexts
 // Components
 import LoadingScreen from '../../../../LoadingScreen/LoadingScreen';
 import ProgramCard from '../../../../../components/ProgramCard/ProgramCard';
 // Pages
 // CSS
-const BorderLinearProgress = withStyles((theme) => ({
-	root: {
-		height: 10,
-		borderRadius: 5,
-	},
-	colorPrimary: {
-		backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 700],
-	},
-	bar: {
-		borderRadius: 5,
-		backgroundColor: '#1a90ff',
-	},
-}))(LinearProgress);
 
 export default function ActiveProgram(props) {
 	const { currentUser, activePrograms } = props;
-	const [ngoActivePrograms, setNGOActivePrograms] = useState([]);
 
 	let toDisplay;
 
-	useEffect(() => {
-		activePrograms.forEach(programId => {
-			axios.get(`/api/program/${programId}`)
-				.then(res => {
-					const { data } = res;
-					setNGOActivePrograms((curr) => [...curr, data]);
-				});
-		})
-	}, []);
-
 	if (currentUser === "ngo") {
-		toDisplay = ngoActivePrograms.map((program, index) => {
+		toDisplay = activePrograms.map((program, index) => {
 			const { id: programId, status, stage, about, timeline } = program;
 			const { programName, programDescription } = about;
 			const { executionDate } = timeline;
@@ -135,13 +110,9 @@ export default function ActiveProgram(props) {
 
 	return (
 		<>
-			{
-				ngoActivePrograms.length !== 0
-					?
-					toDisplay
-					:
-					<LoadingScreen />
-			}
+			<Grid container spacing={2}>
+				{toDisplay}
+			</Grid>
 		</>
 	);
 }

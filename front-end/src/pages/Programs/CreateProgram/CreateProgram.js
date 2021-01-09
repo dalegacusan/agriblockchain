@@ -42,9 +42,9 @@ export default function CreateProgram() {
 
 	const [newProgram, setNewProgram] = useState({
 		programName: '',
-		about: '',
-		cityAddress: '',
-		ngo: loginData.uid,
+		programDescription: '',
+		addressLine: '',
+		ngoUnder: loginData.uid,
 		requiredAmount: 0,
 		programDate: new Date().toLocaleDateString(),
 	});
@@ -77,9 +77,9 @@ export default function CreateProgram() {
 					setSuccess(true);
 					setNewProgram({
 						programName: '',
-						about: '',
-						cityAddress: '',
-						ngo: loginData.uid,         // must be ngo: '5fcdafdafcda8f250439db05'
+						programDescription: '',
+						addressLine: '',
+						ngoUnder: loginData.uid,         // must be ngo: '5fcdafdafcda8f250439db05'
 						requiredAmount: 0,
 						programDate: new Date().toLocaleDateString(),
 					})
@@ -154,9 +154,9 @@ export default function CreateProgram() {
 									shrink: true,
 								}}
 								variant="outlined"
-								id="about"
-								name="about"
-								value={newProgram.about}
+								id="programDescription"
+								name="programDescription"
+								value={newProgram.programDescription}
 								onChange={handleChange}
 							/>
 						</Box>
@@ -170,9 +170,9 @@ export default function CreateProgram() {
 									shrink: true,
 								}}
 								variant="outlined"
-								id="cityAddress"
-								name="cityAddress"
-								value={newProgram.cityAddress}
+								id="addressLine"
+								name="addressLine"
+								value={newProgram.addressLine}
 								onChange={handleChange}
 							/>
 						</Box>
