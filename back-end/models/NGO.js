@@ -9,6 +9,7 @@ const ngoSchema = new mongoose.Schema({
 	},
 	about: {
 		ngoName: String,
+		ngoDescription: String,
 		addressLine1: String,
 		addressLine2: String,
 		region: String,
@@ -20,7 +21,6 @@ const ngoSchema = new mongoose.Schema({
 			firstName: String,
 			lastName: String,
 			representativeContactNumber: String,
-			representativeEmailAddress: String,
 		},
 		contactNumber: String,
 		contactEmailAddress: String,

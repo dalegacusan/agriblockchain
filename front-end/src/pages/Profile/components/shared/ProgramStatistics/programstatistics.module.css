@@ -1,0 +1,10 @@
+.stat_container {
+  padding: 0 15px;
+  margin: 0 15px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.stat_container p {
+  display: inline-block;
+}

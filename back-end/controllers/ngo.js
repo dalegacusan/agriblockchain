@@ -1,4 +1,5 @@
 const NGO = require('../models/NGO');
+const logger = require('../utils/logger');
 
 const viewAllNGO = async (req, res, next) => {
 	try {
@@ -34,40 +35,40 @@ const viewNGO = async (req, res, next) => {
 const createNGO = (req, res, next) => {
 	const newNGOAccount = new NGO({
 		loginDetails: {
-			username: 'redcrossphilippines',
-			emailAddress: 'red@cross.com',
-			password: 'redcrosspassword',
+			username: 'philihuriad',
+			emailAddress: 'philihuriad@ph.com',
+			password: 'humanrightsadvocated',
 		},
 		about: {
-			ngoName: 'Philippine Red Cross',
-			addressLine1: 'Mandaluyong City',
-			addressLine2: 'Manila City',
+			ngoName: 'Philippine Alliance of Human Rights Advocates',
+			ngoDescription: 'Philippine Alliance of Human Rights Advocates is human rights NGO working with a mission ‘’to develop a strong, progressive, dynamic, and pluralist human rights movement that engages the state to comply with its human rights obligations and non-state actors to fulfill their human rights responsibilities’’.',
+			addressLine1: 'Quezon City',
+			addressLine2: 'Metro Manila',
 			region: 'NCR',
 			city: 'Manila',
 			country: 'Philippines',
 		},
 		contactDetails: {
 			authorizedRepresentative: {
-				firstName: 'Michael',
-				lastName: 'Lopez',
-				representativeContactNumber: '883-5633',
-				representativeEmailAddress: 'michaellopez@gmail.com',
+				firstName: 'Raymond',
+				lastName: 'Nickenss',
+				representativeContactNumber: '283-54-4490',
 			},
-			contactNumber: '845-435-1111',
-			emailAddress: 'redcrossphilippines@gmail.com',
+			contactNumber: '740-463-3291',
+			emailAddress: 'allianceofhumanrightsadvocatedph@gmail.com',
 		},
 	});
 
 	newNGOAccount.save()
 		.then(() => {
-			console.log('Successfully saved NGO to the database.');
+			logger.info('Successfully saved NGO to the database.');
 
 			res.status(200).json({
 				message: 'Successfully saved NGO to the database.',
 			});
 		})
 		.catch((err) => {
-			console.log('Error: ', err);
+			logger.error('Error: ', err);
 
 			res.status(400).json({
 				message: 'Failed to save NGO to the database.',

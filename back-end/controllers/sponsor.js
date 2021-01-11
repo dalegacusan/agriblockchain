@@ -1,5 +1,6 @@
 const Sponsor = require('../models/Sponsor');
 const Program = require('../models/Program');
+const logger = require('../utils/logger');
 
 // @dev - For updater functions, use https://www.npmjs.com/package/mongoose-unique-validator#find--updates
 
@@ -74,14 +75,14 @@ const createSponsor = (req, res, next) => {
 
 	newSponsorAccount.save()
 		.then((data) => {
-			console.log(`Successfully saved Sponsor ${firstName} ${lastName} to the database.`);
+			logger.info(`Successfully saved Sponsor ${firstName} ${lastName} to the database.`);
 
 			res.status(200).json({
 				message: `Successfully saved Sponsor ${firstName} ${lastName} to the database.`,
 			});
 		})
 		.catch((err) => {
-			console.log('Error: ', err);
+			logger.err('Error: ', err);
 
 			res.status(400).json({
 				message: 'Failed to save sponsor to the database.',

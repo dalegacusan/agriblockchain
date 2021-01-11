@@ -1,6 +1,7 @@
 const Program = require('../models/Program');
 const NGO = require('../models/NGO');
 const Sponsor = require('../models/Sponsor');
+const logger = require('../utils/logger');
 
 const viewAllPrograms = async (req, res, next) => {
 	try {
@@ -42,12 +43,12 @@ const createProgram = (req, res, next) => {
 	} = req.body;
 
 	const newProgram = new Program({
+		requiredAmount,
 		about: {
 			programName,
 			programDescription,
 			addressLine,
 			ngoUnder,
-			requiredAmount,
 		},
 	});
 
@@ -56,7 +57,9 @@ const createProgram = (req, res, next) => {
 		.then((data) => {
 			const { id: programId, about } = data;
 			const { ngoUnder: programNGOId } = about;
-			console.log(`Successfully saved Program ${programName} to the database.`);
+			logger.info(`Successfully saved Program ${programName} to the database.`);
+
+			console.log(programNGOId);
 
 			// Add Program ID to NGO's activePrograms array
 			NGO.findByIdAndUpdate(
@@ -64,14 +67,14 @@ const createProgram = (req, res, next) => {
 				{ $push: { 'programDetails.activePrograms': programId } },
 			)
 				.then(() => {
-					console.log('Successfully added Program to the active programs of NGO.');
+					logger.info('Successfully added Program to the active programs of NGO.');
 
 					res.status(200).json({
 						message: 'Successfully saved NGO\'s new program to the database.',
 					});
 				})
 				.catch((err) => {
-					console.log('Error: ', err);
+					logger.error('Error: ', err);
 
 					res.status(400).json({
 						message: 'Failed to add program to the active programs of NGO.',
@@ -81,7 +84,7 @@ const createProgram = (req, res, next) => {
 				});
 		})
 		.catch((err) => {
-			console.log('Error: ', err);
+			logger.error('Error: ', err);
 
 			res.status(400).json({
 				message: 'Failed to save program to the database.',
@@ -126,7 +129,7 @@ const deleteProgram = async (req, res, next) => {
 					status: 'Successfully deleted program from the database.',
 				});
 			}).catch((err) => {
-				console.log('Error: ', err);
+				logger.error('Error: ', err);
 
 				res.status(400).json({
 					message: 'Failed to remove program from NGO\'s active programs.',
@@ -136,7 +139,7 @@ const deleteProgram = async (req, res, next) => {
 			});
 		})
 		.catch((err) => {
-			console.log('Error: ', err);
+			logger.error('Error: ', err);
 
 			res.status(400).json({
 				message: 'Failed to delete program.',
@@ -213,7 +216,7 @@ const addSponsor = async (req, res, next) => {
 
 					program.save()
 						.then(() => {
-							console.log('Program is now in Procurement Phase!');
+							logger.info('Program is now in Procurement Phase!');
 
 							res.status(200).json({
 								message: 'Program is now in Procurement Phase.',
@@ -226,7 +229,7 @@ const addSponsor = async (req, res, next) => {
 				}
 			});
 	} catch (err) {
-		console.log('Error: ', err);
+		logger.error('Error: ', err);
 
 		res.status(400).json({
 			message: 'Something went wrong.',

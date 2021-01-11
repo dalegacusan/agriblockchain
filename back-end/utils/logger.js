@@ -1,12 +1,12 @@
-const info = (...params) => {
-  console.log(...params);
+const info = (...message) => {
+	console.log(...message);
 };
 
-const error = (...params) => {
-  console.error(...params);
+const error = (...message) => {
+	console.error(...message);
 };
 
 module.exports = {
-  info,
-  error,
+	info,
+	error,
 };

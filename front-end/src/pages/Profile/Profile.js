@@ -1,8 +1,10 @@
+// https://material-ui.com/components/material-icons/
 import React, { useContext } from 'react';
 // MaterialUI
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
+import Container from '@material-ui/core/Container';
+import Box from '@material-ui/core/Box';
 // Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 // Components
@@ -42,11 +44,17 @@ export default function Profile() {
 
 	return (
 		<div className={classes.root}>
-			<Grid container spacing={3}>
-				<Grid item xs={12}>
-					{toDisplay}
-				</Grid>
-			</Grid>
+			<Container maxWidth='lg' component={Box} mt={5}>
+				<Box my={3}>
+					<Grid container spacing={3}>
+						<Grid item xs={12}>
+							<Grid container>
+								{toDisplay}
+							</Grid>
+						</Grid>
+					</Grid>
+				</Box>
+			</Container>
 		</div>
 	);
 }

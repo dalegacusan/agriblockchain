@@ -34,22 +34,22 @@ const members = [
 	{
 		name: 'Dale',
 		image: '/images/avatars/dale.png',
-		text: 'Developer',
+		text: 'Software Engineer',
 	},
 	{
 		name: 'Dobi',
 		image: '/images/avatars/dobi.png',
-		text: '<caption/role>',
+		text: 'QA Engineer',
 	},
 	{
 		name: 'Minnie',
 		image: '/images/avatars/minnie.png',
-		text: '<adjective> Designer',
+		text: 'Industrial Designer',
 	},
 	{
 		name: 'Stephen',
 		image: '/images/avatars/stephen.png',
-		text: '<adjective> Front-end developer',
+		text: 'Software Engineer',
 	}
 ]
 

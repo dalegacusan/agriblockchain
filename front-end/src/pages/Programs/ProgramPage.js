@@ -57,22 +57,24 @@ export default withRouter((props) => {
 	const [program, setProgram] = useState({
 		'id': '',
 		'balance': 0,
+		'requiredAmount': 0,
+		'completed': false,
+		'status': '',
+		'stage': '',
 		'about': {
-			'status': '',
-			'stage': '',
-			'completed': false,
 			'programName': '',
-			'about': '',
-			'cityAddress': '',
-			'ngo': '',
-			'requiredAmount': 0
+			'programDescription': '',
+			'addressLine': '',
+			'ngoUnder': '',
 		},
 		'timeline': {
-			'programDate': ''
+			'dateCreated': '',
+			'executionDate': ''
 		},
 		'produceRequirements': [],
 		'farmersParticipating': [],
-		// Why does this have objects inside?
+		// @dev: Why does this have objects inside?
+		// - maybe because it only displays 2 sponsors?
 		'sponsors': [
 			{
 				'sponsorId': '',
@@ -88,27 +90,33 @@ export default withRouter((props) => {
 	});
 	const [ngo, setNgo] = useState({
 		'id': '',
+		'loginDetails': {
+			'username': '',
+			'emailAddress': '',
+			'password': '',
+		},
 		'about': {
 			'ngoName': '',
+			'ngoDescription': '',
 			'addressLine1': '',
 			'addressLine2': '',
 			'region': '',
 			'city': '',
 			'country': '',
 		},
-		'programs': {
+		'contactDetails': {
+			'authorizedRepresentative': {
+				'firstName': '',
+				'lastName': '',
+				'representativeContactNumber': ''
+			},
+			'contactNumber': '',
+			'contactEmailAddress': ''
+		},
+		'programDetails': {
 			'activePrograms': [],
 			'completedPrograms': [],
 		},
-		'contactDetails': {
-			'authorizedRepresentative': '',
-			'contactNumber': '',
-			'emailAddress': ''
-		},
-		'loginDetails': {
-			'username': '',
-			'password': '',
-		}
 	})
 	const [pledgeDialog, setPledgeDialog] = useState({
 		loading: false,
@@ -133,12 +141,12 @@ export default withRouter((props) => {
 			.then((res) => {
 				const { data } = res;
 				const { about, farmersParticipating, sponsors } = data;
-				const { ngo } = about;
+				const { ngoUnder } = about;
 
 				setProgram(data);
 
-				if (about && ngo !== '') {
-					axios.get(`/api/ngo/${ngo}`)
+				if (about && ngoUnder !== '') {
+					axios.get(`/api/ngo/${ngoUnder}`)
 						.then(res => {
 							const { data } = res;
 							setNgo(data);
@@ -397,7 +405,7 @@ export default withRouter((props) => {
 										Stage: &nbsp;&nbsp;
 									</Typography>
 									<Typography display='inline' variant='subtitle2' className={classes.stage}>
-										{program.about.stage}
+										{program.stage}
 									</Typography>
 								</Box>
 								<Box>
@@ -413,14 +421,14 @@ export default withRouter((props) => {
 					</Grid>
 					<Grid item sm={12} md={8} lg={7}>
 						<Box pb={2} display='flex' flexDirection='column' alignItems='center' justifyContent='space-between'>
-							<CircularProgressWithLabel value={program.balance / program.about.requiredAmount * 100} />
+							<CircularProgressWithLabel value={program.balance / program.requiredAmount * 100} />
 							<Box my={2}>
 								<Typography variant='h6' component='div'>
 									&#8369;
 									{program.balance}
 									{' '}
 									of &#8369;
-									{program.about.requiredAmount}
+									{program.requiredAmount}
 									{' '}
 									pledged
 								</Typography>
