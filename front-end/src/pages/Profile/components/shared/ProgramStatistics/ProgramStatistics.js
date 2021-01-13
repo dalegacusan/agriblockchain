@@ -11,8 +11,11 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 	},
 	programStatsBackgroundColor: {
-		backgroundColor: theme.palette.secondary.main,
+		backgroundColor: '#F2E58A',
 	},
+	stat_number_color: {
+		color: theme.palette.primary.main
+	}
 }));
 
 export default function ProgramStatistics(props) {
@@ -30,18 +33,24 @@ export default function ProgramStatistics(props) {
 	if (currentUser === 'ngo') {
 		toDisplay = (
 			<>
-				<Box className={styles.stat_container}>
-					<p>{activeProgramsCount + completedProgramsCount}</p>
-					<span>Total</span>
-				</Box>
-				<Box className={styles.stat_container}>
-					<p>{activeProgramsCount}</p>
-					<span>Active</span>
-				</Box>
-				<Box className={styles.stat_container}>
-					<p>{completedProgramsCount}</p>
-					<span>Completed</span>
-				</Box>
+				<Grid item xs={12} md={4} lg={4}>
+					<Box>
+						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{activeProgramsCount + completedProgramsCount}</span>
+						<span className={styles.stat_text}>Total Programs</span>
+					</Box>
+				</Grid>
+				<Grid item xs={12} md={4} lg={4}>
+					<Box>
+						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{activeProgramsCount}</span>
+						<span className={styles.stat_text}>Active Programs</span>
+					</Box>
+				</Grid>
+				<Grid item xs={12} md={4} lg={4}>
+					<Box>
+						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{completedProgramsCount}</span>
+						<span className={styles.stat_text}>Completed Programs</span>
+					</Box>
+				</Grid>
 			</>
 		);
 	} else if (currentUser === 'corporation') {
@@ -91,23 +100,11 @@ export default function ProgramStatistics(props) {
 
 	return (
 		<>
-			<Grid container>
-				<Grid item xs={12}>
-					<Box
-						component='div'
-						display='flex'
-						justifyContent='center'
-						className={classes.programStatsBackgroundColor}
-						style={
-							{
-								padding: '25px'
-							}
-						}
-					>
-						{toDisplay}
-					</Box>
+			<div className={classes.root}>
+				<Grid container className={`${classes.programStatsBackgroundColor} ${styles.stat_container}`}>
+					{toDisplay}
 				</Grid>
-			</Grid>
+			</div>
 		</>
 	);
 }

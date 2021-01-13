@@ -6,3 +6,15 @@
 .footerIcon {
   width: 24px;
 }
+
+.footer_grid_left,
+.footer_grid_right {
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .footer_grid_right {
+    display: block;
+  }
+}

@@ -57,11 +57,11 @@ function AboutPage() {
 	const classes = useStyles();
 
 	return (
-		<Container className={classes.container} maxWidth="lg" component={Box} mt={5}>
-			<Typography variant="h2" component="h1" gutterBottom>About Us</Typography>
-			<Typography variant="h5" component="h1" gutterBottom>Hello! We are Team AgriBlockChain.</Typography>
+		<Container className={classes.container} maxWidth='lg' component={Box} mt={5}>
+			<Typography variant='h2' component='h1' gutterBottom>About Us</Typography>
+			<Typography variant='h5' component='h1' gutterBottom>Hello! We are Team AgriBlockChain.</Typography>
 			<Box my={5}>
-				<Grid container justify="center" spacing={5}>
+				<Grid container justify='center' spacing={5}>
 					<Grid item>
 						{
 							members.map((item, i) => <Item key={i} item={item} />)
@@ -70,8 +70,8 @@ function AboutPage() {
 				</Grid>
 			</Box>
 			<Box my={5}>
-				<Grid container justify="center" spacing={5}>
-					<img src="/images/abc_logo.svg" className={classes.logo} alt="abc_logo" />
+				<Grid container justify='center' spacing={5}>
+					<img src='/images/abc_logo.svg' className={classes.logo} alt='abc_logo' />
 				</Grid>
 			</Box>
 		</Container>
@@ -91,13 +91,13 @@ function Item(props) {
 				<CardMedia
 					className={classes.media}
 					image={image}
-					title=""
+					title=''
 				/>
 				<CardContent>
-					<Typography gutterBottom variant="h5" component="h2">
+					<Typography gutterBottom variant='h5' component='h2'>
 						{name}
 					</Typography>
-					<Typography variant="body2" color="textSecondary" component="p">
+					<Typography variant='body2' color='textSecondary' component='p'>
 						{text}
 					</Typography>
 				</CardContent>

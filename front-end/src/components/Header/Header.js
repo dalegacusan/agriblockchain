@@ -25,9 +25,11 @@ import logo from './logo_01.svg';
 // Contexts
 import { RegisterDialogContext } from '../../contexts/RegisterDialogContext';
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
+
 // Components
 // Pages
 // CSS
+import './header.css';
 
 const drawerWidth = 320;
 
@@ -128,7 +130,7 @@ export default function ButtonAppBar() {
 					<IconButton onClick={handleDrawerOpen} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
 						<MenuIcon />
 					</IconButton>
-					<Typography variant="h6" className={classes.title}>
+					<Typography variant="h6" className={`${classes.title} header_logo`}>
 						<Link component={RouterLink} to="/">
 							<img src={logo} alt="Logo" className={classes.logo} />
 						</Link>
@@ -149,7 +151,7 @@ export default function ButtonAppBar() {
 									loggedIn
 										? (
 											<Link component={RouterLink} to={`/profile/${loginData.uid}`} style={{ textDecoration: 'none', color: 'rgba(0, 0, 0, 0.87)' }}>
-												<List component='div' style={{ padding: 0 }}>
+												<List component='div' style={{ padding: 0 }} className='header_name_balance'>
 													<ListItem
 														button
 														style={{ borderRadius: 8 }}

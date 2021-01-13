@@ -1,10 +1,21 @@
 .stat_container {
-  padding: 0 15px;
-  margin: 0 15px;
-  font-size: 24px;
+  /* padding: 0 15px;
+  margin: 0 15px; */
+  font-size: 20px;
   font-weight: bold;
+  margin: 10px 0 20px 0;
+  padding: 24px 20px;
+  text-align: center;
 }
 
-.stat_container p {
-  display: inline-block;
+.stat_number {
+  margin-right: 8px;
+  text-align: center;
+  font-size: 34px;
+}
+
+.stat_text {
+  color: rgb(41, 41, 41);
+  position: relative;
+  top: -4px;
 }

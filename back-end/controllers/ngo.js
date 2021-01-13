@@ -55,7 +55,7 @@ const createNGO = (req, res, next) => {
 				representativeContactNumber: '283-54-4490',
 			},
 			contactNumber: '740-463-3291',
-			emailAddress: 'allianceofhumanrightsadvocatedph@gmail.com',
+			contactEmailAddress: 'allianceofhumanrightsadvocatesph@gmail.com',
 		},
 	});
 

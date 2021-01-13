@@ -40,27 +40,31 @@ export default function GeneralInformation(props) {
 		case 'ngo':
 			toDisplay = (
 				<>
-					<Box display='flex' justifyContent='center'>
-						<Avatar className={classes.iconBackgroundColor}>
-							<ApartmentIcon />
-						</Avatar>
-					</Box>
-					<Box style={{ textAlign: 'center' }}>
+					<Grid container spacing={3}>
+						<Grid item xs={12} md={6} lg={6}>
+							<Box>
 
-						<h1>{ngoName}</h1>
-						<p>{ngoDescription}</p>
-						<p>{addressLine1}</p>
-						<p>
-							<span>{region}</span>, <span>{city}</span>, <span>{country}</span>,
-						</p>
-						<p>
-							<span>{representativeFirstName} {representativeLastName}, {representativeContactNumber}</span>
-						</p>
-						<p>
-							<span>{contactNumber}, {contactEmailAddress}</span>
-						</p>
+								<h1>{ngoName}</h1>
+								<p>{ngoDescription}</p>
+								<p>
+									<span>{contactNumber}, {contactEmailAddress}</span>
+								</p>
+								<p>{addressLine1}</p>
+								<p>
+									<span>{region}</span>, <span>{city}</span>, <span>{country}</span>,
+								</p>
+								<p>
+									<span>{representativeFirstName} {representativeLastName}, {representativeContactNumber}</span>
+								</p>
 
-					</Box>
+							</Box>
+						</Grid>
+						<Grid item xs={12} md={6} lg={6}>
+							<img src='/images/ngo.svg' alt='ngo' style={{ width: '100%' }} />
+						</Grid>
+
+					</Grid>
+
 				</>
 
 			);

@@ -30,7 +30,7 @@ export default function Footer() {
 	return (
 		<>
 			<Grid container className={styles.footer}>
-				<Grid item xs={6} style={{ display: 'flex', justifyContent: 'center' }}>
+				<Grid item xs={12} md={6} lg={6} className={styles.footer_grid_left}>
 					<Box>
 						<p>Bayanihan</p>
 						<p>
@@ -40,7 +40,7 @@ export default function Footer() {
 						<p>© 2020 Team Agriblockchain. All rights reserved.</p>
 					</Box>
 				</Grid>
-				<Grid item xs={6} style={{ display: 'flex', justifyContent: 'center' }}>
+				<Grid item xs={12} md={6} lg={6} className={styles.footer_grid_right}>
 					<Box>
 						<p>
 							<a href='https://youtu.be/y8MjU8664Lo' target='_blank' rel='noreferrer'>
@@ -49,10 +49,8 @@ export default function Footer() {
 								</BootstrapTooltip>
 							</a>
 						</p>
-						<p>Report a bug.</p>
-						<p>
-							<a href='https://github.com/dalegacusan/agriblockchain' target='_blank' rel='noreferrer'>https://github.com/dalegacusan/agriblockchain</a>
-						</p>
+						<p>Report a bug</p>
+						<a href='https://github.com/dalegacusan/agriblockchain' target='_blank' rel='noreferrer'>https://github.com/dalegacusan/agriblockchain</a>
 					</Box>
 				</Grid>
 			</Grid>
