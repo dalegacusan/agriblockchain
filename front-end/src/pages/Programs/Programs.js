@@ -10,10 +10,10 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
+import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import Alert from '@material-ui/lab/Alert';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 // Contexts
 import { LoginDialogContext } from '../../contexts/LoginDialogContext';
 // Components
@@ -68,6 +68,19 @@ export default function Programs() {
 			<Typography variant='h2' component='h1' gutterBottom>
 				All Programs
 			</Typography>
+			<Box display={loginData.type === 'ngo' ? 'block' : 'none'}>
+				<Link component={RouterLink} to='/program/create'>
+					<Button
+						variant="contained"
+						color="primary"
+						className={classes.button}
+						startIcon={<AddOutlinedIcon />}
+					>
+						Create Program
+					</Button>
+				</Link>
+			</Box>
+
 			<Box display={loginData.username === '' && loginData.type === '' ? 'block' : 'none'}>
 				<Alert severity='info'>Log in to Bayanihan to get more details about the programs.</Alert>
 			</Box>
@@ -115,14 +128,7 @@ export default function Programs() {
 						)
 				}
 			</Box>
-			<Box display={loginData.type === 'ngo' ? 'block' : 'none'}>
-				<Link component={RouterLink} to='/program/create'>
-					<Fab aria-label='Create Program' className={classes.fab} color='primary' variant='extended'>
-						<AddIcon />
-						Create Program
-					</Fab>
-				</Link>
-			</Box>
+
 		</Container>
 	);
 }

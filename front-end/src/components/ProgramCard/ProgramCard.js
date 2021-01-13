@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
+import Truncate from 'react-truncate';
 
 // Components
 // MaterialUI
@@ -107,8 +108,11 @@ export default function ProgramCard(props) {
 						{stage}
 					</Typography>
 				</Box>
+
 				<Typography variant="body2" component="p" gutterBottom>
-					{programDescription}
+					<Truncate lines={3} ellipsis={<span>... <a href={`/program/${programId}`}>Read more</a></span>}>
+						{programDescription}
+					</Truncate>
 				</Typography>
 			</CardContent>
 			<CardActions>
