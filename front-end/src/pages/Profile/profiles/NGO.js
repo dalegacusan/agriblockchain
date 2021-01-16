@@ -51,6 +51,8 @@ export default withRouter((props) => {
 		}
 	}
 
+	console.log(ngo);
+
 	useEffect(() => {
 		getNGODetails();
 	}, [])

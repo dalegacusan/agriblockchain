@@ -17,19 +17,33 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GeneralInformation(props) {
 	const { currentUser } = props;
+
 	// NGO
 	const {
 		ngoName,
 		ngoDescription,
-		addressLine1,
-		region,
-		city,
-		country,
+		addressLine1: ngoAddressLine1,
+		region: ngoRegion,
+		city: ngoCity,
+		country: ngoCountry,
 		representativeFirstName,
 		representativeLastName,
 		representativeContactNumber,
-		contactNumber,
-		contactEmailAddress
+		contactNumber: ngoContactNumber,
+		contactEmailAddress: ngoContactEmailAddress
+	} = props;
+
+	// Sponsor
+	const {
+		sponsorFirstName,
+		sponsorLastName,
+		corporationUnder,
+		addressLine1: sponsorAddressLine1,
+		region: sponsorRegion,
+		city: sponsorCity,
+		country: sponsorCountry,
+		contactNumber: sponsorContactNumber,
+		contactEmailAddress: sponsorContactEmailAddress
 	} = props;
 
 	const classes = useStyles();
@@ -47,11 +61,11 @@ export default function GeneralInformation(props) {
 								<h1>{ngoName}</h1>
 								<p>{ngoDescription}</p>
 								<p>
-									<span>{contactNumber}, {contactEmailAddress}</span>
+									<span>{ngoContactNumber}, {ngoContactEmailAddress}</span>
 								</p>
-								<p>{addressLine1}</p>
+								<p>{ngoAddressLine1}</p>
 								<p>
-									<span>{region}</span>, <span>{city}</span>, <span>{country}</span>,
+									<span>{ngoRegion}</span>, <span>{ngoCity}</span>, <span>{ngoCountry}</span>,
 								</p>
 								<p>
 									<span>{representativeFirstName} {representativeLastName}, {representativeContactNumber}</span>
@@ -64,13 +78,35 @@ export default function GeneralInformation(props) {
 						</Grid>
 
 					</Grid>
-
 				</>
-
 			);
 			break;
 		case 'sponsor':
+			toDisplay = (
+				<>
+					<Grid container spacing={3}>
+						<Grid item xs={12} md={6} lg={6}>
+							<Box>
 
+								<h1>{sponsorFirstName} {sponsorLastName}</h1>
+								<p>{corporationUnder}</p>
+								<p>
+									<span>{sponsorContactNumber}, {sponsorContactEmailAddress}</span>
+								</p>
+								<p>{sponsorAddressLine1}</p>
+								<p>
+									<span>{sponsorRegion}</span>, <span>{sponsorCity}</span>, <span>{sponsorCountry}</span>,
+								</p>
+
+							</Box>
+						</Grid>
+						<Grid item xs={12} md={6} lg={6}>
+							<img src='/images/sponsor.svg' alt='ngo' style={{ width: '80%' }} />
+						</Grid>
+
+					</Grid>
+				</>
+			);
 			break;
 		case 'farmer':
 

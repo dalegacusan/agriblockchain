@@ -23,14 +23,16 @@ export default function ProgramStatistics(props) {
 
 	const classes = useStyles();
 
-	// NGO
-	const { activePrograms, completedPrograms } = props;
-	const activeProgramsCount = activePrograms.length;
-	const completedProgramsCount = completedPrograms.length;
+
 
 	let toDisplay;
 
 	if (currentUser === 'ngo') {
+		// NGO
+		const { activePrograms, completedPrograms } = props;
+		const activeProgramsCount = activePrograms.length;
+		const completedProgramsCount = completedPrograms.length;
+
 		toDisplay = (
 			<>
 				<Grid item xs={12} md={4} lg={4}>
@@ -53,30 +55,23 @@ export default function ProgramStatistics(props) {
 				</Grid>
 			</>
 		);
-	} else if (currentUser === 'corporation') {
+	} else if (currentUser === 'sponsor') {
+		// Sponsor
+		const { sponsoredPrograms } = props;
+
+		// Remove duplicated of same program
+		const programIds = sponsoredPrograms.map(program => program.id);
+		const filteredSponsoredPrograms = sponsoredPrograms.filter(({ id }, index) => !programIds.includes(id, index + 1))
+		const sponsoredProgramsCount = filteredSponsoredPrograms.length;
+
 		toDisplay = (
 			<>
-				<p>
-					Total Programs Sponsored:
-				</p>
-				<span>0</span>
-				<p>
-					Active Programs:
-					<span>0</span>
-				</p>
-				<p>
-					Completed Programs:
-					<span>0</span>
-				</p>
-			</>
-		);
-	} else if (currentUser === 'individual') {
-		toDisplay = (
-			<>
-				<p>
-					Total Programs Sponsored:
-					<span>0</span>
-				</p>
+				<Grid item xs={12} md={12} lg={12}>
+					<Box>
+						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{sponsoredProgramsCount}</span>
+						<span className={styles.stat_text}>Program{sponsoredPrograms.length === 1 ? '' : 's'} Sponsored</span>
+					</Box>
+				</Grid>
 			</>
 		);
 	} else if (currentUser === 'farmer') {

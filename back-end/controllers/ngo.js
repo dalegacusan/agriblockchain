@@ -35,13 +35,13 @@ const viewNGO = async (req, res, next) => {
 const createNGO = (req, res, next) => {
 	const newNGOAccount = new NGO({
 		loginDetails: {
-			username: 'philihuriad',
-			emailAddress: 'philihuriad@ph.com',
-			password: 'humanrightsadvocated',
+			username: 'centerfordisasterpreparednessfoundation',
+			emailAddress: 'centerfdpf@ph.com',
+			password: 'alwaysbeready',
 		},
 		about: {
-			ngoName: 'Philippine Alliance of Human Rights Advocates',
-			ngoDescription: 'Philippine Alliance of Human Rights Advocates is human rights NGO working with a mission ‘’to develop a strong, progressive, dynamic, and pluralist human rights movement that engages the state to comply with its human rights obligations and non-state actors to fulfill their human rights responsibilities’’.',
+			ngoName: 'Center for Disaster Preparedness Foundation',
+			ngoDescription: 'CDP is known in the Philippines and in the Asia-Pacific Region as one of the pioneers in the field of community-based disaster risk reduction and management (CBDRRM) and climate change adaptation (CCA)',
 			addressLine1: 'Quezon City',
 			addressLine2: 'Metro Manila',
 			region: 'NCR',
@@ -50,12 +50,12 @@ const createNGO = (req, res, next) => {
 		},
 		contactDetails: {
 			authorizedRepresentative: {
-				firstName: 'Raymond',
-				lastName: 'Nickenss',
-				representativeContactNumber: '283-54-4490',
+				firstName: 'Judith',
+				lastName: 'McCabe',
+				representativeContactNumber: '469 7983',
 			},
-			contactNumber: '740-463-3291',
-			contactEmailAddress: 'allianceofhumanrightsadvocatesph@gmail.com',
+			contactNumber: '479 4898',
+			contactEmailAddress: 'centerfdpf@ph.com',
 		},
 	});
 

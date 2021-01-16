@@ -397,7 +397,7 @@ export default withRouter((props) => {
 										Status: &nbsp;
 									</Typography>
 									<Typography display='inline' variant='overline' color='primary' gutterBottom>
-										Active
+										{program.status}
 									</Typography>
 								</Box>
 								<Box>
@@ -433,13 +433,13 @@ export default withRouter((props) => {
 									pledged
 								</Typography>
 							</Box>
-							<Box display={program.about.stage === 'crowdfunding' ? 'block' : 'none'}>
+							<Box display={program.stage === 'crowdfunding' ? 'block' : 'none'}>
 								{
 									loginData.username !== '' && loginData.type === 'sponsor' ? (
 										<Button
 											variant='contained'
 											color='primary'
-											disabled={program.about.stage === 'procurement'}
+											disabled={program.stage === 'procurement'}
 											onClick={handlePledgeOpen}
 										>
 											Make a Pledge
@@ -452,7 +452,7 @@ export default withRouter((props) => {
 										)
 								}
 							</Box>
-							<Box display={program.about.stage === 'procurement' ? 'block' : 'none'} textAlign='center'>
+							<Box display={program.stage === 'procurement' ? 'block' : 'none'} textAlign='center'>
 								{
 									loginData.username !== '' && loginData.type === 'farmer' ? (
 										<Button
@@ -495,7 +495,7 @@ export default withRouter((props) => {
 						<Alert severity='success'>Action successful!</Alert>
 					</Box>
 					<Typography component='p' variant='body1' paragraph>
-						{program.about.about}
+						{program.about.programDescription}
 					</Typography>
 					<Typography variant='subtitle2'>
 						Current sponsors
@@ -504,10 +504,10 @@ export default withRouter((props) => {
 						program.sponsors.map((programSponsor, index) => (
 							<Box Box display='flex' key={index} flexDirection='row' alignItems='center' my={1}>
 								<Avatar>
-									{programSponsor.corporationName && programSponsor.corporationName[0]}
+									{programSponsor.sponsorName && programSponsor.sponsorName[0]}
 								</Avatar>
 								<Typography variant='subtitle1' style={{ marginLeft: 8 }}>
-									{programSponsor.corporationName && programSponsor.corporationName}
+									{programSponsor.sponsorName && programSponsor.sponsorName}
 									&nbsp;
 									(&#8369;
 									{programSponsor.amountFunded}

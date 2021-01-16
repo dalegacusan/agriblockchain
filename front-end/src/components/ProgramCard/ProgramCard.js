@@ -110,7 +110,7 @@ export default function ProgramCard(props) {
 				</Box>
 
 				<Typography variant="body2" component="p" gutterBottom>
-					<Truncate lines={3} ellipsis={<span>... <a href={`/program/${programId}`}>Read more</a></span>}>
+					<Truncate lines={3} ellipsis={<span>... <Link component={RouterLink} to={`/program/${programId}`}>Read more</Link></span>}>
 						{programDescription}
 					</Truncate>
 				</Typography>

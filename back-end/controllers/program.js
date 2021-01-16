@@ -161,7 +161,7 @@ const addSponsor = async (req, res, next) => {
 		// Get Sponsor and Program Name
 		const getSponsor = await Sponsor.findById(sponsorId);
 		const { about: sponsorAbout } = getSponsor;
-		const { corporationName } = sponsorAbout;
+		const { firstName: sponsorFirstName, lastName: sponsorLastName } = sponsorAbout;
 
 		const getProgram = await Program.findById(programId);
 		const { about: programAbout } = getProgram;
@@ -177,7 +177,7 @@ const addSponsor = async (req, res, next) => {
 		// Pushed to Program's [sponsors] array
 		const sponsorToPush = {
 			sponsorId,
-			corporationName,
+			sponsorName: `${sponsorFirstName} ${sponsorLastName}`,
 			amountFunded,
 			dateFunded: new Date(),
 		};
@@ -186,7 +186,7 @@ const addSponsor = async (req, res, next) => {
 		const addProgramToSponsor = Sponsor.findByIdAndUpdate(
 			sponsorId,
 			{
-				$push: { sponsoredPrograms: programToPush },
+				$push: { 'programDetails.sponsoredPrograms': programToPush },
 				$inc: { balance: -amountFunded }, // Decrease sponsor balance
 			},
 		);

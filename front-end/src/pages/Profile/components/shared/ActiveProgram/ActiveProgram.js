@@ -4,84 +4,151 @@ import moment from 'moment';
 
 // MaterialUI
 import Grid from '@material-ui/core/Grid';
-import { withStyles } from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
+import Alert from '@material-ui/lab/Alert';
 // Contexts
 // Components
 import LoadingScreen from '../../../../LoadingScreen/LoadingScreen';
 import ProgramCard from '../../../../../components/ProgramCard/ProgramCard';
 // Pages
 // CSS
+import styles from './activeprogram.module.css';
 
 export default function ActiveProgram(props) {
-	const { currentUser, activePrograms } = props;
+	const { currentUser } = props;
 
 	let toDisplay;
 
 	if (currentUser === "ngo") {
-		toDisplay = activePrograms.map((program, index) => {
-			const { id: programId, status, stage, about, timeline } = program;
-			const { programName, programDescription } = about;
-			const { executionDate } = timeline;
-			return (
-				<Grid key={index} item xs={12} md={6} lg={4}>
-					<ProgramCard
-						programName={programName}
-						programDate={moment(executionDate).format('dddd, MMMM Do YYYY')}
-						programDescription={programDescription}
-						programStatus={status}
-						programStage={stage}
-						programId={programId}
-					/>
-				</Grid>
-			)
-		})
-	} else if (currentUser === "corporation") {
-		toDisplay = (
-			<>
-				{/* Brings user to the Program Profile page */}
-				<p><a href="/">Active Program Name</a></p>
-				<p>
-					Status:
-					<span><i>Active, Cancelled, Completed</i></span>
-				</p>
-				<p>
-					Stage:
-					<span><i>Funding, Procurement, Execution</i></span>
-				</p>
-				<p>
-					Date Funded:
-					<span>12/3/2020</span>
-				</p>
-				<p>
-					Amount Funded:
-					<span>20,000</span>
-				</p>
-			</>
-		);
-	} else if (currentUser === "individual") {
-		toDisplay = (
-			<>
+		const { activePrograms } = props;
 
-				{/* Brings user to the Program Profile page */}
-				<p><a href="/">Active Program Name</a></p>
-				<p>
-					Status:
-					<span><i>Active, Cancelled, Completed</i></span>
-				</p>
-				<p>
-					Stage:
-					<span><i>Funding, Procurement, Execution</i></span>
-				</p>
-				<p>
-					Date Funded:
-					<span>12/3/2020</span>
-				</p>
-				<p>
-					Amount Funded:
-					<span>20,000</span>
-				</p>
+		toDisplay = (
+			<>
+				{
+					activePrograms.length === 0
+						?
+						(
+							<Box mb={2}>
+								<Alert severity='error'>You don't have any programs hosted yet.</Alert>
+							</Box>
+						)
+						:
+						activePrograms.map((program, index) => {
+							const { id: programId, status, stage, about, timeline } = program;
+							const { programName, programDescription } = about;
+							const { executionDate } = timeline;
+							return (
+								<Grid key={index} item xs={12} md={6} lg={4}>
+									<ProgramCard
+										programName={programName}
+										programDate={moment(executionDate).format('dddd, MMMM Do YYYY')}
+										programDescription={programDescription}
+										programStatus={status}
+										programStage={stage}
+										programId={programId}
+									/>
+								</Grid>
+							)
+						})
+				}
 			</>
 		);
+
+
+	} else if (currentUser === "sponsor") {
+		const { sponsoredPrograms } = props;
+
+		// Remove duplicates of same program
+		const programIds = sponsoredPrograms.map(program => program.id);
+		const filteredSponsoredPrograms = sponsoredPrograms.filter(({ id }, index) => !programIds.includes(id, index + 1))
+
+		toDisplay = (
+			<>
+				<Grid item xs={12} md={12} lg={12}>
+					<p className={styles.activePrograms_header_text}>Currently Sponsored Programs</p>
+				</Grid>
+
+				{
+
+					sponsoredPrograms.length === 0
+						?
+						(
+							<Box mb={2}>
+								<Alert severity='error'>You haven't sponsored any programs.</Alert>
+							</Box>
+						)
+						:
+						filteredSponsoredPrograms.map((program, index) => {
+							const { id: programId, status, stage, about, timeline } = program;
+							const { programName, programDescription } = about;
+							const { executionDate } = timeline;
+
+
+							return (
+								<>
+									{
+										status !== 'completed' && status !== 'cancelled'
+											?
+											(
+												<Grid key={index} item xs={12} md={6} lg={4}>
+													<ProgramCard
+														programName={programName}
+														programDate={moment(executionDate).format('dddd, MMMM Do YYYY')}
+														programDescription={programDescription}
+														programStatus={status}
+														programStage={stage}
+														programId={programId}
+													/>
+												</Grid>
+											)
+											:
+											null
+									}
+
+								</>
+							)
+						})
+				}
+
+				<Grid item xs={12} md={12} lg={12}>
+					<p className={styles.activePrograms_header_text}>All Sponsored Programs</p>
+				</Grid>
+
+				{
+					sponsoredPrograms.length === 0
+						?
+						(
+							<Box mb={2}>
+								<Alert severity='error'>You haven't sponsored any programs.</Alert>
+							</Box>
+						)
+						:
+						filteredSponsoredPrograms.map((program, index) => {
+							const { id: programId, status, stage, about, timeline } = program;
+							const { programName, programDescription } = about;
+							const { executionDate } = timeline;
+
+							return (
+								<>
+									<Grid key={index} item xs={12} md={6} lg={4}>
+										<ProgramCard
+											programName={programName}
+											programDate={moment(executionDate).format('dddd, MMMM Do YYYY')}
+											programDescription={programDescription}
+											programStatus={status}
+											programStage={stage}
+											programId={programId}
+										/>
+									</Grid>
+								</>
+							)
+						})
+				}
+			</>
+		);
+
+
+
 	} else if (currentUser === "farmer") {
 		toDisplay = (
 			<>
