@@ -521,27 +521,31 @@ export default withRouter((props) => {
 						Farmers participating
 					</Typography>
 					{
-						program.farmersParticipating.map((programFarmer, index) => (
-							<Box key={index} display='flex' flexDirection='row' alignItems='center' my={2}>
-								<Avatar>
-									{programFarmer.farmerAbout && programFarmer.farmerAbout.firstName[0]}
-								</Avatar>
-								<Box ml={1}>
-									<Typography variant='subtitle1'>
-										{programFarmer.farmerAbout && programFarmer.farmerAbout.firstName}
-										{programFarmer.farmerAbout && programFarmer.farmerAbout.middletName}
-										{programFarmer.farmerAbout && programFarmer.farmerAbout.lastName}
-									</Typography>
-									<Typography variant='caption'>
-										{programFarmer.quantity}
-										{' '}
-										kg of
-										{programFarmer.name}
-									</Typography>
-								</Box>
+						program.farmersParticipating.map((programFarmer, index) => {
+							const { produce, farmerName } = programFarmer;
+							const { name: produceName, price: producePrice, quantity: produceQuantity } = produce;
 
-							</Box>
-						))
+							return (
+								<Box key={index} display='flex' flexDirection='row' alignItems='center' my={2}>
+									<Avatar>
+										{programFarmer.farmerName && programFarmer.farmerName[0]}
+									</Avatar>
+									<Box ml={1}>
+										<Typography variant='subtitle1'>
+											{programFarmer.farmerName && programFarmer.farmerName}
+										</Typography>
+										<Typography variant='caption'>
+											{produceQuantity}
+											{' '}
+											kg of
+											{' '}
+											{produceName}
+										</Typography>
+									</Box>
+
+								</Box>
+							);
+						})
 					}
 				</Box>
 			</Container>
@@ -600,7 +604,7 @@ export default withRouter((props) => {
 					<Box my={2}>
 						<TextField
 							autoFocus
-							label='Produce quantity'
+							label='Produce quantity (in kg)'
 							fullWidth
 							variant='outlined'
 							id='produceQuantity'
@@ -612,7 +616,7 @@ export default withRouter((props) => {
 					<Box my={2}>
 						<TextField
 							autoFocus
-							label='Price per quantity'
+							label='Price per'
 							fullWidth
 							variant='outlined'
 							type='number'

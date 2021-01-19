@@ -6,7 +6,7 @@ const router = express.Router();
 const FarmerController = require('../controllers/farmer');
 
 router.get('/', (req, res) => {
-  res.send('Welcome to Farmer\'s Dashboard');
+	res.send('Welcome to Farmer\'s Dashboard');
 });
 
 // ====== CREATE ====== //

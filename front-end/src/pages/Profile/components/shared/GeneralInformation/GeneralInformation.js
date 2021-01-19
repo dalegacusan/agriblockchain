@@ -46,6 +46,17 @@ export default function GeneralInformation(props) {
 		contactEmailAddress: sponsorContactEmailAddress
 	} = props;
 
+	const {
+		farmerFirstName,
+		farmerLastName,
+		addressLine1: farmerAddressLine1,
+		region: farmerRegion,
+		city: farmerCity,
+		country: farmerCountry,
+		contactNumber: farmerContactNumber,
+		contactEmailAddress: farmerContactEmailAddress
+	} = props;
+
 	const classes = useStyles();
 
 	let toDisplay;
@@ -109,6 +120,30 @@ export default function GeneralInformation(props) {
 			);
 			break;
 		case 'farmer':
+			toDisplay = (
+				<>
+					<Grid container spacing={3}>
+						<Grid item xs={12} md={6} lg={6}>
+							<Box>
+
+								<h1>{farmerFirstName} {farmerLastName}</h1>
+								<p>
+									<span>{farmerContactNumber}, {farmerContactEmailAddress}</span>
+								</p>
+								<p>{farmerAddressLine1}</p>
+								<p>
+									<span>{farmerRegion}</span>, <span>{farmerCity}</span>, <span>{farmerCountry}</span>,
+								</p>
+
+							</Box>
+						</Grid>
+						<Grid item xs={12} md={6} lg={6}>
+							<img src='/images/farmer.svg' alt='ngo' style={{ width: '100%' }} />
+						</Grid>
+
+					</Grid>
+				</>
+			);
 
 			break;
 		default:

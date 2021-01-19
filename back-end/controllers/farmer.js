@@ -1,3 +1,5 @@
+const { v4: uuidv4 } = require('uuid');
+
 const Farmer = require('../models/Farmer');
 const logger = require('../utils/logger');
 
@@ -35,22 +37,22 @@ const viewFarmer = async (req, res, next) => {
 const createFarmer = (req, res, next) => {
 	const newFarmerAccount = new Farmer({
 		about: {
-			firstName: 'Joseph',
-			lastName: 'Hermano',
-			addressLine1: '2050 Roane Avenue, Washington MD, Maryland',
-			addressLine2: '3274 Ingram Street, Galion, Ohio',
+			firstName: 'Claudia',
+			lastName: 'Griffin',
+			addressLine1: '3358 Jett Lane',
+			addressLine2: 'Inglewood, CA 90301',
 			region: 'NCR',
-			city: 'Manila',
+			city: 'Quezon',
 			country: 'Philippines',
 		},
 		contactDetails: {
-			contactNumber: '937-538-5148',
-			contactEmailAddress: 'josephhermano@gmail.com',
+			contactNumber: '5373 8859 4551',
+			contactEmailAddress: 'claudiagriffin@armyspy.com',
 		},
 		loginDetails: {
-			username: 'josephhermano',
-			emailAddress: 'josephhermano@gmail.com',
-			password: 'hermanojoseph123',
+			username: 'Youdiven63',
+			emailAddress: 'claudiagriffin@armyspy.com',
+			password: 'thoe5pa6uR3',
 		},
 	});
 
@@ -100,6 +102,7 @@ const addProduce = (req, res, next) => {
 	// Object that gets pushed to Farmer's produce portfolio array
 	const produceToPush = {
 		farmerId,
+		produceId: uuidv4(),
 		name,
 		price,
 		quantity,

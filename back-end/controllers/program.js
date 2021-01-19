@@ -1,6 +1,7 @@
 const Program = require('../models/Program');
 const NGO = require('../models/NGO');
 const Sponsor = require('../models/Sponsor');
+const Farmer = require('../models/Farmer');
 const logger = require('../utils/logger');
 
 const viewAllPrograms = async (req, res, next) => {
@@ -160,73 +161,161 @@ const addSponsor = async (req, res, next) => {
 	try {
 		// Get Sponsor and Program Name
 		const getSponsor = await Sponsor.findById(sponsorId);
-		const { about: sponsorAbout } = getSponsor;
+		const { about: sponsorAbout, balance: sponsorBalance } = getSponsor;
 		const { firstName: sponsorFirstName, lastName: sponsorLastName } = sponsorAbout;
 
 		const getProgram = await Program.findById(programId);
 		const { about: programAbout } = getProgram;
 		const { programName } = programAbout;
 
-		// Pushed to Sponsor's [sponsoredPrograms] array
+		// Check if Amount Funded is GREATER THAN current balance
+		if (amountFunded > sponsorBalance) {
+			logger.error('Error: Insufficient balance');
+
+			res.status(400).json({
+				message: 'Insufficient balance.',
+			});
+
+			next();
+		} else {
+			// Pushed to Sponsor's [sponsoredPrograms] array
+			const programToPush = {
+				programId,
+				programName,
+				amountFunded,
+				dateFunded: new Date(),
+			};
+			// Pushed to Program's [sponsors] array
+			const sponsorToPush = {
+				sponsorId,
+				sponsorName: `${sponsorFirstName} ${sponsorLastName}`,
+				amountFunded,
+				dateFunded: new Date(),
+			};
+
+			// Promises to be passed to Promise.all()
+			const addProgramToSponsor = Sponsor.findByIdAndUpdate(
+				sponsorId,
+				{
+					$push: { 'programDetails.sponsoredPrograms': programToPush },
+					$inc: { balance: -amountFunded }, // Decrease sponsor balance
+				},
+			);
+			const addSponsorToProgram = Program.findByIdAndUpdate(
+				programId,
+				{
+					$push: { sponsors: sponsorToPush },
+					$inc: { balance: amountFunded }, // Increase program balance
+				},
+				{ new: true },
+			);
+
+			Promise.all([addProgramToSponsor, addSponsorToProgram])
+				.then((values) => {
+					const program = values[1];
+
+					const { balance, requiredAmount } = program;
+
+					/*
+						Check if current balance of Program is >= required amount
+						IF TRUE, set Program's stage to "procurement"
+					*/
+					if (balance >= requiredAmount) {
+						program.stage = 'procurement';
+
+						program.save()
+							.then(() => {
+								logger.info('Program is now in Procurement Phase!');
+
+								res.status(200).json({
+									message: 'Program is now in Procurement Phase.',
+								});
+							});
+					} else {
+						res.status(200).json({
+							message: 'Successfully added sponsor to program.',
+						});
+					}
+				});
+		}
+	} catch (err) {
+		logger.error('Error: ', err);
+
+		res.status(400).json({
+			message: 'Something went wrong.',
+		});
+
+		next(err);
+	}
+};
+
+const addFarmer = async (req, res, next) => {
+	const { programId, farmerId } = req.params;
+	const { name, price, quantity } = req.body;
+
+	try {
+		const getFarmer = await Farmer.findById(farmerId);
+		const { about: farmerAbout, balance: farmerBalance } = getFarmer;
+		const { firstName: farmerFirstName, lastName: farmerLastName } = farmerAbout;
+
+		const getProgram = await Program.findById(programId);
+		const { about: programAbout } = getProgram;
+		const { programName } = programAbout;
+
+		// Pushed to Farmer's [programsParticipated] array
 		const programToPush = {
 			programId,
 			programName,
-			amountFunded,
-			dateFunded: new Date(),
+			expectedAmountToReceive: price * quantity,
+			received: false,
+			produce: {
+				name,
+				price,
+				quantity,
+			},
+			dateOffered: new Date(),
 		};
-		// Pushed to Program's [sponsors] array
-		const sponsorToPush = {
-			sponsorId,
-			sponsorName: `${sponsorFirstName} ${sponsorLastName}`,
-			amountFunded,
-			dateFunded: new Date(),
+		// Pushed to Program's [farmersParticipating] array
+		const farmerToPush = {
+			farmerId,
+			farmerName: `${farmerFirstName} ${farmerLastName}`,
+			expectedAmountToReceive: price * quantity,
+			produce: {
+				name,
+				price,
+				quantity,
+			},
+			dateOffered: new Date(),
 		};
 
 		// Promises to be passed to Promise.all()
-		const addProgramToSponsor = Sponsor.findByIdAndUpdate(
-			sponsorId,
+		const addProgramToFarmer = Farmer.findByIdAndUpdate(
+			farmerId,
 			{
-				$push: { 'programDetails.sponsoredPrograms': programToPush },
-				$inc: { balance: -amountFunded }, // Decrease sponsor balance
+				$push: { programsParticipated: programToPush },
 			},
 		);
-		const addSponsorToProgram = Program.findByIdAndUpdate(
+		const addFarmerToProgram = Program.findByIdAndUpdate(
 			programId,
 			{
-				$push: { sponsors: sponsorToPush },
-				$inc: { balance: amountFunded }, // Increase program balance
+				$push: { farmersParticipating: farmerToPush },
 			},
-			{ new: true },
 		);
 
-		Promise.all([addProgramToSponsor, addSponsorToProgram])
-			.then((values) => {
-				const program = values[1];
+		Promise.all([addProgramToFarmer, addFarmerToProgram])
+			.then((data) => {
+				logger.info('Successful!');
 
-				const { balance } = program;
-				const { about } = program;
-				const { requiredAmount } = about;
+				res.status(200).json({
+					message: 'Successfully added farmer to program',
+				});
+			})
+			.catch((err) => {
+				logger.error(err);
 
-				/*
-					Check if current balance of Program is >= required amount
-					IF TRUE, set Program's stage to "procurement"
-				*/
-				if (balance >= requiredAmount) {
-					program.about.stage = 'procurement';
-
-					program.save()
-						.then(() => {
-							logger.info('Program is now in Procurement Phase!');
-
-							res.status(200).json({
-								message: 'Program is now in Procurement Phase.',
-							});
-						});
-				} else {
-					res.status(200).json({
-						message: 'Successfully added sponsor to program.',
-					});
-				}
+				res.status(400).json({
+					message: 'Failed to add farmer to program',
+				});
 			});
 	} catch (err) {
 		logger.error('Error: ', err);
@@ -246,4 +335,5 @@ module.exports = {
 	getBalance,
 	deleteProgram,
 	addSponsor,
+	addFarmer,
 };

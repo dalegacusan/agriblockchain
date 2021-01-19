@@ -69,26 +69,27 @@ export default function ProgramStatistics(props) {
 				<Grid item xs={12} md={12} lg={12}>
 					<Box>
 						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{sponsoredProgramsCount}</span>
-						<span className={styles.stat_text}>Program{sponsoredPrograms.length === 1 ? '' : 's'} Sponsored</span>
+						<span className={styles.stat_text}>Program{sponsoredProgramsCount === 1 ? '' : 's'} Sponsored</span>
 					</Box>
 				</Grid>
 			</>
 		);
 	} else if (currentUser === 'farmer') {
+		const { programsParticipated } = props;
+
+		// Remove duplicated of same program
+		const programIds = programsParticipated.map(program => program.id);
+		const filteredProgramsParticipated = programsParticipated.filter(({ id }, index) => !programIds.includes(id, index + 1))
+		const participatedProgramsCount = filteredProgramsParticipated.length;
+
 		toDisplay = (
 			<>
-				<p>
-					Total Programs Participated:
-					<span>0</span>
-				</p>
-				<p>
-					Active Programs:
-					<span>0</span>
-				</p>
-				<p>
-					Completed Programs:
-					<span>0</span>
-				</p>
+				<Grid item xs={12} md={12} lg={12}>
+					<Box>
+						<span className={`${styles.stat_number} ${classes.stat_number_color}`}>{participatedProgramsCount}</span>
+						<span className={styles.stat_text}>Program{participatedProgramsCount === 1 ? '' : 's'} Participated</span>
+					</Box>
+				</Grid>
 			</>
 		);
 	}
